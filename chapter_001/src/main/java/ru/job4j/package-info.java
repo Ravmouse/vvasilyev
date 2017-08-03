@@ -1,7 +1,7 @@
 /**
 * Package for Calculate task.
 *
-* @author Vitaly Vasilyev (mailto:rav.energ@rambler.ru)
+* @author Vitaly Vasilyev (rav.energ@rambler.ru)
 * @version $Id$
 * @since 0.1
 */
