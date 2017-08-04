@@ -9,7 +9,8 @@ package ru.job4j;
 */
 public class Calculate {
     /**
-    * Точка входа в программу. 
+    * Точка входа в программу.
+    * @param args - args.
     */
     public static void main(String[] args) {
         /**
