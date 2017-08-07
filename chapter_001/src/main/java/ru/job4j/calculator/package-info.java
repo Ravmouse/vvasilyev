@@ -1,8 +1,8 @@
 /**
-* Package for Calculate.
+* Package for Calculator.
 *
 * @author Vitaly Vasilyev (rav.energ@rambler.ru)
 * @version $Id$
 * @since 0.1
 */
-package ru.job4j;
+package ru.job4j.calculator;
