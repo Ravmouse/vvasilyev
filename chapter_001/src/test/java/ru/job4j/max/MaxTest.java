@@ -12,6 +12,7 @@ import static org.junit.Assert.assertThat;
 * @since 0.1
 */
 public class MaxTest {
+    
     /**
     * Test add.
     */
@@ -20,5 +21,8 @@ public class MaxTest {
         Max maxim = new Max();
         int result = maxim.max(1, 2);
         assertThat(result, is(2));
+
+        result = maxim.max(-4, 10, 0);
+        assertThat(result, is(10));
     }
 }
