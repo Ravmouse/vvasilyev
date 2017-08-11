@@ -50,4 +50,18 @@ public class Point {
     public boolean is(int a, int b) {
         return y == a * x + b;
     }
+
+    /**
+     * The method calculates the distance between the point and any other point of Point type that is passed
+     * as an argument.
+     * @param otherPoint A variable of Point type.
+     * @return The distance between two points.
+     */
+    public double distanceTo(Point otherPoint) {
+        double result = Math.sqrt((this.getX() - otherPoint.getX())
+                                * (this.getX() - otherPoint.getX())
+                                + (this.getY() - otherPoint.getY())
+                                * (this.getY() - otherPoint.getY()));
+        return result;
+    }
 }

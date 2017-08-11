@@ -35,20 +35,6 @@ public class Triangle {
     }
 
     /**
-     * The method calculates a distance between the left point and the right point.
-     * @param left Left point
-     * @param right Right point
-     * @return The distance between the left point and the right point
-     */
-    public double distance(Point left, Point right) {
-        double result = Math.sqrt((left.getX() - right.getX())
-                                * (left.getX() - right.getX())
-                                + (left.getY() - right.getY())
-                                * (left.getY() - right.getY()));
-        return result;
-    }
-
-    /**
      * The method calculates a perimeter of the triangle.
      * @param ab The distance between the first and the second points
      * @param ac The distance between the first and the third points
@@ -76,12 +62,12 @@ public class Triangle {
      */
     public double area() {
         double result = -1;
-        double ab = this.distance(this.a, this.b);
-        double ac = this.distance(this.a, this.c);
-        double bc = this.distance(this.b, this.c);
-        double p = this.period(ab, ac, bc);
-        if (this.exist(ab, ac, bc)) {
-            result = Math.sqrt(p * (p - ab) * (p - ac) * (p - bc));
+        double aTob = a.distanceTo(b);
+        double aToc = a.distanceTo(c);
+        double bToc = b.distanceTo(c);
+        double p = this.period(aTob, aToc, bToc);
+        if (this.exist(aTob, aToc, bToc)) {
+            result = Math.sqrt(p * (p - aTob) * (p - aToc) * (p - bToc));
         }
         return result;
     }
