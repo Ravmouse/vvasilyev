@@ -51,6 +51,16 @@ public class StartUI {
     }
 
     /**
+     * Initializes input and tracker fields.
+     * @param input of Input type.
+     * @param tracker of Tracker type.
+     */
+    public StartUI(Input input, Tracker tracker) {
+        this.input = input;
+        this.tracker = tracker;
+    }
+
+    /**
      * The entry point of the program.
      * @param args The array of String variables.
      */
