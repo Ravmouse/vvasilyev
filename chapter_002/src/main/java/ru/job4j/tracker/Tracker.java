@@ -54,6 +54,8 @@ public class Tracker {
                     System.arraycopy(items, i + 1, items, i, position - (i + 1));
                     position--;
                     break;
+                } else {
+                    position--;
                 }
             }
         }
@@ -68,7 +70,7 @@ public class Tracker {
         for (int index = 0; index != this.position; index++) {
             result[index] = this.items[index];
         }
-	return result;
+        return result;
     }
 
     /**

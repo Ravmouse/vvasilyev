@@ -122,4 +122,9 @@ public class Item {
     public String[] getComments() {
         return comments;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Id: %s, user name: %s, description: %s", id, name, description);
+    }
 }
