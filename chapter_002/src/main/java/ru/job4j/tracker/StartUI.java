@@ -86,7 +86,7 @@ public class StartUI {
 
                 answer = input.ask("Please, choose an operation number: ");
 
-            } while (Integer.parseInt(answer) < 0 | Integer.parseInt(answer) > 6);
+            } while (Integer.parseInt(answer) < 0 || Integer.parseInt(answer) > 6);
 
             if (EXIT.equals(answer)) {
                 break;
