@@ -13,33 +13,13 @@ public class StartUI {
      */
     private Input input;
     /**
-     * The ADD const.
+     * The FIRST_MENU_ITEM const.
      */
-    private static final String ADD = "0";
+    private static final int FIRST_MENU_ITEM = 0;
     /**
-     * The UPDATE const.
+     * The LAST_MENU_ITEM const.
      */
-    private static final String UPDATE = "1";
-    /**
-     * The DELETE const.
-     */
-    private static final String DELETE = "2";
-    /**
-     * The FIND_ALL const.
-     */
-    private static final String FIND_ALL = "3";
-    /**
-     * The FIND_NAME const.
-     */
-    private static final String FIND_NAME = "4";
-    /**
-     * The FIND_ID const.
-     */
-    private static final String FIND_ID = "5";
-    /**
-     * The EXIT const.
-     */
-    private static final String EXIT = "6";
+    private static final int LAST_MENU_ITEM = 6;
 
 
     /**
@@ -69,123 +49,23 @@ public class StartUI {
     }
 
     /**
-     * The method creates the UI and displays it on a screen.
+     * Creates the UI and displays it on the screen.
      */
     public void init() {
-        String answer;
+        MenuTracker menu = new MenuTracker(this.input, this.tracker);
+        int answer;
+        menu.fillActions();
         for (;;) {
             do {
-                System.out.println("\n*** Tracker Program ***\n");
-                System.out.println("0. Add new Item (Добавить новую заявку);");
-                System.out.println("1. Update Item (Заменить заявку);");
-                System.out.println("2. Delete Item (Удалить заявку);");
-                System.out.println("3. Find All Items (Найти все заявки);");
-                System.out.println("4. Find Item by name (Найти заявку по имени пользователя);");
-                System.out.println("5. Find Item by id (Найти заявку по номеру);");
-                System.out.println("6. Exit (Выход);\n");
+                menu.show();
+                answer = Integer.parseInt(input.ask("Please, choose a menu option: "));
+            } while (answer < FIRST_MENU_ITEM || answer > LAST_MENU_ITEM);
 
-                answer = input.ask("Please, choose an operation number: ");
+            menu.select(answer);
 
-            } while (Integer.parseInt(answer) < 0 || Integer.parseInt(answer) > 6);
-
-            if (EXIT.equals(answer)) {
+            if (answer == LAST_MENU_ITEM) {
                 break;
             }
-            switch (answer) {
-                case ADD :
-                    addItem();
-                    break;
-                case UPDATE :
-                    updateItem();
-                    break;
-                case DELETE :
-                    deleteItem();
-                    break;
-                case FIND_ALL :
-                    showAllItems();
-                    break;
-                case FIND_NAME :
-                    findItemByName();
-                    break;
-                case FIND_ID :
-                    findItemById();
-                default:
-            }
         }
-    }
-
-    /**
-     * The method calls the Tracker class's method add().
-     * @return The reference to Item object.
-     */
-    public Item addItem() {
-        String[] data = new String[2];
-        System.out.println("\n--- Adding a new Item: ---");
-        data[0] = input.ask("Please, enter the name of the user: ");
-        data[1] = input.ask("Please, enter the description of the Item: ");
-        System.out.println("--- The Item has been created. ---\n");
-        return tracker.add(new Item(data[0], data[1], System.currentTimeMillis()));
-    }
-
-    /**
-     * The method calls the Tracker class's method update().
-     */
-    public void updateItem() {
-        String[] data = new String[3];
-        System.out.println("\n--- Updating the Item: ---");
-        data[0] = input.ask("Please, enter the id of the Item that should be replaced: ");
-        System.out.println("\nNow you need to input two parameters for a new Item.");
-        data[1] = input.ask("Please, enter the name of the user: ");
-        data[2] = input.ask("Please, enter the description of the Item: ");
-        tracker.update(new Item(data[0], data[1], data[2], System.currentTimeMillis()));
-        System.out.println("--- The Item has been updated. ---\n");
-    }
-
-    /**
-     * The method calls the Tracker class's method delete().
-     */
-    public void deleteItem() {
-        System.out.println("\n--- Deleting the Item: ---");
-        String id = input.ask("Please, enter the id of the Item that should be deleted: ");
-        Item item = tracker.findById(id);
-        tracker.delete(item);
-        System.out.println("--- The Item has been deleted. ---\n");
-    }
-
-    /**
-     * The method calls the Tracker class's method findAll() and displays the results on a screen.
-     */
-    public void showAllItems() {
-        System.out.println("\n--- All Items in the Tracker: ---");
-        for (Item item : tracker.findAll()) {
-            System.out.println(item);
-        }
-        System.out.println();
-    }
-
-    /**
-     * The method calls the Tracker class's method findByName() and displays the results on a screen.
-     */
-    public void findItemByName() {
-        System.out.println("\n--- Finding the Item(-s) by name: ---");
-        String name = input.ask("Please, enter the name of the User: ");
-        Item[] items = tracker.findByName(name);
-        System.out.println("\nThe following Item(-s) has(-ve) been found: ");
-        for (Item item : items) {
-            System.out.println(item);
-        }
-        System.out.println();
-    }
-
-    /**
-     * The method calls the Tracker class's method findById() and displays the results on a screen.
-     */
-    public void findItemById() {
-        System.out.println("\n--- Finding the Item by id: ---");
-        String id = input.ask("Please, enter the id of the Item: ");
-        Item item = tracker.findById(id);
-        System.out.println("\nThe following Item has been found: ");
-        System.out.println(item);
-        System.out.println();
     }
 }
