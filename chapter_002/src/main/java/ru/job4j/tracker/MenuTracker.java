@@ -61,6 +61,14 @@ public class MenuTracker {
     }
 
     /**
+     * The getter.
+     * @return The ref. to the array of UserAction.
+     */
+    public UserAction[] getActions() {
+        return actions;
+    }
+
+    /**
      * Private static inner class AddItem.
      */
     private static class AddItem implements UserAction {

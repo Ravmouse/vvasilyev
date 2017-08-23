@@ -1,5 +1,4 @@
 package ru.job4j.tracker;
-
 /**
  * Class StartUI.
  */
@@ -20,6 +19,10 @@ public class StartUI {
      * The LAST_MENU_ITEM const.
      */
     private static final int LAST_MENU_ITEM = 6;
+    /**
+     * The array of integers.
+     */
+    private int[] range;
 
 
     /**
@@ -45,7 +48,7 @@ public class StartUI {
      * @param args The array of String variables.
      */
     public static void main(String[] args) {
-        new StartUI(new ConsoleInput()).init();
+        new StartUI(new ValidateInput()).init();
     }
 
     /**
@@ -55,17 +58,23 @@ public class StartUI {
         MenuTracker menu = new MenuTracker(this.input, this.tracker);
         int answer;
         menu.fillActions();
-        for (;;) {
-            do {
-                menu.show();
-                answer = Integer.parseInt(input.ask("Please, choose a menu option: "));
-            } while (answer < FIRST_MENU_ITEM || answer > LAST_MENU_ITEM);
-
+        initializeRange(menu);
+        do {
+            menu.show();
+            answer = input.ask("Please, choose a menu option: ", range);
             menu.select(answer);
+        } while (answer != 6);
+    }
 
-            if (answer == LAST_MENU_ITEM) {
-                break;
-            }
+    /**
+     * Creates the array of integers and initializes it according to the length of UserAction array in the
+     * MenuTracker class.
+     * @param menu The ref. to the MenuTracker object.
+     */
+    private void initializeRange(MenuTracker menu) {
+        range = new int[menu.getActions().length];
+        for (int i = 0; i < menu.getActions().length; i++) {
+            range[i] = i;
         }
     }
 }

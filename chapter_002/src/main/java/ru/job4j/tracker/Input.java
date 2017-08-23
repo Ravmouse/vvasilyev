@@ -10,4 +10,12 @@ public interface Input {
      * @return The String object.
      */
     String ask(String question);
+
+    /**
+     * The overloaded method ask() with two parameters.
+     * @param question question.
+     * @param range range.
+     * @return int.
+     */
+    int ask(String question, int[] range);
 }
