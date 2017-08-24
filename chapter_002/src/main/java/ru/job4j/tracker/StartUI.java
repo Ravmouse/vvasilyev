@@ -1,4 +1,8 @@
 package ru.job4j.tracker;
+
+import ru.job4j.tracker.input.Input;
+import ru.job4j.tracker.input.ValidateInput;
+
 /**
  * Class StartUI.
  */
@@ -11,14 +15,8 @@ public class StartUI {
      * The reference to the Input interface.
      */
     private Input input;
-    /**
-     * The FIRST_MENU_ITEM const.
-     */
-    private static final int FIRST_MENU_ITEM = 0;
-    /**
-     * The LAST_MENU_ITEM const.
-     */
-    private static final int LAST_MENU_ITEM = 6;
+//    private static final int FIRST_MENU_ITEM = 0;
+//    private static final int LAST_MENU_ITEM = 6;
     /**
      * The array of integers.
      */

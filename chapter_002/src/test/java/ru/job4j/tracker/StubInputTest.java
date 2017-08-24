@@ -1,6 +1,10 @@
 package ru.job4j.tracker;
 
 import org.junit.Test;
+import ru.job4j.tracker.input.Input;
+import ru.job4j.tracker.input.StubInput;
+import ru.job4j.tracker.item.Item;
+
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.core.Is.is;
 

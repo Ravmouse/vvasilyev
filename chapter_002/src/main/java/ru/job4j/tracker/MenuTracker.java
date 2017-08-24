@@ -1,5 +1,10 @@
 package ru.job4j.tracker;
 
+import ru.job4j.tracker.input.Input;
+import ru.job4j.tracker.action.UserAction;
+import ru.job4j.tracker.action.BaseAction;
+import ru.job4j.tracker.item.Item;
+
 /**
  * Class MenuTracker.
  */
@@ -16,6 +21,10 @@ public class MenuTracker {
      * The array of object's references that implement UserAction interface.
      */
     private UserAction[] actions = new UserAction[7];
+    /**
+     * The index of the array's element.
+     */
+    private int position;
 
     /**
      * The constructor.
@@ -31,13 +40,13 @@ public class MenuTracker {
      * Creates for each array's element the object of the inner class with reference.
      */
     public void fillActions() {
-        this.actions[0] = new MenuTracker.AddItem();
-        this.actions[1] = new MenuTracker.EditItem();
-        this.actions[2] = new MenuTracker.DeleteItem();
-        this.actions[3] = new MenuTracker.FindAllItems();
-        this.actions[4] = new MenuTracker.FindByName();
-        this.actions[5] = new MenuTracker.FindById();
-        this.actions[6] = new MenuTracker.ExitProgram();
+        this.actions[position++] = new MenuTracker.AddItem();
+        this.actions[position++] = new MenuTracker.EditItem();
+        this.actions[position++] = new MenuTracker.DeleteItem();
+        this.actions[position++] = new MenuTracker.FindAllItems();
+        this.actions[position++] = new MenuTracker.FindByName();
+        this.actions[position++] = new MenuTracker.FindById();
+        this.actions[position++] = new MenuTracker.ExitProgram();
     }
 
     /**
@@ -68,16 +77,17 @@ public class MenuTracker {
         return actions;
     }
 
+    //-------------------------------------------------------------------------------------------------------------
+
     /**
      * Private static inner class AddItem.
      */
-    private static class AddItem implements UserAction {
+    private static class AddItem extends BaseAction {
         /**
-         * Returns 0.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 0;
+        AddItem() {
+            super(0, "Add new Item (Добавить новую заявку);");
         }
 
         /**
@@ -92,26 +102,17 @@ public class MenuTracker {
             tracker.add(new Item(name, desc, System.currentTimeMillis()));
             System.out.println("--- The Item has been created. ---\n");
         }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Add new Item (Добавить новую заявку);");
-        }
     }
 
     /**
      * Private static inner class EditItem.
      */
-    private static class EditItem implements UserAction {
+    private static class EditItem extends BaseAction {
         /**
-         * Returns 1.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 1;
+        EditItem() {
+            super(1, "Edit Item (Редактировать заявку);");
         }
 
         /**
@@ -128,26 +129,17 @@ public class MenuTracker {
             tracker.update(new Item(id, name, desc, System.currentTimeMillis()));
             System.out.println("--- The Item has been edited. ---\n");
         }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Edit Item (Редактировать заявку);");
-        }
     }
 
     /**
      * Private static inner class DeleteItem.
      */
-    private static class DeleteItem implements UserAction {
+    private static class DeleteItem extends BaseAction {
         /**
-         * Returns 2.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 2;
+        DeleteItem() {
+            super(2, "Delete Item (Удалить заявку);");
         }
 
         /**
@@ -162,26 +154,17 @@ public class MenuTracker {
             tracker.delete(tmpItem);
             System.out.println("--- The Item has been deleted. ---\n");
         }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Delete Item (Удалить заявку);");
-        }
     }
 
     /**
      * Private static inner class FindAllItems.
      */
-    private static class FindAllItems implements UserAction {
+    private static class FindAllItems extends BaseAction {
         /**
-         * Returns 3.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 3;
+        FindAllItems() {
+            super(3, "Find All Items (Найти все заявки);");
         }
 
         /**
@@ -196,26 +179,17 @@ public class MenuTracker {
             }
             System.out.println();
         }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Find All Items (Найти все заявки);");
-        }
     }
 
     /**
      * Private static inner class FindByName.
      */
-    private static class FindByName implements UserAction {
+    private static class FindByName extends BaseAction {
         /**
-         * Returns 4.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 4;
+        FindByName() {
+            super(4, "Find Item by name (Найти заявку по имени пользователя);");
         }
 
         /**
@@ -233,26 +207,17 @@ public class MenuTracker {
             }
             System.out.println();
         }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Find Item by name (Найти заявку по имени пользователя);");
-        }
     }
 
     /**
      * Private static inner class FindById.
      */
-    private static class FindById implements UserAction {
+    private static class FindById extends BaseAction {
         /**
-         * Returns 5.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 5;
+        FindById() {
+            super(5, "Find Item by id (Найти заявку по номеру);");
         }
 
         /**
@@ -268,26 +233,17 @@ public class MenuTracker {
             System.out.println(item);
             System.out.println();
         }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Find Item by id (Найти заявку по номеру);");
-        }
     }
 
     /**
      * Private static inner class ExitProgram.
      */
-    private static class ExitProgram implements UserAction {
+    private static class ExitProgram extends BaseAction {
         /**
-         * Returns 6.
-         * @return int.
+         * The constructor.
          */
-        public int key() {
-            return 6;
+        ExitProgram() {
+            super(6, "Exit (Выход);\n");
         }
 
         /**
@@ -298,14 +254,6 @@ public class MenuTracker {
         public void execute(Input input, Tracker tracker) {
             System.out.println("\n--- Exiting program ---");
             return;
-        }
-
-        /**
-         * Shows a String line with a menu option.
-         * @return String.
-         */
-        public String info() {
-            return String.format("%s. %s", this.key(), "Exit (Выход);\n");
         }
     }
 }
