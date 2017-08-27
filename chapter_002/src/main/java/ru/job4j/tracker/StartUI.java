@@ -67,6 +67,9 @@ public class StartUI {
     /**
      * Creates the array of integers and initializes it according to the length of UserAction array in the
      * MenuTracker class.
+     * В этом методе создается и инициализируется массив int'ов (range) в соответствии с длиной массива UserAction
+     * из класса MenuTracker. Это нужно для метода ask() из ConsoleInput, чтобы проверять, что число
+     * пользователя находится в нужном диапазоне (например, от 0 до 6).
      * @param menu The ref. to the MenuTracker object.
      */
     private void initializeRange(MenuTracker menu) {
