@@ -43,7 +43,7 @@ public class ConvertList {
         }
         result[i] = new int[count];
         for (Integer value : list) {
-            result[i][j++] = value;
+            result[i][j++] = (value == null) ? 0 : value;
             if ((j == count) && (i < rows - 1)) {
                 j = 0;
                 i++;

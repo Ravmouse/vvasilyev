@@ -31,10 +31,15 @@ public class ConvertListTest {
     public void whenConvertListThenArrayIsCreated() {
         ConvertList convertList = new ConvertList();
         List<Integer> integerList = new ArrayList<>();
-        for (int i = 1; i < 11; i++) {
+        for (int i = 1; i < 6; i++) {
+            integerList.add(i);
+        }
+        integerList.add(5, null);
+        integerList.add(6, null);
+        for (int i = 8; i < 11; i++) {
             integerList.add(i);
         }
         int rows = 3;
-        assertThat(convertList.toArray(integerList, rows), is(new int[][] {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 0, 0}}));
+        assertThat(convertList.toArray(integerList, rows), is(new int[][] {{1, 2, 3, 4}, {5, 0, 0, 8}, {9, 10, 0, 0}}));
     }
 }
