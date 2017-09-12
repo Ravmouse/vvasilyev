@@ -42,4 +42,22 @@ public class ConvertListTest {
         int rows = 3;
         assertThat(convertList.toArray(integerList, rows), is(new int[][] {{1, 2, 3, 4}, {5, 0, 0, 8}, {9, 10, 0, 0}}));
     }
+
+    /**
+     * Test of conversion List interface with array's of int into List interface with Integer.
+     */
+    @Test
+    public void whenAddListWithIntArraysThenAllElementsAreAddedToListInteger() {
+        ConvertList convertList = new ConvertList();
+        List<int[]> list = new ArrayList<>();
+        list.add(new int[] {1, 2, 3});
+        list.add(new int[] {4, 5});
+        list.add(new int[] {6, 7, 8, 9, 10, 11});
+        List<Integer> result = convertList.convert(list);
+        List<Integer> expected = new ArrayList<>();
+        for (int i = 1; i < 12; i++) {
+            expected.add(i);
+        }
+        assertThat(result, is(expected));
+    }
 }

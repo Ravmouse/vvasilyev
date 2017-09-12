@@ -63,4 +63,19 @@ public class ConvertList {
         }
         return result;
     }
+
+    /**
+     * Converts List interface with int arrays into List interface with Integer.
+     * @param list that contains elements each of them is array of int.
+     * @return List with Integer elements.
+     */
+    public List<Integer> convert(List<int[]> list) {
+        List<Integer> result = new ArrayList<>();
+        for (int[] array : list) {
+            for (int value : array) {
+                result.add(value);
+            }
+        }
+        return result;
+    }
 }
