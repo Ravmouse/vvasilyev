@@ -30,6 +30,13 @@ public class User implements Comparable<User> {
     }
 
     /**
+     * @return name of User.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * @param obj User object to be compared.
      * @return the value 0, less than 0 or greater than 0.
      */

@@ -38,4 +38,50 @@ public class SortUserTest {
         }
         assertThat(resultArray, is(expectedArray));
     }
+
+    /**
+     * Checks if the User elements are sorted only by name.
+     */
+    @Test
+    public void whenAddUsersWithDiffNamesThenSortThemByLengthName() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("ABCD", 8));
+        userList.add(new User("ABC", 3));
+        userList.add(new User("AB", 6));
+        userList.add(new User("A", 10));
+        SortUser s = new SortUser();
+        s.sortNameLength(userList);
+
+        String[] sa = new String[userList.size()];
+        for (int i = 0; i < sa.length; i++) {
+            sa[i] = userList.get(i).getName();
+        }
+        assertThat(sa, is(new String[] {"A", "AB", "ABC", "ABCD"}));
+    }
+
+    /**
+     * Checks if the User elements are sorted by name and after that by age.
+     */
+    @Test
+    public void whenAddUsersWithDiffNamesAndAgesThenSortThemByAllFields() {
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("Сергей", 25));
+        userList.add(new User("Иван", 30));
+        userList.add(new User("Сергей", 20));
+        userList.add(new User("Иван", 25));
+        SortUser s = new SortUser();
+        s.sortByAllFields(userList);
+
+        String[] stringArray = new String[userList.size()];
+        for (int i = 0; i < stringArray.length; i++) {
+            stringArray[i] = userList.get(i).getName();
+        }
+        assertThat(stringArray, is(new String[] {"Иван", "Иван", "Сергей", "Сергей"}));
+
+        int[] intArray = new int[userList.size()];
+        for (int i = 0; i < intArray.length; i++) {
+            intArray[i] = userList.get(i).getAge();
+        }
+        assertThat(intArray, is(new int[] {25, 30, 20, 25}));
+    }
 }
