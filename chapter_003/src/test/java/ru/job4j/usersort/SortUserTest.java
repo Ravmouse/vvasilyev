@@ -17,10 +17,10 @@ public class SortUserTest {
     @Test
     public void whenAddUserObjectsToSetThenSortThemByAge() {
         List<User> list = new ArrayList<>();
-        list.add(new User("Viktor", 56));
-        list.add(new User("Alex", 42));
-        list.add(new User("Dan", 34));
-        list.add(new User("Pasha", 15));
+        list.add(new User("Victor", 21));
+        list.add(new User("Alex", 23));
+        list.add(new User("Dana", 25));
+        list.add(new User("Victory", 21));
         SortUser sUser = new SortUser();
         Set<User> set = sUser.sort(list);
 
@@ -30,7 +30,6 @@ public class SortUserTest {
             expectedArray[i++] = user.getAge();
         }
         Arrays.sort(expectedArray);
-
         i = 0;
         int[] resultArray = new int[set.size()];
         for (User user : set) {

@@ -41,8 +41,9 @@ public class User implements Comparable<User> {
      * @return the value 0, less than 0 or greater than 0.
      */
     @Override
-    public int compareTo(User obj) {
-        return Integer.compare(this.getAge(), obj.getAge());
+    public int compareTo(final User obj) {
+        final int value = Integer.compare(this.getAge(), obj.getAge());
+        return value != 0 ? value : this.getName().compareTo(obj.getName());
     }
 
     /**
