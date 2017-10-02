@@ -39,6 +39,13 @@ public class Account {
     }
 
     /**
+     * @return requisites of class Account object.
+     */
+    public int getRequisites() {
+        return this.requisites;
+    }
+
+    /**
      * @param amount - a number that must be added to value of class Account object.
      */
     public void deposit(double amount) {

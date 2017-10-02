@@ -92,19 +92,29 @@ public class BankTest {
         User user2 = new User("Joe", 430511875);
         bank.addUser(user1);
         bank.addUser(user2);
-        Account acc1 = new Account(12300.45, 3213);
-        Account acc2 = new Account(456.45, 1332);
+        Account acc1 = new Account(12000.00, 3213);
+        Account acc2 = new Account(4000.00, 6213);
+        Account acc3 = new Account(5000.00, 9213);
+
+        Account acc11 = new Account(10000.00, 2255);
+        Account acc21 = new Account(8000.00, 4415);
+        Account acc31 = new Account(3000.00, 8819);
 
         bank.addAccountToUser(user1, acc1);
-        bank.addAccountToUser(user2, acc2);
-        bank.transferMoney(user1, acc1, user2, acc2, 10000);
+        bank.addAccountToUser(user1, acc2);
+        bank.addAccountToUser(user1, acc3);
+        bank.addAccountToUser(user2, acc11);
+        bank.addAccountToUser(user2, acc21);
+        bank.addAccountToUser(user2, acc31);
 
-        Account testAcc = new Account(12300.45, 3213);
-        testAcc.withdraw(10000);
+        bank.transferMoney(user1, 3213, user2, 8819, 2000);
+
+        Account testAcc = new Account(12000.00, 3213);
+        testAcc.withdraw(2000);
         assertThat(bank.getUserAccounts(user1).get(1).getValue(), is(testAcc.getValue()));
 
-        testAcc = new Account(456.45, 1332);
-        testAcc.deposit(10000);
-        assertThat(bank.getUserAccounts(user2).get(1).getValue(), is(testAcc.getValue()));
+        testAcc = new Account(3000.00, 1332);
+        testAcc.deposit(2000);
+        assertThat(bank.getUserAccounts(user2).get(3).getValue(), is(testAcc.getValue()));
     }
 }

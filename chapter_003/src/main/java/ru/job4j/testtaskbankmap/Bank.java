@@ -104,4 +104,30 @@ public class Bank {
         }
         return result;
     }
+
+    /**
+     * @param srcUser from who's account we need to take the money.
+     * @param srcReq number of requisites we want to withdraw money from.
+     * @param dstUser to who's account we need to put the money.
+     * @param dstReq number of requisites we want to deposit money to.
+     * @param amount of money.
+     * @return true or false.
+     */
+    public boolean transferMoney(User srcUser, int srcReq, User dstUser, int dstReq, double amount) {
+        boolean result = false;
+        final List<Account> srcList = bankMap.get(srcUser);
+        final List<Account> dstList = bankMap.get(dstUser);
+        for (Account srcAcc : srcList) {
+            if (srcAcc.getRequisites() == srcReq) {
+                for (Account dstAcc : dstList) {
+                    if ((dstAcc.getRequisites() == dstReq) && (srcAcc.checkValue(amount))) {
+                        srcAcc.withdraw(amount);
+                        dstAcc.deposit(amount);
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }
