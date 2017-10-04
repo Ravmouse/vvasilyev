@@ -1,5 +1,6 @@
 package ru.job4j.primeiterator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * PrimeIterator class.
@@ -25,29 +26,36 @@ public class PrimeIterator implements Iterator {
      * @return true if the array's element is the prime number.
      */
     public boolean hasNext() {
+        boolean result = false;
         while (values.length > index) {
             if (values[index] > 7) {
                 if ((values[index] % 2 != 0) && (values[index] % 3 != 0) && (values[index] % 5 != 0)
                         && (values[index] % 7 != 0)) {
-                    return true;
+                    result = true;
+                    break;
                 } else {
                     index++;
                 }
             } else {
                 if (values[index] % 2 != 0) {
-                    return true;
+                    result = true;
+                    break;
                 } else {
                     index++;
                 }
             }
         }
-        return false;
+        return result;
     }
 
     /**
      * @return the next array's element.
      */
     public Object next() {
-        return values[index++];
+        try {
+            return values[index++];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
+        }
     }
 }
