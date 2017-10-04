@@ -1,5 +1,6 @@
 package ru.job4j.eveniterator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * EvenIterator class.
@@ -27,14 +28,16 @@ public class EvenIterator implements Iterator {
      */
     @Override
     public boolean hasNext() {
+        boolean result = false;
         while (values.length > index) {
             if (values[index] % 2 != 0) {
                 index++;
             } else {
-                return true;
+                result = true;
+                break;
             }
         }
-        return false;
+        return result;
     }
 
     /**
@@ -42,6 +45,10 @@ public class EvenIterator implements Iterator {
      */
     @Override
     public Object next() {
-        return values[index++];
+        try {
+            return values[index++];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
+        }
     }
 }
