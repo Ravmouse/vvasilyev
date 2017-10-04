@@ -1,5 +1,6 @@
 package ru.job4j.twodimiterator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * TwoDimIterator class.
@@ -37,16 +38,17 @@ public class TwoDimIterator implements Iterator {
      */
     @Override
     public boolean hasNext() {
+        boolean result = true;
         if (indexIn == array[indexOut].length) {
             if (indexOut == array.length - 1) {
-                return false;
+                result = false;
             } else {
                 indexOut++;
                 indexIn = 0;
-                return true;
+                result = true;
             }
         }
-        return true;
+        return result;
     }
 
     /**
@@ -54,6 +56,10 @@ public class TwoDimIterator implements Iterator {
      */
     @Override
     public Object next() {
-        return array[indexOut][indexIn++];
+        try {
+            return array[indexOut][indexIn++];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
+        }
     }
 }
