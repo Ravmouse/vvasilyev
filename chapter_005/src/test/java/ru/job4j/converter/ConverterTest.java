@@ -1,7 +1,7 @@
 package ru.job4j.converter;
 import org.junit.Test;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Iterator;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -11,17 +11,63 @@ import static org.junit.Assert.assertThat;
  */
 public class ConverterTest {
     /**
-     * Checks if the convert() method returns one iterator containing all the Integer elements.
+     * Checks if return value of convert() method can iterate through all the elements within the iterator
+     * of the iterator.
      */
     @Test
-    public void whenItHasTwoInnerIt() {
-        Iterator<Iterator<Integer>> it = Arrays.asList(
-                Collections.singletonList(1).iterator(),
-                Collections.singletonList(2).iterator()
-        ).iterator();
-        Iterator<Integer> convert = new Converter().convert(it);
-        convert.next();
-        int result = convert.next();
-        assertThat(result, is(2));
+    public void whenThereAreElementsToIterateThenReturnThem() {
+        List<Integer> list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(2);
+        Iterator<Integer> it1 = list1.iterator();
+
+        List<Integer> list2 = new ArrayList<>();
+        list2.add(3);
+        list2.add(4);
+        Iterator<Integer> it2 = list2.iterator();
+
+        List<Iterator<Integer>> itList = new ArrayList<>();
+        itList.add(it1);
+        itList.add(it2);
+        Iterator<Iterator<Integer>> sIt = itList.iterator();
+
+        Iterator<Integer> iterInt = new Converter().convert(sIt);
+        iterInt.next();
+        iterInt.next();
+        iterInt.next();
+        final Integer result = iterInt.next();
+        assertThat(result, is(4));
+    }
+
+    /**
+     * Checks if the hasNext() method returns true when ends one inner iterator and starts another inner iterator
+     * within the iterator of the iterator.
+     */
+    @Test
+    public void whenUsingHasNextMethodThenReturnTrueOrFalse() {
+        List<Integer> list1 = new ArrayList<>();
+        list1.add(1);
+        list1.add(2);
+        Iterator<Integer> it1 = list1.iterator();
+
+        List<Integer> list2 = new ArrayList<>();
+        list2.add(3);
+        list2.add(4);
+        Iterator<Integer> it2 = list2.iterator();
+
+        List<Iterator<Integer>> itList = new ArrayList<>();
+        itList.add(it1);
+        itList.add(it2);
+        Iterator<Iterator<Integer>> sIt = itList.iterator();
+
+        Iterator<Integer> iterInt = new Converter().convert(sIt);
+        iterInt.next();
+        iterInt.next();
+        boolean result = iterInt.hasNext();
+        assertThat(result, is(true));
+        iterInt.next();
+        iterInt.next();
+        result = iterInt.hasNext();
+        assertThat(result, is(false));
     }
 }
