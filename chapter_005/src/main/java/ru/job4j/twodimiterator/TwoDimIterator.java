@@ -11,11 +11,11 @@ public class TwoDimIterator implements Iterator {
      */
     private final int[][] array;
     /**
-     * The index of the first dimension.
+     * The element's index of the first dimension.
      */
     private int indexOut = 0;
     /**
-     * The index of the second dimension.
+     * The element's index of the second dimension.
      */
     private int indexIn = 0;
 
@@ -24,13 +24,6 @@ public class TwoDimIterator implements Iterator {
      */
     public TwoDimIterator(final int[][] array) {
         this.array = array;
-    }
-
-    /**
-     * @return the ref to private field.
-     */
-    public int[][] getArray() {
-        return this.array;
     }
 
     /**
@@ -56,9 +49,9 @@ public class TwoDimIterator implements Iterator {
      */
     @Override
     public Object next() {
-        try {
+        if (this.hasNext()) {
             return array[indexOut][indexIn++];
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } else {
             throw new NoSuchElementException();
         }
     }
