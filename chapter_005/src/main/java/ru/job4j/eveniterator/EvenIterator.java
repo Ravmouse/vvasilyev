@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
  * EvenIterator class.
  */
 public class EvenIterator implements Iterator {
-
     /**
      * The ref to an array.
      */
@@ -24,7 +23,7 @@ public class EvenIterator implements Iterator {
     }
 
     /**
-     * @return true if there is even numbers in the values field and false when the end of an array is reached.
+     * @return true if there are even numbers in the values field and false when the end of an array is reached.
      */
     @Override
     public boolean hasNext() {
@@ -45,9 +44,9 @@ public class EvenIterator implements Iterator {
      */
     @Override
     public Object next() {
-        try {
+        if (this.hasNext()) {
             return values[index++];
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } else {
             throw new NoSuchElementException();
         }
     }

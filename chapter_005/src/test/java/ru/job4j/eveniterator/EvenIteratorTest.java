@@ -8,28 +8,29 @@ import static org.hamcrest.core.Is.is;
  */
 public class EvenIteratorTest {
     /**
-     * Checks if the next() method is iterating through an array.
+     * Checks if the next() method iterates through the array.
      */
     @Test
     public void whenTakeTheNextElementThenGetThisElement() {
-        EvenIterator ev = new EvenIterator(new int[]{1, 2, 3});
+        EvenIterator ev = new EvenIterator(new int[]{1, 2, 3, 4, 5, 6});
+        ev.next();
         ev.next();
         final int tmp = (Integer) ev.next();
-        assertThat(tmp, is(2));
+        assertThat(tmp, is(6));
     }
 
     /**
-     * Checks if the hasNext() method returns true only if the even number is the next in an array.
+     * Checks if the hasNext() method returns true only if the even number is the next in the array.
      */
     @Test
     public void whenCheckIfTheNextElementIsEvenThenGetTrueOrFalse() {
-        EvenIterator ev = new EvenIterator(new int[]{1, 2, 3, 4, 1});
+        EvenIterator ev = new EvenIterator(new int[]{1, 2, 3, 4, 5, 6});
         ev.hasNext();
         ev.next();
         ev.hasNext();
         final int tmp = (Integer) ev.next();
         assertThat(tmp, is(4));
         final boolean temp = ev.hasNext();
-        assertThat(temp, is(false));
+        assertThat(temp, is(true));
     }
 }
