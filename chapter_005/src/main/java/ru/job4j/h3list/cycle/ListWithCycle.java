@@ -14,9 +14,13 @@ public class ListWithCycle<T> {
         boolean result = false;
         Node<T> current = first.next;
         Node<T> beforeCurrent = first;
-        while ((current != first) && (current != beforeCurrent) && (current != null)) {
+        while ((current != first) && (current != null)) {
             current = current.next;
-            beforeCurrent = beforeCurrent.next;
+            if (beforeCurrent != current) {
+                beforeCurrent = beforeCurrent.next;
+            } else {
+                break;
+            }
         }
         if ((current == first) || (current == beforeCurrent)) {
             result = true;
