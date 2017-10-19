@@ -4,7 +4,7 @@ import java.util.Iterator;
 /**
  * @param <E> is the name of type parameter.
  */
-public interface MySimpleSetInterface<E> extends Iterator<E> {
+public interface MySimpleSet<E> extends Iterator<E> {
     /**
      * @param e is the type parameter that should be added.
      */

@@ -5,11 +5,11 @@ import java.util.NoSuchElementException;
 /**
  * @param <E> is the name of type parameter.
  */
-public class SimpleSet<E> implements MySimpleSetInterface<E> {
+public class SimpleSet<E> implements MySimpleSet<E> {
     /**
      * The array of Object elements.
      */
-    private Object[] container;
+    private E[] container;
     /**
      * The variable that counts the amount of added elements in the container.
      */
@@ -23,7 +23,7 @@ public class SimpleSet<E> implements MySimpleSetInterface<E> {
      * The constructor.
      */
     public SimpleSet() {
-        container = new Object[3];
+        container = (E[]) new Object[3];
     }
 
     /**
@@ -43,7 +43,7 @@ public class SimpleSet<E> implements MySimpleSetInterface<E> {
      * @param obj is the parameter that is checked whether or not it is inside the container.
      * @return true or false.
      */
-    private boolean contains(Object obj) {
+    private boolean contains(E obj) {
         boolean result = false;
         for (int i = 0; i < count; i++) {
             if (obj.equals(container[i])) {
@@ -72,7 +72,7 @@ public class SimpleSet<E> implements MySimpleSetInterface<E> {
     @Override
     public E next() {
         if (hasNext()) {
-            return (E) container[index++];
+            return container[index++];
         } else {
             throw new NoSuchElementException();
         }
@@ -81,8 +81,8 @@ public class SimpleSet<E> implements MySimpleSetInterface<E> {
     /**
      * @return all the added elements within the container.
      */
-    public Object[] getAllElements() {
-        Object[] array = new Object[count];
+    public E[] getAllElements() {
+        E[] array = (E[]) new Object[count];
         for (int i = 0; i < count; i++) {
             array[i] = container[i];
         }
