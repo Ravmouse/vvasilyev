@@ -18,33 +18,29 @@ public class SimpleLinkedListSet<E> implements Iterator<E> {
      * The element for iterating through this set.
      */
     private Link<E> current;
-    /**
-     *
-     */
-    private Link<E> previous;
 
     /**
+     * Добавляет значение в конец контейнера-списка.
      * @param value is the passed parameter.
-     * @return true or false.
+     * @return true, если удалось добавить значение в список, и false, если такое значение уже имеется в списке.
      */
     public boolean add(E value) {
         boolean result = false;
         if (value != null) {
             Link<E> newLink = new Link<>(value);
             if (isEmpty()) {
-                last = newLink;
-                newLink.next = first;
                 first = newLink;
+                current = first;
+                last = newLink;
                 result = true;
             } else {
                 if (!contains(value)) {
-                    newLink.next = first;
-                    first = newLink;
+                    last.next = newLink;
+                    last = newLink;
                     result = true;
                 }
             }
-            current = first; //Каждый раз при добавлении нового элемента в контейнер переменная current для итератора
-        }                    //должна все время ссылаться на новый элемент.
+        }
         return result;
     }
 
@@ -101,7 +97,6 @@ public class SimpleLinkedListSet<E> implements Iterator<E> {
     public E next() {
         E result;
         if (hasNext()) {
-            previous = current;
             result = current.data;
             current = current.next;
         } else {

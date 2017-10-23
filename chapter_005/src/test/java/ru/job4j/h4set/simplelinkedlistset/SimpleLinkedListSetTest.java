@@ -17,14 +17,14 @@ public class SimpleLinkedListSetTest {
         sll.add("java");
         assertThat(sll.get(1), is("java"));
         sll.add("bingo");
-        assertThat(sll.get(1), is("bingo"));
-        sll.add("java");
-        assertThat(sll.get(1), is("bingo"));
-        assertThat(sll.get(2), is("java"));
-        sll.add("tea");
-        assertThat(sll.get(1), is("tea"));
         assertThat(sll.get(2), is("bingo"));
-        assertThat(sll.get(3), is("java"));
+        sll.add("java");
+        assertThat(sll.get(1), is("java"));
+        assertThat(sll.get(2), is("bingo"));
+        sll.add("tea");
+        assertThat(sll.get(1), is("java"));
+        assertThat(sll.get(2), is("bingo"));
+        assertThat(sll.get(3), is("tea"));
     }
 
     /**
@@ -38,13 +38,13 @@ public class SimpleLinkedListSetTest {
         sll.add("day");
         sll.add("mars");
         assertThat(sll.hasNext(), is(true));
-        assertThat(sll.next(), is("mars"));
-        assertThat(sll.hasNext(), is(true));
-        assertThat(sll.next(), is("day"));
+        assertThat(sll.next(), is("java"));
         assertThat(sll.hasNext(), is(true));
         assertThat(sll.next(), is("hello"));
         assertThat(sll.hasNext(), is(true));
-        assertThat(sll.next(), is("java"));
+        assertThat(sll.next(), is("day"));
+        assertThat(sll.hasNext(), is(true));
+        assertThat(sll.next(), is("mars"));
         assertThat(sll.hasNext(), is(false));
         sll.next();
     }
