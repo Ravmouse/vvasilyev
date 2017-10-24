@@ -1,7 +1,7 @@
 /**
-* Package for PrimeIterator class.
+* Package for PrimeIteratorTest class.
 * @author Vitaly Vasilyev (rav.energ@rambler.ru)
 * @version $Id$
 * @since 0.1
 */
-package ru.job4j.primeiterator;
+package ru.job4j.h1iterator.primeiterator;
