@@ -31,16 +31,12 @@ public class PrimeIterator implements Iterator {
         boolean result = false;
         int i = 2;
         while (values.length > index) {
-            for (; i < values[index]; i++) {
-                if (values[index] % i == 0) {
-                    break;
-                }
-            }
-            if (values[index] == i) {
+            if (!isPrime(values[index])) {
+                index++;
+            } else {
                 result = true;
                 break;
             }
-            index++;
         }
         return result;
     }
@@ -54,5 +50,21 @@ public class PrimeIterator implements Iterator {
         } else {
             throw new NoSuchElementException();
         }
+    }
+
+    /**
+     * @param value is the number to be checked whether it is prime or not.
+     * @return true if the value is a prime number, and false otherwise.
+     */
+    private boolean isPrime(int value) {
+        boolean result = true;
+        int i = 2;
+        for (; i < value; i++) {
+            if (value % i == 0) {
+                result = false;
+                break;
+            }
+        }
+        return result;
     }
 }

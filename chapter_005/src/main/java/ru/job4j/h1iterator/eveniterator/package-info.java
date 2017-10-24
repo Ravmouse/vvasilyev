@@ -4,4 +4,4 @@
 * @version $Id$
 * @since 0.1
 */
-package ru.job4j.eveniterator;
+package ru.job4j.h1iterator.eveniterator;

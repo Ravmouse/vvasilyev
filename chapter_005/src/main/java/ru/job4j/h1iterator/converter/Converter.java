@@ -1,4 +1,4 @@
-package ru.job4j.converter;
+package ru.job4j.h1iterator.converter;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 

@@ -1,4 +1,4 @@
-package ru.job4j.converter;
+package ru.job4j.h1iterator.converter;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;

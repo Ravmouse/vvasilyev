@@ -51,7 +51,7 @@ public class DynamicList<E> implements Iterable<E> {
      */
     public E get(int position) {
         E result = null;
-        if ((position > -1) && (position < container.length)) { // position д.б. больше -1 и меньше длины container
+        if ((position > -1) && (position < count)) { // position д.б. больше -1 и меньше кол-ва добавлен.элементов
             result = (E) container[position];
         }
         return result;

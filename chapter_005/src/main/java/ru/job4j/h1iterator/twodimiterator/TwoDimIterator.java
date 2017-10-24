@@ -1,4 +1,4 @@
-package ru.job4j.twodimiterator;
+package ru.job4j.h1iterator.twodimiterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
