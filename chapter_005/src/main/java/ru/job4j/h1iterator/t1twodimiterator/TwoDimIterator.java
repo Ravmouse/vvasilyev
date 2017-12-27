@@ -45,7 +45,7 @@ public class TwoDimIterator implements Iterator {
     }
 
     /**
-     * @return the next element in the array.
+     * @return the next element in this array.
      */
     @Override
     public Object next() {
