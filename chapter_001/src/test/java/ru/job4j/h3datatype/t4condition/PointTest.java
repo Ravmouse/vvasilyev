@@ -1,4 +1,4 @@
-package ru.job4j.condition;
+package ru.job4j.h3datatype.t4condition;
 
 import org.junit.Test;
 import static org.hamcrest.core.Is.is;

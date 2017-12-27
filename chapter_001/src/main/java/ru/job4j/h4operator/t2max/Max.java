@@ -1,4 +1,4 @@
-package ru.job4j.max;
+package ru.job4j.h4operator.t2max;
 
 /**
  * Class Max.

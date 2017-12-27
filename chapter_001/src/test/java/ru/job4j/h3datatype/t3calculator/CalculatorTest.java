@@ -1,4 +1,4 @@
-package ru.job4j.calculator;
+package ru.job4j.h3datatype.t3calculator;
 
 import org.junit.Test;
 

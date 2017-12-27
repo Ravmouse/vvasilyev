@@ -1,4 +1,4 @@
-package ru.job4j.condition;
+package ru.job4j.h3datatype.t4condition;
 /**
  * Class Triangle.
  * @author Vitaly Vasilyev
