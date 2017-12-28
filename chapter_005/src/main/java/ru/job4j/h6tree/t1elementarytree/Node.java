@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @param <T> - обобщенный тип.
+ * @param <T> - обобщенный тип для класса.
  */
 public class Node<T> {
     /**

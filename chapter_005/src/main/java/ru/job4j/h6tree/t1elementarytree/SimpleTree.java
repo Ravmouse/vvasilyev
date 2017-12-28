@@ -1,5 +1,4 @@
 package ru.job4j.h6tree.t1elementarytree;
-
 /**
  * @param <E> - обобщенный тип.
  */

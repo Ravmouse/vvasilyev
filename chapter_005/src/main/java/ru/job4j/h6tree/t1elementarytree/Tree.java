@@ -5,7 +5,7 @@ import java.util.Queue;
 import java.util.LinkedList;
 
 /**
- * @param <E> - обобщенный тип.
+ * @param <E> - обобщенный тип класса.
  */
 public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
     /**
