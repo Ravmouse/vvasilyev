@@ -14,9 +14,9 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
     private Node<E> root;
 
     /**
-     * Очередь для итератора.
+     * Очередь как для метода find(), так и для итератора.
      */
-    private Queue<Node<E>> queueForIter;
+    private Queue<Node<E>> queue = new LinkedList<>();
 
     /**
      * @param parent - родительский элемент для добавления.
@@ -25,53 +25,41 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
      */
     @Override
     public boolean add(E parent, E child) {
-        boolean result = false;
+        boolean rsl = false;
         if ((parent != null) && (child != null)) {
-            if (root == null) {                                  //Если корень == null, то очередь пуста ->
-                root = new Node<E>(parent);                      //parent становится root, а child - первым доч.эл-ом.
-                root.add(new Node<E>(child));
-                result = true;
+            if (root == null) {                                      //Если корень == null, то очередь пуста ->
+                root = new Node<>(parent);                           //parent становится root,
+                root.add(new Node<>(child));                         //а child - первым доч.эл-ом.
+                rsl = true;
             } else {
-                Queue<Node<E>> q = new LinkedList<>();
-                q.offer(root);
-                while (!q.isEmpty()) {
-                    final Node<E> node = q.poll();
-                    if (node.getValue().compareTo(parent) == 0) {
-                        if (!findBy(child)) {
-                            root.add(new Node<>(child));
-                            result = true;
-                            break;
-                        }
-                        break;
-                    }
-                    for (Node<E> tmp : node.childrenList()) {
-                        q.offer(tmp);
-                    }
+                Node<E> parentNode = find(parent);                   //Добавление происходит только тогда, когда parent
+                if ((parentNode != null) && (find(child) == null)) { //имеется как один из child,поэтому он д.б. найден
+                    parentNode.add(new Node<>(child));
+                    rsl = true;
                 }
             }
         }
-        return result;
+        return rsl;
     }
 
     /**
      * @param value - значение, которое может содержаться в одном из Node'ов и которое надо найти.
-     * @return true, если значение найдено и false, если - нет.
+     * @return Node со значением value, если такое значение имеется, или null.
      */
-    public boolean findBy(E value) {
-        boolean result = false;
-        Queue<Node<E>> queue = new LinkedList<>();    //
+    public Node<E> find(E value) {
+        Node<E> rsl = null;
         queue.offer(root);                            //В очередь вводится корень дерева
         while (!queue.isEmpty()) {                    //Пока очередь не станет пустой
             final Node<E> node = queue.poll();        //Вытащить из очереди следующий элемент
             if (node.eqValue(value)) {                //Если элемент равен значению, то...
-                result = true;
+                rsl = node;                           //То вернуть Node со значением.
                 break;
-            }                                         //Если елемент не равен значению, то...
+            }                                         //Если элемент не равен значению, то...
             for (Node<E> tmp : node.childrenList()) { //для каждого Node в листе Node
                 queue.offer(tmp);                     //Ввести в очередь каждый Node
             }
         }
-        return result;
+        return rsl;
     }
 
     /**
@@ -79,20 +67,16 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
      */
     @Override
     public Iterator<E> iterator() {
-        fillQueueForIterator();         //Заполнение очереди для итератора.
+        visitAll(root);
         return new Iterator<E>() {
 
             public boolean hasNext() {
-                boolean rsl = false;
-                if (!queueForIter.isEmpty()) {
-                    rsl = true;
-                }
-                return rsl;
+                return !queue.isEmpty();
             }
 
             public E next() {
                 if (this.hasNext()) {
-                    return queueForIter.poll().getValue();
+                    return queue.poll().getValue();
                 } else {
                     throw new NoSuchElementException();
                 }
@@ -101,19 +85,17 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
     }
 
     /**
-     * При создании объекта типа Iterator вызывается этот метод для заполнения очереди queueForIter
-     * всеми элементами, входящими в этот класс Tree.
+     * Перебор всех элементов дерева при помощи рекурсии.
+     * @param val - Node, с которого начинается перебор дочерних элементов.
      */
-    private void fillQueueForIterator() {
-        queueForIter = new LinkedList<>();
-        Queue<Node<E>> tmpQueue = new LinkedList<>();
-        tmpQueue.offer(root);
-        while (!tmpQueue.isEmpty()) {
-            final Node<E> node = tmpQueue.poll();
-            queueForIter.offer(node);
-            for (Node<E> tmp: node.childrenList()) {
-                tmpQueue.offer(tmp);
+    private void visitAll(Node<E> val) {
+        int count = 0;
+        if (val.childrenList() != null) {               //Условие, при котором рекурсия прекращается.
+            while (count < val.childrenList().size()) { //Пока лок.переменная не равна кол-ву нодов в Листе...
+                visitAll(val.childrenList().get(count));//Снова заход в метод.
+                count++;
             }
         }
+        queue.offer(val);
     }
 }

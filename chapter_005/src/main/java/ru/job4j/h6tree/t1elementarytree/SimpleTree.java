@@ -16,5 +16,5 @@ public interface SimpleTree<E extends Comparable<E>> extends Iterable<E> {
      * @param value - значение, которое надо найти.
      * @return true, если значение найдено и false, если - нет.
      */
-    boolean findBy(E value);
+    Node<E> find(E value);
 }

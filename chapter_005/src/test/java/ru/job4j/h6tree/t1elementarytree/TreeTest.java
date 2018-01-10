@@ -19,7 +19,7 @@ public class TreeTest {
         t.add(1, 4);
         t.add(2, 5);
         t.add(2, 6);
-        assertThat(t.findBy(6), is(true));
+        assertThat(t.find(6).getValue(), is(6));
     }
 
     /**
@@ -31,7 +31,7 @@ public class TreeTest {
         t.add(1, 2);
         t.add(1, 3);
         t.add(1, 4);
-        assertThat(t.findBy(8), is(false));
+        assertThat(t.find(4).getValue(), is(4));
     }
 
     /**
@@ -48,19 +48,19 @@ public class TreeTest {
         t.add(9, 18);
         final Iterator<Integer> it = t.iterator();
         assertThat(it.hasNext(), is(true));
-        assertThat(it.next(), is(1));
-        assertThat(it.hasNext(), is(true));
         assertThat(it.next(), is(2));
         assertThat(it.hasNext(), is(true));
         assertThat(it.next(), is(3));
         assertThat(it.hasNext(), is(true));
-        assertThat(it.next(), is(4));
-        assertThat(it.hasNext(), is(true));
         assertThat(it.next(), is(8));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next(), is(18));
         assertThat(it.hasNext(), is(true));
         assertThat(it.next(), is(9));
         assertThat(it.hasNext(), is(true));
-        assertThat(it.next(), is(18));
+        assertThat(it.next(), is(4));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next(), is(1));
         assertThat(it.hasNext(), is(false));
     }
 }
