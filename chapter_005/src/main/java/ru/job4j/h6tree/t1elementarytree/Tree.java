@@ -90,12 +90,20 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
      */
     private void visitAll(Node<E> val) {
         int count = 0;
-        if (val.childrenList() != null) {               //Условие, при котором рекурсия прекращается.
-            while (count < val.childrenList().size()) { //Пока лок.переменная не равна кол-ву нодов в Листе...
-                visitAll(val.childrenList().get(count));//Снова заход в метод.
+        if (val.childrenList() != null) {                //Условие, при котором рекурсия прекращается.
+            while (count < val.childrenList().size()) {  //Пока лок.переменная не равна кол-ву нодов в Листе...
+                visitAll(val.childrenList().get(count)); //Снова заход в метод.
                 count++;
             }
         }
         queue.offer(val);
+    }
+
+    /**
+     * @return ссылку на корень дерева.
+     * Метод нужен для класса TreeBinCheck, который расширяет данный класс.
+     */
+    public Node<E> getRoot() {
+        return root;
     }
 }
