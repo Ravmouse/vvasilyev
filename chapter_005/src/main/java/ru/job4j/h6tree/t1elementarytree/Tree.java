@@ -67,6 +67,7 @@ public class Tree<E extends Comparable<E>> implements SimpleTree<E> {
      */
     @Override
     public Iterator<E> iterator() {
+        queue.clear();                   //Очищение очереди от нодов каждый раз перед созданием итератора.
         visitAll(root);
         return new Iterator<E>() {
 
