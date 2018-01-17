@@ -94,6 +94,7 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
      */
     @Override
     public Iterator<E> iterator() {
+        list.clear();    //Очищение очереди всякий раз, когда создается итератор.
         visitAll(root);
         return new Iterator<E>() {
             public boolean hasNext() {
