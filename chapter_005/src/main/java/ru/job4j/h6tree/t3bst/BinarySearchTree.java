@@ -2,7 +2,7 @@ package ru.job4j.h6tree.t3bst;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.Queue;
+import java.util.List;
 
 /**
  * @param <E> - обобщенный тип класса.
@@ -16,11 +16,18 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
      * Ссылка на нод при добавлении элемента.
      */
     private Node<E> current;
-
     /**
-     * Очередь для размещения всех элементов в целях итерации.
+     * Список для размещения всех элементов в целях итерации.
      */
-    private Queue<E> list = new LinkedList<>();
+    private List<Node<E>> list = new LinkedList<>();
+    /**
+     * Здесь хранится кол-во добавляемых в дерево элементов.
+     */
+    private int size;
+    /**
+     * Переменная для итератора, чтобы получать значения из списка.
+     */
+    private int index;
 
     /**
      * @param e - значение дочернего элемента для добавления в дерево.
@@ -32,6 +39,7 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
         if (e != null) {
             if (root == null) {                             //Если root == null, значит дерево не содержит элементов.
                 root = new Node<>(e);
+                size++;                                     //Один элемент добавлен.
                 current = root;                             //Теперь current не null, а ссылается на root.
                 rsl = true;
             } else {
@@ -41,6 +49,7 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
                         rsl = add(e);                       //Рекурсивно вызвать этот же метод.
                     } else {
                         current.setLeft(new Node<>(e));     //Если слева нет элемента, то создается дочерний эл-т.
+                        size++;
                         rsl = true;
                         current = root;                     //Вернуть current значения root, чтобы при след.добавлении
                     }                                       //сравнение эл-тов происходило от корня.
@@ -51,6 +60,7 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
                         rsl = add(e);
                     } else {
                         current.setRight(new Node<>(e));
+                        size++;
                         rsl = true;
                         current = root;
                     }
@@ -77,37 +87,58 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
         return temp;
     }
 
-    /**
-     * При помощи рекурсии осуществляется обход всех элементов дерева.
-     * @param node - элемент дерева.
-     */
-    private void visitAll(Node<E> node) {
-        if (node != null) {               //Условие выхода из рекурсии.
-            visitAll(node.getLeft());     //Посетить дочерний элемент слева.
-            list.add(node.getValue());    //Получить значение самого элемента и добавить его в очередь.
-            visitAll(node.getRight());    //Посетить дочерний элемент справа.
-        }
-    }
+//    /**
+//     * При помощи рекурсии осуществляется обход всех элементов дерева.
+//     * @param node - элемент дерева.
+//     */
+//    private void visitAll(Node<E> node) {
+//        if (node != null) {               //Условие выхода из рекурсии.
+//            visitAll(node.getLeft());     //Посетить дочерний элемент слева.
+//            list.add(node.getValue());    //Получить значение самого элемента и добавить его в очередь.
+//            visitAll(node.getRight());    //Посетить дочерний элемент справа.
+//        }
+//    }
 
     /**
      * @return итератор по всем элементам дерева.
      */
     @Override
     public Iterator<E> iterator() {
-        list.clear();    //Очищение очереди всякий раз, когда создается итератор.
-        visitAll(root);
+        list.clear(); //Очищение списка всякий раз, когда создается итератор.
+        index = -1;   //В next() значение инкрементируется. При след.вызове итератора index д.б. в начале списка.
+        listFill();   //Заполнение списка.
         return new Iterator<E>() {
+
             public boolean hasNext() {
-                return !list.isEmpty();
+                return index < list.size() - 1;
             }
 
             public E next() {
                 if (hasNext()) {
-                    return list.poll();
+                    index++;
+                    return list.get(index).getValue();
                 } else {
                     throw new NoSuchElementException();
                 }
             }
         };
+    }
+
+    /**
+     * Заполнение списка всеми элементами дерева.
+     */
+    private void listFill() {
+        int i = 0;
+        list.add(root);
+        while (i < size) {
+            Node<E> tmp = list.get(i);
+            if (tmp.getLeft() != null) {
+                list.add(tmp.getLeft());
+            }
+            if (tmp.getRight() != null) {
+                list.add(tmp.getRight());
+            }
+            i++;
+        }
     }
 }
