@@ -2,7 +2,7 @@ package ru.job4j.h6tree.t3bst;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-import java.util.List;
+import java.util.Queue;
 
 /**
  * @param <E> - обобщенный тип класса.
@@ -16,18 +16,6 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
      * Ссылка на нод при добавлении элемента.
      */
     private Node<E> current;
-    /**
-     * Список для размещения всех элементов в целях итерации.
-     */
-    private List<Node<E>> list = new LinkedList<>();
-    /**
-     * Здесь хранится кол-во добавляемых в дерево элементов.
-     */
-    private int size;
-    /**
-     * Переменная для итератора, чтобы получать значения из списка.
-     */
-    private int index;
 
     /**
      * @param e - значение дочернего элемента для добавления в дерево.
@@ -39,7 +27,6 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
         if (e != null) {
             if (root == null) {                             //Если root == null, значит дерево не содержит элементов.
                 root = new Node<>(e);
-                size++;                                     //Один элемент добавлен.
                 current = root;                             //Теперь current не null, а ссылается на root.
                 rsl = true;
             } else {
@@ -49,7 +36,6 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
                         rsl = add(e);                       //Рекурсивно вызвать этот же метод.
                     } else {
                         current.setLeft(new Node<>(e));     //Если слева нет элемента, то создается дочерний эл-т.
-                        size++;
                         rsl = true;
                         current = root;                     //Вернуть current значения root, чтобы при след.добавлении
                     }                                       //сравнение эл-тов происходило от корня.
@@ -60,7 +46,6 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
                         rsl = add(e);
                     } else {
                         current.setRight(new Node<>(e));
-                        size++;
                         rsl = true;
                         current = root;
                     }
@@ -104,41 +89,32 @@ public class BinarySearchTree<E extends Comparable<E>> implements SimpleBinarySe
      */
     @Override
     public Iterator<E> iterator() {
-        list.clear(); //Очищение списка всякий раз, когда создается итератор.
-        index = -1;   //В next() значение инкрементируется. При след.вызове итератора index д.б. в начале списка.
-        listFill();   //Заполнение списка.
+        Queue<Node<E>> queue = new LinkedList<>(); //Создание очереди.
+        queue.offer(root);                         //Введение в очередь корня дерева.
         return new Iterator<E>() {
 
             public boolean hasNext() {
-                return index < list.size() - 1;
+                return !queue.isEmpty();
             }
 
             public E next() {
                 if (hasNext()) {
-                    index++;
-                    return list.get(index).getValue();
+                    Node<E> node = queue.poll();
+                    addAll(node);                  //Добавление в очередь дочерних элементов слева и справа.
+                    return node.getValue();
                 } else {
                     throw new NoSuchElementException();
                 }
             }
-        };
-    }
 
-    /**
-     * Заполнение списка всеми элементами дерева.
-     */
-    private void listFill() {
-        int i = 0;
-        list.add(root);
-        while (i < size) {
-            Node<E> tmp = list.get(i);
-            if (tmp.getLeft() != null) {
-                list.add(tmp.getLeft());
+            private void addAll(Node<E> value) {
+                if (value.getLeft() != null) {
+                    queue.offer(value.getLeft());
+                }
+                if (value.getRight() != null) {
+                    queue.add(value.getRight());
+                }
             }
-            if (tmp.getRight() != null) {
-                list.add(tmp.getRight());
-            }
-            i++;
-        }
+        };
     }
 }
