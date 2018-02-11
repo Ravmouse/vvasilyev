@@ -63,4 +63,26 @@ public class TreeTest {
         assertThat(it.next(), is(1));
         assertThat(it.hasNext(), is(false));
     }
+
+    /**
+     * Проверка того, что при повторном создании итератора элементы с предыдущего
+     * вызова удаляются полностью.
+     */
+    @Test
+    public void whenIterateTwiceThenNoDoubleElementsAreContained() {
+        Tree<Integer> t = new Tree<>();
+        t.add(1, 10);
+        t.add(1, 20);
+        t.add(1, 30);
+        Iterator<Integer> it = t.iterator();
+        assertThat(it.next(), is(10));
+        assertThat(it.next(), is(20));
+        assertThat(it.hasNext(), is(true));
+        it = t.iterator();
+        assertThat(it.next(), is(10));
+        assertThat(it.next(), is(20));
+        assertThat(it.next(), is(30));
+        assertThat(it.next(), is(1));
+        assertThat(it.hasNext(), is(false));
+    }
 }
