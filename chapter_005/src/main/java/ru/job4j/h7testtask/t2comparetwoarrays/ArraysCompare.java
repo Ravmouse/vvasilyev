@@ -62,6 +62,22 @@ public class ArraysCompare {
     }
 
     /**
+     * @param one is the first array of int elements.
+     * @param two is the second array of int elements.
+     * @return true if these two arrays are equal and false otherwise.
+     */
+    public boolean compareTwoArraysThird(int[] one, int[] two) {
+        int tmp = 0;
+        if (one.length != two.length) {
+            return false;
+        }
+        for (int i = 0; i < one.length; i++) {
+            tmp += (one[i] - two[i]);
+        }
+        return tmp == 0;
+    }
+
+    /**
      * @param args is the String array.
      */
     public static void main(String[] args) {
@@ -88,6 +104,19 @@ public class ArraysCompare {
         Collections.shuffle(Arrays.asList(two));
         start = System.currentTimeMillis();
         ar.compareTwoArraysSecond(one, two);
+        System.out.println(System.currentTimeMillis() - start);
+        //=====================================================
+
+        int[] a = new int[1000_000];
+        int[] b;
+        for (int i = 0; i < a.length; i++) {
+            a[i] = rnd.nextInt(100);
+        }
+        b = a.clone();
+        Collections.shuffle(Arrays.asList(b));
+        start = System.currentTimeMillis();
+        boolean c = ar.compareTwoArraysThird(a, b);
+        System.out.println(c);
         System.out.println(System.currentTimeMillis() - start);
     }
 }

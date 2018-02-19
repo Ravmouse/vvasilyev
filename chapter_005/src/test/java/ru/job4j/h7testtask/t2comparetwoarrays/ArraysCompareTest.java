@@ -50,4 +50,18 @@ public class ArraysCompareTest {
         ArraysCompare ar = new ArraysCompare();
         assertThat(ar.compareTwoArraysSecond(one, two), is(false));
     }
+
+    /**
+     * Using the third method.
+     */
+    @Test
+    public void testingTheThirdMethod() {
+        int[] a = {2, -4, 56, 1, -9, 7, 45, -123};
+        int[] b = {45, -9, 7, -123, -4, 2, 56, 1};
+        ArraysCompare ar = new ArraysCompare();
+        assertThat(ar.compareTwoArraysThird(a, b), is(true));
+
+        a[0] = 20;
+        assertThat(ar.compareTwoArraysThird(a, b), is(false));
+    }
 }
