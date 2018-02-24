@@ -15,7 +15,7 @@ public class ArraysCompareTest {
         Integer[] one = {2, 2, 1};
         Integer[] two = {2, 1, 2};
         ArraysCompare ar = new ArraysCompare();
-        assertThat(ar.compareTwoArraysFirst(one, two), is(true));
+        assertThat(ar.areTwoArraysEqualFirst(one, two), is(true));
     }
 
     /**
@@ -26,7 +26,7 @@ public class ArraysCompareTest {
         Integer[] one = {2, 2, 1};
         Integer[] two = {2, 1, 3};
         ArraysCompare ar = new ArraysCompare();
-        assertThat(ar.compareTwoArraysFirst(one, two), is(false));
+        assertThat(ar.areTwoArraysEqualFirst(one, two), is(false));
     }
 
     /**
@@ -37,7 +37,7 @@ public class ArraysCompareTest {
         Integer[] one = {3, 2, 1};
         Integer[] two = {2, 1, 3};
         ArraysCompare ar = new ArraysCompare();
-        assertThat(ar.compareTwoArraysSecond(one, two), is(true));
+        assertThat(ar.areTwoArraysEqualSecond(one, two), is(true));
     }
 
     /**
@@ -48,7 +48,7 @@ public class ArraysCompareTest {
         Integer[] one = {3, 2, 1};
         Integer[] two = {2, 1, 2};
         ArraysCompare ar = new ArraysCompare();
-        assertThat(ar.compareTwoArraysSecond(one, two), is(false));
+        assertThat(ar.areTwoArraysEqualSecond(one, two), is(false));
     }
 
     /**
@@ -56,12 +56,33 @@ public class ArraysCompareTest {
      */
     @Test
     public void testingTheThirdMethod() {
-        int[] a = {2, -4, 56, 1, -9, 7, 45, -123};
-        int[] b = {45, -9, 7, -123, -4, 2, 56, 1};
+        int[] a = {-10, 35, 3, 8, 4, 6, 9, 1, 6, 8, 7, 12};
+        int[] b = {6, 4, 1, 8, 3, 9, 6, 12, 8, -10, 35, 7};
         ArraysCompare ar = new ArraysCompare();
-        assertThat(ar.compareTwoArraysThird(a, b), is(true));
+        assertThat(ar.areTwoArraysEqualThird(a, b), is(true));
+        a[0] = 2;
+        assertThat(ar.areTwoArraysEqualThird(a, b), is(false));
+    }
 
-        a[0] = 20;
-        assertThat(ar.compareTwoArraysThird(a, b), is(false));
+    /**
+     * Comparing two arrays.
+     */
+    @Test
+    public void testingCompareMethod() {
+        int[] a = {1, 2, 3};
+        int[] b = {1, 2, 3};
+        ArraysCompare ar = new ArraysCompare();
+        assertThat(ar.compareTwoArrays(a, b), is(0));
+
+        a[0] = 2;
+        assertThat(ar.compareTwoArrays(a, b), is(1));
+
+        b[0] = 3;
+        assertThat(ar.compareTwoArrays(a, b), is(-1));
+
+        a[0] = 1;
+        int[] c = {1, 2, 3, 4};
+        assertThat(ar.compareTwoArrays(a, c), is(-1));
+        assertThat(ar.compareTwoArrays(c, a), is(1));
     }
 }

@@ -2,6 +2,7 @@ package ru.job4j.h7testtask.t2comparetwoarrays;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * The class with comparing methods.
@@ -13,7 +14,7 @@ public class ArraysCompare {
      * @param <E> is the type parameter.
      * @return true if the arrays have the same length and the same set of elements.
      */
-    public <E extends Number> boolean compareTwoArraysFirst(E[] one, E[] two) {
+    public <E extends Number> boolean areTwoArraysEqualFirst(E[] one, E[] two) {
         int i;
         if (one.length != two.length) {
             return false;
@@ -34,7 +35,7 @@ public class ArraysCompare {
      * @param <E> is the type parameter.
      * @return true if the arrays have the same length and the same set of elements.
      */
-    public <E extends Number> boolean compareTwoArraysSecond(E[] one, E[] two) {
+    public <E extends Number> boolean areTwoArraysEqualSecond(E[] one, E[] two) {
         if (one.length != two.length) {
             return false;
         }
@@ -64,17 +65,46 @@ public class ArraysCompare {
     /**
      * @param one is the first array of int elements.
      * @param two is the second array of int elements.
-     * @return true if these two arrays are equal and false otherwise.
+     * @return true if these two arrays have the same elements in different order and the same length.
      */
-    public boolean compareTwoArraysThird(int[] one, int[] two) {
-        int tmp = 0;
+    public boolean areTwoArraysEqualThird(int[] one, int[] two) {
         if (one.length != two.length) {
             return false;
         }
-        for (int i = 0; i < one.length; i++) {
-            tmp += (one[i] - two[i]);
+        HashSet<Integer> set = new HashSet<>();
+        for (int i : one) {
+            set.add(i);
         }
-        return tmp == 0;
+        int lenOne = set.size();
+        for (int i : two) {
+            set.add(i);
+        }
+        int lenTwo = set.size();
+        return lenOne == lenTwo;
+    }
+
+    /**
+     * @param one is the first array of int elements.
+     * @param two is the second array of int elements.
+     * @return 1 if the i-element of the first array is greater than the i-element of the second array,
+     * -1 if the i-element of the first array is less than the i-element of the second array and 0 if they're equal.
+     */
+    public int compareTwoArrays(int[] one, int[] two) {
+        int i, rsl = 0;
+        int min = (one.length <= two.length) ? one.length : two.length;
+        for (i = 0; i < min; i++) {
+            if (one[i] > two[i]) {
+                rsl = 1;
+                break;
+            } else if (one[i] < two[i]) {
+                rsl = -1;
+                break;
+            }
+        }
+        if ((i == min) && (one.length != two.length)) {
+            rsl = (one.length > two.length) ? 1 : -1;
+        }
+        return rsl;
     }
 
     /**
@@ -93,8 +123,8 @@ public class ArraysCompare {
         ArraysCompare ar = new ArraysCompare();
         long start;
         start = System.currentTimeMillis();
-        ar.compareTwoArraysFirst(one, two);
-        System.out.println(System.currentTimeMillis() - start);
+        ar.areTwoArraysEqualFirst(one, two);
+        System.out.println("The first method: " + (System.currentTimeMillis() - start));
         //=====================================================
 
         for (int i = 0; i < one.length; i++) {
@@ -103,8 +133,8 @@ public class ArraysCompare {
         two = one.clone();
         Collections.shuffle(Arrays.asList(two));
         start = System.currentTimeMillis();
-        ar.compareTwoArraysSecond(one, two);
-        System.out.println(System.currentTimeMillis() - start);
+        ar.areTwoArraysEqualSecond(one, two);
+        System.out.println("The second method: " + (System.currentTimeMillis() - start));
         //=====================================================
 
         int[] a = new int[1000_000];
@@ -115,8 +145,7 @@ public class ArraysCompare {
         b = a.clone();
         Collections.shuffle(Arrays.asList(b));
         start = System.currentTimeMillis();
-        boolean c = ar.compareTwoArraysThird(a, b);
-        System.out.println(c);
-        System.out.println(System.currentTimeMillis() - start);
+        System.out.println(ar.areTwoArraysEqualThird(a, b));
+        System.out.println("The third method: " + (System.currentTimeMillis() - start));
     }
 }
