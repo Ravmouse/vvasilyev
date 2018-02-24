@@ -73,13 +73,10 @@ public class ArraysCompareTest {
         int[] b = {1, 2, 3};
         ArraysCompare ar = new ArraysCompare();
         assertThat(ar.compareTwoArrays(a, b), is(0));
-
         a[0] = 2;
         assertThat(ar.compareTwoArrays(a, b), is(1));
-
         b[0] = 3;
         assertThat(ar.compareTwoArrays(a, b), is(-1));
-
         a[0] = 1;
         int[] c = {1, 2, 3, 4};
         assertThat(ar.compareTwoArrays(a, c), is(-1));

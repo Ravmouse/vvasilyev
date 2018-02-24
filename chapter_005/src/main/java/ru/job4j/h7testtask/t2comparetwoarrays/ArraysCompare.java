@@ -71,14 +71,14 @@ public class ArraysCompare {
         if (one.length != two.length) {
             return false;
         }
-        HashSet<Integer> set = new HashSet<>();
+        HashSet<Integer> set = new HashSet<>(); //Using a hashset.
         for (int i : one) {
-            set.add(i);
-        }
-        int lenOne = set.size();
-        for (int i : two) {
-            set.add(i);
-        }
+            set.add(i);                         //Adding all the elements from the first array. If the array has
+        }                                       //duplicate elements, then the size of the hashset will be less
+        int lenOne = set.size();                //than the amount of elements in the first array.
+        for (int i : two) {                     //If the second array has the same elements as the first array, then
+            set.add(i);                         //the size of the hashset won't be changed. Otherwise the size will be
+        }                                       //increased.
         int lenTwo = set.size();
         return lenOne == lenTwo;
     }
