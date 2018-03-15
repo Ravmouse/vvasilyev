@@ -77,6 +77,38 @@ public class Order implements Comparable<Order> {
     public String toString() {
         return String.format("Volume = %d; price = %f", this.volume, this.price);
     }
+
+    /**
+     * @param o is the Object to be compared.
+     * @return true if two objects are equal and false, if they're not.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Order order = (Order) o;
+        if (Double.compare(order.price, price) != 0) {
+            return false;
+        }
+        return volume == order.volume;
+    }
+
+    /**
+     * @return the hashcode of the instance of the class.
+     */
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(price);
+        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + volume;
+        return result;
+    }
 }
 
 /**

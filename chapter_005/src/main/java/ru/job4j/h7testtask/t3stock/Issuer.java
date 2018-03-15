@@ -2,6 +2,7 @@ package ru.job4j.h7testtask.t3stock;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Here the Issuer is created.
@@ -141,13 +142,14 @@ public class Issuer {
         low = 0;
         up = list.size() - 1;
         while (true) {
-            cur = (low + up) / 2;
-            if (list.get(cur).getPrice() == price) {
+            cur = (low + up) >>> 1;
+            final Order o = list.get(cur);
+            if (o.getPrice() == price) {
                 return cur;
             }  else if (low > up) {
                 return -1;
             } else {
-                if (list.get(cur).getPrice() < price) {
+                if (o.getPrice() < price) {
                     low = cur + 1;
                 } else {
                     up = cur - 1;
@@ -185,4 +187,55 @@ public class Issuer {
             j++;
         }
     }
+
+
+    /**
+     * @param args args.
+     */
+    public static void main(String[] args) {
+        Order ord = null;
+        Random rnd = new Random();
+        Issuer is = new Issuer("test");
+        int amount = 20_000_000;
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < amount; i++) {
+            is.askList.add(new Order(0, 0, rnd.nextDouble(), rnd.nextInt(100)));
+            if (i == 19_999_000) {
+                ord = new Order(0, 0, 0.455, rnd.nextInt(100));
+                is.askList.add(ord);
+            }
+        }
+        System.out.println("ADD: " + (System.currentTimeMillis() - start));
+
+        start = System.currentTimeMillis();
+        Collections.sort(is.askList);
+        System.out.println("SORT: " + (System.currentTimeMillis() - start));
+
+        start = System.currentTimeMillis();
+//        boolean boo = is.askList.contains(ord);
+        int c = is.bSearch(is.askList, 0.455);
+//        int c = Collections.binarySearch(is.askList, ord);
+//        if (boo) {
+            System.out.println("SEARCH: " + (System.currentTimeMillis() - start));
+//        }
+        System.out.println(c);
+    }
 }
+
+//180315.
+//TreeSet = добавление элементов = 20 сек (10 млн), 53 сек (20 млн). Сортировать не нужно. Использовать бинарный поиск
+//напрямую не нужно, т.к. есть метод contains(), который обеспечивает время O(log(n)) при поиске искомого элемента.
+//Метод contains() -> 0 сек.
+
+//HashSet = добавление элементов = 10 сек (10 млн), 32 сек (20 млн). Метод contains() -> 0 сек.
+
+//ArrayList = добавление элементов = 2,3 сек (20 млн). Сортировка qsort() = 14 сек. Метод contains() -> 0,2 сек.
+//Если использовать мой метод bSearch(), то время вообще 0 сек. Метод Collections.binarySearch() -> 0 сек.
+
+//LinkedList = добавление элементов = 4,2 сек (20 млн). Сортировка qsort() = 19 сек.
+
+//Почему мой метод bSearch() для LL выполянется 3,8 сек, в то время как Collections.binarySearch() выполняется 0,3 сек.
+//В методе bSearch() было 2 вызова list.get(index). Как говорит Хорстманн, в LL не буферизуется индекс.
+//Заменил на 1 вызов и присвоение Order o, а дальше использование этой переменной вместо постоянного вызова list.get(index).
+//Время снизилось до 1,8 сек.
