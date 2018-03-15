@@ -21,14 +21,11 @@ public class StandByForOutput extends CountWordsAndSpaces {
     public static void main(String[] args) {
         System.out.println("*** Greetings, User! ***");
         System.out.println("This is a program that counts a number of spaces and words in a text.");
-        String str;
-        Thread spaceThread;
-        Thread wordThread;
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.println("Please, enter a text: ");
-            str = br.readLine();
-            spaceThread = new Thread(new StandByForOutput(str).new CountSpaces());
-            wordThread = new Thread(new StandByForOutput(str).new CountWords());
+            final String str = br.readLine();
+            final Thread spaceThread = new Thread(new StandByForOutput(str).new CountSpaces());
+            final Thread wordThread = new Thread(new StandByForOutput(str).new CountWords());
             spaceThread.start();
             wordThread.start();
 
