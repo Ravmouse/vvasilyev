@@ -1,5 +1,5 @@
 /**
- * Тестовый класс UserStorageImplTest
+ * Тестовый класс UserStorageImplTest.
  * @author Rav, date: 24.03.2018
  * @version 1.0
  */

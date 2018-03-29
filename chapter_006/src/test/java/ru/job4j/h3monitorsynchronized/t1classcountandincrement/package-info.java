@@ -1,5 +1,5 @@
 /**
- * Тестовый класс CountTest
+ * Тестовый класс CountTest.
  * @author Rav, date: 21.03.2018
  * @version 1.0
  */

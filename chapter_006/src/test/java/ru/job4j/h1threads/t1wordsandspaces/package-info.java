@@ -1,5 +1,5 @@
 /**
- * Тестовый класс CountWordsAndSpacesTest
+ * Тестовый класс CountWordsAndSpacesTest.
  * @author Rav, date: 11.03.2018
  * @version 1.0
  */
