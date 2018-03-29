@@ -1,7 +1,6 @@
 /**
-* Package for CountWordsAndSpacesTest class.
-* @author Vitaly Vasilyev (rav.energ@rambler.ru)
-* @version $Id$
-* @since 0.1
-*/
+ * Тестовый класс CountWordsAndSpacesTest
+ * @author Rav, date: 11.03.2018
+ * @version 1.0
+ */
 package ru.job4j.h1threads.t1wordsandspaces;

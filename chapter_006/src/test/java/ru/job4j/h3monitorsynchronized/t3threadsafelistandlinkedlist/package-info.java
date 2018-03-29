@@ -1,7 +1,6 @@
 /**
- * Классы ThreadSafeDynListTest и ThreadSafeLinkedListTest.
- * @author Vitaly Vasilyev (rav.energ@rambler.ru)
- * @version $Id$
- * @since 0.1
+ * Тестовые классы ThreadSafeDynListTest и ThreadSafeLinkedListTest.
+ * @author Rav, date: 26.03.2018
+ * @version 1.0
  */
 package ru.job4j.h3monitorsynchronized.t3threadsafelistandlinkedlist;

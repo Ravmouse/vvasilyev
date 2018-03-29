@@ -1,9 +1,13 @@
 /**
-* В этом пакете - класс с методами, которые подсчитывают кол-во пробелов и слов (примитивно) в тексте.
-* Помимо потока main здесь дополнительно создаются 2 потока.
-* There's a class in the package with methods counting an amount of spaces and words in a text.
-* Also two threads are created besides the main thread.
-* @author Vitaly Vasilyev (rav.energ@rambler.ru).
-* @version 1.0
-*/
+ * 1. Сосчитать количество слов и пробелов в тексте [#1016].
+ * Создать программу, которая будет расчитывать количество слов и пробелов в тексте. Здесь не надо использовать
+ * регулярные выражения. Просто в цикле перебрать символы. Необходимо создать два Thread. Первый будет считать
+ * количество слов. Второй - количество пробелов в тексте. Вывести результат на экран.
+ *
+ * В этом пакете - класс с методами, которые подсчитывают кол-во пробелов и слов (примитивно) в тексте.
+ * Помимо потока main здесь дополнительно создаются 2 потока.
+ * There's a class in the package with methods counting an amount of spaces and words in a text.
+ * Also two threads are created besides the main thread.
+ * @version 1.0
+ */
 package ru.job4j.h1threads.t1wordsandspaces;
