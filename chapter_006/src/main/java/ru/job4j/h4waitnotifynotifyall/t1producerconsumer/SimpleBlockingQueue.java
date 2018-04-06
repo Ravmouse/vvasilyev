@@ -17,14 +17,9 @@ public class SimpleBlockingQueue<T> {
     @GuardedBy("this")
     private final Queue<T> queue = new LinkedList<>();
     /**
-     * Счетчик кол-ва добавленных элементов.
-     */
-    private int count;
-    /**
      * Максимальное число элементов в очереди.
      */
     private static final int MAX_SIZE = 5;
-
 
     /**
      * Добавляет элемент в блокирующую очередь.
@@ -32,14 +27,11 @@ public class SimpleBlockingQueue<T> {
      * @throws InterruptedException в случае возникновения исключения.
      */
     public synchronized void offer(T value) throws InterruptedException {
-        while (count == MAX_SIZE) {
+        while (queue.size() == MAX_SIZE) {
             this.wait();
         }
         queue.offer(value);
-        System.out.println("Producer puts: " + value);
-        Thread.sleep(1000);
-        count++;
-        this.notify();
+        this.notifyAll();
     }
 
     /**
@@ -48,14 +40,11 @@ public class SimpleBlockingQueue<T> {
      * @throws InterruptedException в случае возникновения исключения.
      */
     public  synchronized T poll() throws InterruptedException {
-        while (count == 0) {
+        while (queue.isEmpty()) {
             this.wait();
         }
         T rsl = queue.poll();
-        System.out.println("Consumer takes: " + rsl);
-        Thread.sleep(1000);
-        count--;
-        this.notify();
+        this.notifyAll();
         return rsl;
     }
 }
