@@ -6,42 +6,42 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class-container with a list of Users.
+ * Класс, который реализует интерфейс UserStorage.
  */
 @ThreadSafe
 public class UserStorageImpl implements UserStorage {
     /**
-     * The list of Users.
+     * Лист User'ов.
      */
     @GuardedBy("this")
     private final List<User> list;
 
     /**
-     * The constructor.
+     * Конструктор.
      */
     public UserStorageImpl() {
         list = Collections.synchronizedList(new ArrayList<>());
     }
 
     /**
-     * @param user to be added.
-     * @return true if the user is added successfully and false otherwise.
+     * @param user - элемент для добавления.
+     * @return true, если элемент удалось добавить, и false, если - нет.
      */
     @Override
     public boolean add(User user) {
         boolean rsl = false;
         if (user != null) {
             list.add(user);
-//            Collections.sort(list); //Заккоментировал из-за двух циклов for в двух разных потоках в классе
-            rsl = true;               //UserStorageImplTest.
+            Collections.sort(list);
+            rsl = true;
         }
         return rsl;
     }
 
     /**
-     * @param user to be updated.
-     * @param amount to be changed.
-     * @return true if the user is updated successfully and false otherwise.
+     * @param user - элемент для изменения.
+     * @param amount - новая сумма для элемента user.
+     * @return true, если такой элемент существует, и его удалось изменить, и false, если - нет.
      */
     @Override
     public boolean update(User user, int amount) {
@@ -57,11 +57,11 @@ public class UserStorageImpl implements UserStorage {
     }
 
     /**
-     * @param user to be deleted.
-     * @return true if the user is deleted successfully and false otherwise.
+     * @param user - элемент для удаления.
+     * @return true, если такой элемент существует, и его удалось удалить, и false, если - нет.
      */
     @Override
-    public boolean delete(User user) {
+    public synchronized boolean delete(User user) {
         boolean rsl = false;
         if (user != null) {
             int pos = Collections.binarySearch(list, user);
@@ -74,28 +74,33 @@ public class UserStorageImpl implements UserStorage {
     }
 
     /**
-     * @param fromId is the ID of the first user.
-     * @param toId is the ID of the second user.
-     * @param amount to be replaced from the first user to the second one.
-     * @return true if the transfer is complete successfully.
+     * @param fromId - id пользователя, с которого нужно перевести сумму.
+     * @param toId - id пользователя, на которого нужно перевести сумму.
+     * @param amount - сумма для перевода.
+     * @return true, если удалось осуществить перевод и false, если - нет.
+     * @throws InterruptedException в случае возникновения исключения.
      */
     @Override
-    public boolean transfer(int fromId, int toId, int amount) {
+    public synchronized boolean transfer(int fromId, int toId, int amount) throws InterruptedException {
         User fromUser, toUser;
         boolean rsl = false;
         fromUser = bSearch(fromId);
         toUser = bSearch(toId);
         if ((fromUser != null) && (toUser != null)) {
+            while (fromUser.getAmount() < amount) {
+                wait();
+            }
             fromUser.setAmount(fromUser.getAmount() - amount);
             toUser.setAmount(toUser.getAmount() + amount);
             rsl = true;
+            notifyAll();
         }
         return rsl;
     }
 
     /**
-     * @param id to be found in the data structure.
-     * @return the user if the id is found or the null.
+     * @param id элемента, которого нужно найти.
+     * @return ссылку на найденный элемент или null.
      */
     private User bSearch(int id) {
         int low, up, cur;
@@ -119,7 +124,7 @@ public class UserStorageImpl implements UserStorage {
     }
 
     /**
-     * @return the ref. to the list.
+     * @return ссылку на текущий лист.
      */
     public List<User> getList() {
         return list;
