@@ -22,6 +22,7 @@ public class SimpleLock {
 	/**
 	 * Количество раз, когда один и тот же поток захватывает блокировку.
 	 */
+	@GuardedBy("this")
 	private int holdCount;
 
     /**

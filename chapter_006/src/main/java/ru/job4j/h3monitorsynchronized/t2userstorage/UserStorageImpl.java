@@ -44,7 +44,7 @@ public class UserStorageImpl implements UserStorage {
      * @return true, если такой элемент существует, и его удалось изменить, и false, если - нет.
      */
     @Override
-    public boolean update(User user, int amount) {
+    public synchronized boolean update(User user, int amount) {
         boolean rsl = false;
         if (user != null) {
             int pos = Collections.binarySearch(list, user);
