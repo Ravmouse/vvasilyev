@@ -18,8 +18,8 @@ import java.util.Queue;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 /**
- * Здесь создаются и запускаются два потока, один из которых в директории ищет файлы по расширениям, а другой ищет
- * слово в этих файлах.
+ * Здесь создаются и запускаются два потока, один из которых в директории ищет файлы по расширениям, а другой - ищет
+ * определенное слово в этих файлах.
  */
 @ThreadSafe
 public class ParallelSearch {
@@ -63,30 +63,25 @@ public class ParallelSearch {
 
     /**
      * Создает и запускает два потока.
-     * @throws InterruptedException в случае исключения.
+     * @throws InterruptedException в случае возникновения исключения.
      */
     public void init() throws InterruptedException {
-        Thread search = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Files.walkFileTree(Paths.get(root), new DirTraversal());
-                    finish = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
+        Thread search = new Thread(() -> {
+            try {
+                Files.walkFileTree(Paths.get(root), new DirTraversal());
+                synchronized (files) { //Синхронизация. Когда 1-й поток выходит из walkFileTree() и меняет finish на
+                    finish = true;     //true, а 2-й поток находится в wait(), т.к. он освободил очередь чуть ранее.
+                    files.notifyAll(); //Из-за этого приложение раньше "висло".
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        };
-        Thread read = new Thread() {
-            @Override
-            public void run() {
-                check();
-            }
-        };
+        });
+        Thread read = new Thread(() -> check());
         search.start();
         read.start();
-        search.join();
-        read.join();
+        search.join(); //join'ы поместил для того, чтобы main-поток после окончания работы двух потоков
+        read.join();   //отобразил строки из paths.
     }
 
     /**
@@ -94,8 +89,8 @@ public class ParallelSearch {
      */
     private class DirTraversal extends SimpleFileVisitor<Path> {
         /**
-         * @param file - файл.
-         * @param attrs - атрибуты файла.
+         * @param file файл.
+         * @param attrs атрибуты файла.
          * @return если есть еще файлы в поддиректориях, то продолжает перебирать следующие файлы.
          */
         @Override
