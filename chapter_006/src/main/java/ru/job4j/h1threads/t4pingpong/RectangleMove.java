@@ -6,7 +6,7 @@ import javafx.geometry.Rectangle2D;
 /**
  * В классе задается движение черного квадартика.
  */
-public class RectangleMove implements Runnable {
+public class RectangleMove extends Thread {
     /**
      * Черный квадратик.
      */
@@ -15,10 +15,6 @@ public class RectangleMove implements Runnable {
      * Сцена.
      */
     private final Scene scene;
-    /**
-     * Флаг.
-     */
-    private boolean stop;
 
     /**
      * @param rect - черный квадратик на форме.
@@ -30,15 +26,16 @@ public class RectangleMove implements Runnable {
     }
 
     /**
-     * Создает лок.переменная Rectangle2D, которая служит границей для движения черного квадратика.
-     * Квадратик перемещается в цикле, отталкиваясь от краев окна, пока stop не будет равен true.
+     * Создает лок.переменную Rectangle2D, которая служит границей для движения черного квадратика.
+     * Квадратик перемещается в цикле, отталкиваясь от краев окна.
+     * При выходе из приложения текущий поток прерывается.
      */
     @Override
     public void run() {
         Rectangle2D rect2D = new Rectangle2D(0, 0, scene.getWidth(), scene.getHeight());
         double dx = 1;
         double dy = 1;
-        while (!stop) {
+        while (!Thread.currentThread().isInterrupted()) {
             double x = this.rect.getX();
             double y = this.rect.getY();
             double width = x + rect.getWidth();
@@ -54,15 +51,8 @@ public class RectangleMove implements Runnable {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
-    }
-
-    /**
-     * @param stop меняет значение флага.
-     */
-    public void setStop(boolean stop) {
-        this.stop = stop;
     }
 }

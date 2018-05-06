@@ -1,9 +1,11 @@
 package ru.job4j.h1threads.t4pingpong;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * Создается форма JavaFX приложения с черным квадратиком.
@@ -31,7 +33,12 @@ public class PingPong extends Application {
         stage.setResizable(false);
         stage.show();
         RectangleMove rectMove = new RectangleMove(rect, scene);
-        new Thread(rectMove).start();
-        stage.setOnCloseRequest(event -> rectMove.setStop(true));
+        rectMove.start();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                rectMove.interrupt();
+            }
+        });
     }
 }
