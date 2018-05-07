@@ -38,12 +38,11 @@ public class ParallelSearch {
     /**
      * Очередь файлов, которые соответствуют расширениям.
      */
-    @GuardedBy("this")
+    @GuardedBy("files")
     private final Queue<Path> files = new LinkedList<>();
     /**
      * Список путей до файлов, в которых есть искомая строка.
      */
-    @GuardedBy("this")
     private final List<String> paths = new ArrayList<>();
     /**
      * Переменная, которая сигнализирует о том, что 1-й поток закончил работу по добавлению файлов в очередь.
@@ -51,9 +50,9 @@ public class ParallelSearch {
     private volatile boolean finish;
 
     /**
-     * @param root - путь до директории.
-     * @param text - текст, который нужно найти в содержимом файла.
-     * @param exts - список расширений.
+     * @param root путь до директории.
+     * @param text текст, который нужно найти в содержимом файла.
+     * @param exts список расширений.
      */
     public ParallelSearch(final String root, final String text, final List<String> exts) {
         this.root = root;
@@ -108,11 +107,13 @@ public class ParallelSearch {
     }
 
     /**
-     * В бесконечном цикле проверяет очередь на пустоту и запускает метод для извлечения файлов.
+     * В бесконечном цикле проверяет очередь на пустоту и, если очередь не пуста, то вытаскивает из нее файл
+     * и выполняет метод searchText().
      */
     private void check() {
-        synchronized (files) {
-            while (true) {
+        Path file;
+        while (true) {
+            synchronized (files) {
                 while (files.isEmpty() && !finish) { //Если очередь пуста и 1-й поток еще на закончил работу, то
                     try {                            //нужно ждать, т.к. 1-й поток еще может поместить что-то в
                         files.wait();                //очередь и после каждого размещения 1-й поток уведомляет об этом.
@@ -120,21 +121,22 @@ public class ParallelSearch {
                         e.printStackTrace();
                     }
                 }
-                if (!files.isEmpty()) {      //Если очередь не пуста,то независимо от того,завершил 1-й поток работу
-                    pollFileAndSearchText(); //или нет (finish = true or false), нужно забирать из очереди по файлу.
-                } else {   //Сюда попадаем только в том случае, если очередь пуста и 1-й поток завершил свою работу,
-                    break; //т.е. finish = true.
-                }
-            }
+                if (files.isEmpty() && finish) {     //Сюда попадаем только в том случае, если очередь пуста и 1-й поток
+                    break;                           //завершил свою работу, т.е. finish = true.
+                } else {
+                    file = files.poll();             //Если очередь не пуста, то независимо от того, завершил 1-й поток
+                }                                    //работу или нет (finish = true or false), нужно забирать
+            }                                        //из очереди по файлу.
+            searchText(file);                        //Поиск текста в файле за пределами блока синхронизации.
         }
     }
 
     /**
-     * Вытаскивает файл из очереди, помещает его в символьный поток чтения и ищет искомую строку.
+     * Помещает вытащенный из очереди файл в символьный поток и ищет искомую строку.
      * Если находит, то добавляет путь до этого файла в список paths.
+     * @param file файл, который был взят из очереди.
      */
-    private void pollFileAndSearchText() {
-        Path file = files.poll();
+    private void searchText(Path file) {
         try (final BufferedReader br = new BufferedReader(new FileReader(file.toString()))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -146,13 +148,6 @@ public class ParallelSearch {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @return возвращает список путей файлов, где было найдено искомое слово.
-     */
-    public synchronized List<String> result() {
-        return paths;
     }
 
     /**
