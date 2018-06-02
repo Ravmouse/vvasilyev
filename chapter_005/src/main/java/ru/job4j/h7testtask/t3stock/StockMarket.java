@@ -14,7 +14,7 @@ public class StockMarket {
     /**
      * Each Integer number is associated with the Issuer that could add or delete the Orders.
      */
-    private HashMap<Integer, Issuer> market;
+    private final HashMap<Integer, IssuerHash> market = new HashMap<>();
     /**
      * The ref. to the SimpleInput interface type.
      */
@@ -22,24 +22,24 @@ public class StockMarket {
     /**
      * It's the List of objects each of them has the method with the same name.
      */
-    private List<UserAction> uList;
+    private final List<UserAction> uList = new ArrayList<>();
 
     /**
      * @param input that is passed from the UserInterface class.
      */
     public StockMarket(SimpleInput input) {
-        market = new HashMap<>();
-        uList = new ArrayList<>();
         this.input = input;
     }
 
     /**
      * Fills the HashMap with Integers and Issuers, and also adds into the List three objects.
+     * Кладет в HashMap (market) ключ и значение. Ключ - это Integer, значение - это создание объекта типа Issuer.
+     * Также создает и заполняет List (uList) объектами типа UserAction.
      */
     public void createAndFill() {
         int k = -1;
         for (String s : IssuerNames.list) {
-            market.put(++k, new Issuer(s)); //Filling the map with Integers and instances of Issuer.
+            market.put(++k, new IssuerHash(s)); //Filling the map with Integers and instances of Issuer.
         }
         uList.add(0, new StockMarket.FormOrder()); //Filling the ArrayList with instance of FormOrder class.
         uList.add(1, new StockMarket.ShowStockMarket()); //Filling the ArrayList with instance of ShowStockMarket class.
@@ -49,6 +49,7 @@ public class StockMarket {
 
     /**
      * @param key is the value chosen by the user.
+     * В соответствии со значением key получает объект типа UserAction и выполняет его метод execute().
      */
     public void select(int key) {
         this.uList.get(key).execute(input, market);
@@ -57,6 +58,7 @@ public class StockMarket {
     /**
      * @param input that is passed from the UserInterface class.
      * @return the user's choice.
+     * Печатает каждую строку из List (list) класса IssuerNames и ждет ответа пользователя.
      */
     private static int chooseIssuer(SimpleInput input) {
         int i = -1;
@@ -86,7 +88,7 @@ public class StockMarket {
          * @param market is the HashMap.
          */
         @Override
-        public void execute(SimpleInput input, HashMap<Integer, Issuer> market) {
+        public void execute(SimpleInput input, HashMap<Integer, IssuerHash> market) {
             int type, iNo, action, volume;
             double price;
             System.out.println("\n--- Forming the order: ---");
@@ -94,8 +96,12 @@ public class StockMarket {
             iNo = chooseIssuer(input);
             action = input.ask("Please, enter an action of the order (0 - Ask, 1 - Bid): ");
             price = input.askD("Please, enter a price: ");
-            volume = input.ask("Please, enter a volume: ");
-            market.get(iNo).formOrder(type, action, price, volume);
+            if (type == 1) {
+                market.get(iNo).delete(action, price);
+            } else {
+                volume = input.ask("Please, enter a volume: ");
+                market.get(iNo).add(action, price, volume);
+            }
             System.out.println("--- The order has been formed. ---\n");
         }
     }
@@ -109,9 +115,9 @@ public class StockMarket {
          * @param market is the HashMap.
          */
         @Override
-        public void execute(SimpleInput input, HashMap<Integer, Issuer> market) {
-            Set<Map.Entry<Integer, Issuer>> set = market.entrySet();
-            for (Map.Entry<Integer, Issuer> me : set) {
+        public void execute(SimpleInput input, HashMap<Integer, IssuerHash> market) {
+            Set<Map.Entry<Integer, IssuerHash>> set = market.entrySet();
+            for (Map.Entry<Integer, IssuerHash> me : set) {
                 me.getValue().print();
             }
         }
@@ -126,7 +132,7 @@ public class StockMarket {
          * @param market is the HashMap.
          */
         @Override
-        public void execute(SimpleInput input, HashMap<Integer, Issuer> market) {
+        public void execute(SimpleInput input, HashMap<Integer, IssuerHash> market) {
             System.out.println("--- Exiting program ---");
         }
     }

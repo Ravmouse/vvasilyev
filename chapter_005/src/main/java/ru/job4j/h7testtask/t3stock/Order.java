@@ -75,7 +75,7 @@ public class Order implements Comparable<Order> {
      * @return the string representation of the Order object.
      */
     public String toString() {
-        return String.format("Volume = %d; price = %f", this.volume, this.price);
+        return String.format("[Price = %.2f; volume = %d]", this.price, this.volume);
     }
 
     /**
