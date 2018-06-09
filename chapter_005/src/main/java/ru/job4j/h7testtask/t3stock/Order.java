@@ -79,18 +79,18 @@ public class Order implements Comparable<Order> {
     }
 
     /**
-     * @param o is the Object to be compared.
+     * @param object is the Object to be compared.
      * @return true if two objects are equal and false, if they're not.
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        Order order = (Order) o;
+        Order order = (Order) object;
         if (Double.compare(order.price, price) != 0) {
             return false;
         }

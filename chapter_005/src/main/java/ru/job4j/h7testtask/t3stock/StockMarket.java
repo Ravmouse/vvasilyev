@@ -14,7 +14,7 @@ public class StockMarket {
     /**
      * Each Integer number is associated with the Issuer that could add or delete the Orders.
      */
-    private final HashMap<Integer, IssuerHash> market = new HashMap<>();
+    private final HashMap<Integer, TradeIssuer> market = new HashMap<>();
     /**
      * The ref. to the SimpleInput interface type.
      */
@@ -22,7 +22,7 @@ public class StockMarket {
     /**
      * It's the List of objects each of them has the method with the same name.
      */
-    private final List<UserAction> uList = new ArrayList<>();
+    private final List<UserAction> actions = new ArrayList<>();
 
     /**
      * @param input that is passed from the UserInterface class.
@@ -34,16 +34,16 @@ public class StockMarket {
     /**
      * Fills the HashMap with Integers and Issuers, and also adds into the List three objects.
      * Кладет в HashMap (market) ключ и значение. Ключ - это Integer, значение - это создание объекта типа Issuer.
-     * Также создает и заполняет List (uList) объектами типа UserAction.
+     * Также создает и заполняет List (actions) объектами типа UserAction.
      */
     public void createAndFill() {
         int k = -1;
         for (String s : IssuerNames.list) {
-            market.put(++k, new IssuerHash(s)); //Filling the map with Integers and instances of Issuer.
+            market.put(++k, new TradeIssuer(s)); //Filling the map with Integers and instances of Issuer.
         }
-        uList.add(0, new StockMarket.FormOrder()); //Filling the ArrayList with instance of FormOrder class.
-        uList.add(1, new StockMarket.ShowStockMarket()); //Filling the ArrayList with instance of ShowStockMarket class.
-        uList.add(2, new StockMarket.ExitProgram()); //Filling the ArrayList with instance of ExitProgram class.
+        actions.add(0, new StockMarket.FormOrder()); //Filling the ArrayList with instance of FormOrder class.
+        actions.add(1, new StockMarket.ShowStockMarket()); //Filling the ArrayList with instance of ShowStockMarket class.
+        actions.add(2, new StockMarket.ExitProgram()); //Filling the ArrayList with instance of ExitProgram class.
 
     }
 
@@ -52,7 +52,7 @@ public class StockMarket {
      * В соответствии со значением key получает объект типа UserAction и выполняет его метод execute().
      */
     public void select(int key) {
-        this.uList.get(key).execute(input, market);
+        this.actions.get(key).execute(input, market);
     }
 
     /**
@@ -88,7 +88,7 @@ public class StockMarket {
          * @param market is the HashMap.
          */
         @Override
-        public void execute(SimpleInput input, HashMap<Integer, IssuerHash> market) {
+        public void execute(SimpleInput input, HashMap<Integer, TradeIssuer> market) {
             int type, iNo, action, volume;
             double price;
             System.out.println("\n--- Forming the order: ---");
@@ -115,9 +115,9 @@ public class StockMarket {
          * @param market is the HashMap.
          */
         @Override
-        public void execute(SimpleInput input, HashMap<Integer, IssuerHash> market) {
-            Set<Map.Entry<Integer, IssuerHash>> set = market.entrySet();
-            for (Map.Entry<Integer, IssuerHash> me : set) {
+        public void execute(SimpleInput input, HashMap<Integer, TradeIssuer> market) {
+            Set<Map.Entry<Integer, TradeIssuer>> set = market.entrySet();
+            for (Map.Entry<Integer, TradeIssuer> me : set) {
                 me.getValue().print();
             }
         }
@@ -132,7 +132,7 @@ public class StockMarket {
          * @param market is the HashMap.
          */
         @Override
-        public void execute(SimpleInput input, HashMap<Integer, IssuerHash> market) {
+        public void execute(SimpleInput input, HashMap<Integer, TradeIssuer> market) {
             System.out.println("--- Exiting program ---");
         }
     }
