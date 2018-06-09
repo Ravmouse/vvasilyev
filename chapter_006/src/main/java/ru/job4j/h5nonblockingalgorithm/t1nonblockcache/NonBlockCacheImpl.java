@@ -10,14 +10,7 @@ public class NonBlockCacheImpl<K, V extends Model> implements NonBlockCache<K, V
     /**
      * Потокобезопасное хэш-отображение.
      */
-    private final ConcurrentHashMap<K, V> cache;
-
-    /**
-     * Конструктор.
-     */
-    public NonBlockCacheImpl() {
-        cache = new ConcurrentHashMap<>();
-    }
+    private final ConcurrentHashMap<K, V> cache = new ConcurrentHashMap<>();
 
     /**
      * @param k ключ для добавления в отображение.
@@ -38,15 +31,14 @@ public class NonBlockCacheImpl<K, V extends Model> implements NonBlockCache<K, V
     @Override
     public void update(K k, V newVal) throws OptimisticException {
         if ((k != null) && (newVal != null)) {
-            int expect = newVal.getVersion().get();
-            boolean done = cache.get(k).getVersion().compareAndSet(expect, expect++);
-            if (!done) {
-                throw new OptimisticException();
-            }
-             cache.computeIfPresent(k, (k1, v) -> {
-                v = newVal;
-                return v;
-            });
+            int expect = this.cache.get(k).getVersion().get(); //В каждом потоке есть лок.переменная expect,
+                                                               //куда копируется значение версии Модели.
+            boolean done = this.cache.get(k).getVersion().compareAndSet(expect, ++expect); //Атомарно сравнивается
+            if (!done) {                                       //значение лок.переменной и опять значение версии Модели.
+                throw new OptimisticException();               //Если они равны (т.е. другой поток не успел изменить),то
+            } else {                                           //значение версии Модели инкрементируется.
+                this.cache.get(k).setName(newVal.getName());   //Здесь имя текущей Модели по ключу k изменяется на имя
+            }                                                  //Модели newVal.
         }
     }
 

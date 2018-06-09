@@ -31,10 +31,17 @@ public class Model {
     }
 
     /**
-     * @param version значение для установки поля version.
+     * @return имя данного экземпляра класса.
      */
-    public void setVersion(int version) {
-        this.version.set(version);
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * @param name новое имя модели.
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

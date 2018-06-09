@@ -5,7 +5,10 @@ package ru.job4j.h5nonblockingalgorithm.t1nonblockcache;
  */
 public class OptimisticException extends RuntimeException {
 
+    /**
+     * Конструктор.
+     */
     public OptimisticException() {
-        System.out.println("Optimistic Exception");
+        System.out.println(Thread.currentThread().getName() + " threw Optimistic Exception");
     }
 }

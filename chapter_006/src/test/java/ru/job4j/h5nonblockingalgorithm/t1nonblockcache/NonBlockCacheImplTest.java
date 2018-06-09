@@ -66,22 +66,28 @@ public class NonBlockCacheImplTest {
      */
     @Test
     public void whenUpdateElementsThenMapHasThemUpdated() throws InterruptedException {
+        final NonBlockCacheImpl<Integer, Model> nbc = new NonBlockCacheImpl<>();
         nbc.add(0, new Model("test"));
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 nbc.update(0, new Model("help"));
             }
         });
-
         Thread t2 = new Thread(new Runnable() {
             public void run() {
                 nbc.update(0, new Model("drive"));
             }
         });
+        Thread t3 = new Thread(new Runnable() {
+            public void run() {
+                nbc.update(0, new Model("fate"));
+            }
+        });
         t1.start();
         t2.start();
+        t3.start();
         t1.join();
         t2.join();
-        nbc.show();
+        t3.join();
     }
 }
