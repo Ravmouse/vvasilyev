@@ -36,9 +36,8 @@ public class NonBlockCacheImpl<K, V extends Model> implements NonBlockCache<K, V
             boolean done = this.cache.get(k).getVersion().compareAndSet(expect, ++expect); //Атомарно сравнивается
             if (!done) {                                       //значение лок.переменной и опять значение версии Модели.
                 throw new OptimisticException();               //Если они равны (т.е. другой поток не успел изменить),то
-            } else {                                           //значение версии Модели инкрементируется.
-                this.cache.get(k).setName(newVal.getName());   //Здесь имя текущей Модели по ключу k изменяется на имя
-            }                                                  //Модели newVal.
+            }                                                  //значение версии Модели инкрементируется.
+            this.cache.get(k).setName(newVal.getName()); //Здесь имя текущей Модели по ключу k изменяется на имя Модели newVal.
         }
     }
 
