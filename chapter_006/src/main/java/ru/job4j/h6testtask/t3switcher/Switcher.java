@@ -1,6 +1,10 @@
 package ru.job4j.h6testtask.t3switcher;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Класс Switcher.
+ * Два потока поочередно добавляют в StringBuilder набор единиц и двоек.
  */
 public class Switcher {
     /**
@@ -8,58 +12,84 @@ public class Switcher {
      */
     private final StringBuilder string = new StringBuilder("");
     /**
-     * Переменная для контроля работы потоков в определенном порядке.
+     * Переменная для синхронизации работы двух потоков.
      */
-    private int number = 1;
+    private AtomicInteger synchInt = new AtomicInteger(1);
+    /**
+     * Переменная для подсчета того, сколько раз один поток "догоняет" другой поток.
+     */
+    private AtomicInteger counter = new AtomicInteger();
+
 
     /**
-     * @param value значение для добавления в строку в количестве 10 раз.
-     * @throws InterruptedException исключение.
+     * Один из двух потоков 10 раз добавляет в StringBuilder свое значение.
+     * @param value значение.
      */
-    private synchronized void addValue(int value) throws InterruptedException {
-        while (value != number) {
-            this.wait();
+    private void addValue(int value) {
+        while (synchInt.get() != value) {
+            //Ничего не делать.
+            byte x = 0; //Чтобы maven-checkstyle-plugin не ругался, что while - пустой.
         }
         for (int i = 0; i < 10; i++) {
-            this.string.append(String.valueOf(value));
+            this.string.append(value);
         }
-        this.string.append("\n");
-        number = number == 1 ? 2 : 1;
-        this.notifyAll();
+        synchInt.set(synchInt.get() == 1 ? 2 : 1);
     }
 
     /**
-     * @param args .
+     * Выводит на печать поле string данного экземпляра класса.
+     */
+    public void printString() {
+        int count = 0;
+        for (char ch : string.toString().toCharArray()) {
+            ++count;
+            System.out.print(ch);
+            if (count % 10 == 0) {
+                System.out.println();
+            }
+        }
+    }
+
+    /**
+     * В цикле создаются 2 потока, которые после своего запуска ждут, когда main "даст отмашку" для начала работы.
+     * Потоки инкрементируют AtomicInteger для вызова метода addValue() 10 раз.
+     * Последний latch нужен для вызова метода printString(), чтобы main подождал завершения работы всех потоков.
      * @throws InterruptedException .
      */
-    public static void main(String[] args) throws InterruptedException {
-        Switcher switcher = new Switcher();
-        Thread t1 = new Thread(() -> {
-            int i = 0;
-            while (i < 10) {
+    public void init() throws InterruptedException {
+        int threads = 2;
+        CountDownLatch latchFirst = new CountDownLatch(1);
+        CountDownLatch latchLast = new CountDownLatch(threads);
+        AtomicInteger threadVal = new AtomicInteger();
+        AtomicBoolean flag = new AtomicBoolean();
+        for (int i = 0; i < threads; i++) {
+            new Thread(() -> {
                 try {
-                    switcher.addValue(1);
-                    i++;
+                    latchFirst.await();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-        });
-        Thread t2 = new Thread(() -> {
-            int i = 0;
-            while (i < 10) {
-                try {
-                    switcher.addValue(2);
-                    i++;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                int count = 0;
+                int value = threadVal.incrementAndGet(); //Каждый поток инкрементирует перем. для вызова addValue().
+                if (flag.get()) {                        //1-й поток проходит if-секцию,т.к. flag = false.
+                    counter.incrementAndGet();           //2-й поток увеличивает счетчик,т.к. 1-й поток ниже уже
+                }                                        //изменил flag на true.
+                flag.set(true);
+                while (count++ < 10) {
+                    addValue(value);
                 }
-            }
-        });
-        t1.start();
-        t2.start();
-        t1.join();
-        t2.join();
-        System.out.println(switcher.string);
+                flag.set(false);
+                latchLast.countDown();
+            }).start();
+        }
+        latchFirst.countDown();
+        latchLast.await();
+    }
+
+    /**
+     * @return ссылку на счетчик.
+     */
+    public AtomicInteger getCounter() {
+        return counter;
     }
 }
