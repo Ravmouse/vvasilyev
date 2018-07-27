@@ -62,14 +62,14 @@ ON c.trans_id = t.id;
 --2.
 SELECT ca.name, c.name FROM carbodies ca
 LEFT OUTER JOIN cars c
-ON ca.id = c.carbody_id;
+ON ca.id = c.carbody_id WHERE c.name IS NULL;
 
 --3.
 SELECT e.name, c.name FROM cars c
 RIGHT OUTER JOIN engines e
-ON e.id = c.engine_id;
+ON e.id = c.engine_id WHERE c.name IS NULL;
 
 --4.
 SELECT t.name, c.name FROM transmissions t
 LEFT OUTER JOIN cars c
-ON t.id = c.trans_id;
+ON t.id = c.trans_id WHERE c.name IS NULL;
