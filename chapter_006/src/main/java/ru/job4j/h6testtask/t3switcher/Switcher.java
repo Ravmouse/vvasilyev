@@ -20,7 +20,6 @@ public class Switcher {
      */
     private AtomicInteger counter = new AtomicInteger();
 
-
     /**
      * Один из двух потоков 10 раз добавляет в StringBuilder свое значение.
      * @param value значение.
@@ -51,37 +50,48 @@ public class Switcher {
     }
 
     /**
-     * В цикле создаются 2 потока, которые после своего запуска ждут, когда main "даст отмашку" для начала работы.
-     * Потоки инкрементируют AtomicInteger для вызова метода addValue() 10 раз.
-     * Последний latch нужен для вызова метода printString(), чтобы main подождал завершения работы всех потоков.
-     * @throws InterruptedException .
+     * @throws InterruptedException если поток был прерван.
      */
     public void init() throws InterruptedException {
-        int threads = 2;
-        CountDownLatch latchFirst = new CountDownLatch(1);
-        CountDownLatch latchLast = new CountDownLatch(threads);
-        AtomicInteger threadVal = new AtomicInteger();
-        AtomicBoolean flag = new AtomicBoolean();
-        for (int i = 0; i < threads; i++) {
-            new Thread(() -> {
-                try {
-                    latchFirst.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                int count = 0;
-                int value = threadVal.incrementAndGet(); //Каждый поток инкрементирует перем. для вызова addValue().
-                if (flag.get()) {                        //1-й поток проходит if-секцию,т.к. flag = false.
-                    counter.incrementAndGet();           //2-й поток увеличивает счетчик,т.к. 1-й поток ниже уже
-                }                                        //изменил flag на true.
-                flag.set(true);
-                while (count++ < 10) {
-                    addValue(value);
-                }
-                flag.set(false);
-                latchLast.countDown();
-            }).start();
-        }
+        CountDownLatch latchFirst = new CountDownLatch(1); //Этот latch нужен для того, чтобы 2 потока ждали в одной
+                                                           //точке, пока main не даст им отмашку на начало работы.
+        CountDownLatch latchLast = new CountDownLatch(2); //Этот latch нужен для того, чтобы main ждал завершения
+                                                          //работы 2-х потоков.
+        AtomicBoolean flag = new AtomicBoolean(); //Нужна для проверки, догоняет ли один поток другой или нет?
+        new Thread(() -> {
+            try {
+                latchFirst.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int count = 0;
+            if (flag.get()) {              //Первый из 2-х потоков проходит if-секцию, т.к. flag = false.
+                counter.incrementAndGet(); //Второй из 2-х потоков, если догоняет первый, инкрементирует counter, т.к.
+            }                              //первый из 2-х потоков успел переключить flag на true.
+            flag.set(true);
+            while (count++ < 10) {
+                addValue(1);
+            }
+            flag.set(false);
+            latchLast.countDown();
+        }).start();
+        new Thread(() -> {
+            try {
+                latchFirst.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            int count = 0;
+            if (flag.get()) {
+                counter.incrementAndGet();
+            }
+            flag.set(true);
+            while (count++ < 10) {
+                addValue(2);
+            }
+            flag.set(false);
+            latchLast.countDown();
+        }).start();
         latchFirst.countDown();
         latchLast.await();
     }
@@ -91,5 +101,15 @@ public class Switcher {
      */
     public AtomicInteger getCounter() {
         return counter;
+    }
+
+    /**
+     * @param args .
+     * @throws InterruptedException .
+     */
+    public static void main(String[] args) throws InterruptedException {
+        Switcher s = new Switcher();
+        s.init();
+        s.printString();
     }
 }
