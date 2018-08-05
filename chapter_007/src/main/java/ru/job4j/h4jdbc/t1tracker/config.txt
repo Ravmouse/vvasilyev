@@ -1,0 +1,5 @@
+jdbc:postgresql://localhost:5432/sql_job4j_3_tracker
+postgres
+password
+DROP TABLE IF EXISTS items;
+CREATE TABLE items (id SERIAL PRIMARY KEY, name VARCHAR(255), description VARCHAR(255), create_date DATE, comments VARCHAR(1000));
