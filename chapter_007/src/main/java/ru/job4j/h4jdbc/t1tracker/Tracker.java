@@ -119,13 +119,14 @@ public class Tracker implements AutoCloseable {
      */
     public void findAll() throws SQLException {
         try (final Statement statement = conn.createStatement()) {
-            final ResultSet resultSet = statement.executeQuery("SELECT * FROM items");
-            while (resultSet.next()) {
-                System.out.println(resultSet.getInt("id"));
-                System.out.println(resultSet.getString("name"));
-                System.out.println(resultSet.getString("description"));
-                System.out.println(resultSet.getString("create_date"));
-                System.out.println(resultSet.getString("comments"));
+            try (final ResultSet resultSet = statement.executeQuery("SELECT * FROM items")) {
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getInt("id"));
+                    System.out.println(resultSet.getString("name"));
+                    System.out.println(resultSet.getString("description"));
+                    System.out.println(resultSet.getString("create_date"));
+                    System.out.println(resultSet.getString("comments"));
+                }
             }
         }
     }
