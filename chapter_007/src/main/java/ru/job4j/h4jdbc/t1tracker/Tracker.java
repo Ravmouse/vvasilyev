@@ -5,9 +5,11 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import static java.sql.DriverManager.getConnection;
 
 /**
@@ -18,14 +20,6 @@ public class Tracker implements AutoCloseable {
      * Connection.
      */
     private Connection conn;
-    /**
-     * Statement.
-     */
-    private Statement statement;
-    /**
-     * Результат возврата запроса.
-     */
-    private ResultSet resultSet;
     /**
      * Имя таблицы в базе данных.
      */
@@ -43,7 +37,8 @@ public class Tracker implements AutoCloseable {
     }
 
     /**
-     * Создает Connection с транзакцией, Statement и выполняет подготовку структуры БД.
+     * Считывает config.txt по строкам и заносит их в List; создает Properties со 2-ой и 3-ей строкой List'а;
+     * создает Connection с БД на основе URL и Properties; создает Statement и подготавливает структуру БД.
      * @param config путь до файла настройки.
      * @throws Exception исключение.
      */
@@ -54,10 +49,13 @@ public class Tracker implements AutoCloseable {
             while ((line = br.readLine()) != null) {
                 initList.add(line);
             }
-            conn = getConnection(initList.get(0), initList.get(1), initList.get(2));
+        }
+        final Properties prop = new Properties();
+        prop.setProperty("user", initList.get(1));
+        prop.setProperty("password", initList.get(2));
+        conn = getConnection(initList.get(0), prop);
+        try (final Statement statement = conn.createStatement()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-//            conn.setAutoCommit(false);
-            statement = conn.createStatement();
             final String tmp = initList.get(3);
             dbName = tmp.substring(tmp.lastIndexOf(" "), tmp.length() - 1); //В dbName кладется название таблицы.
             int index = 3;
@@ -69,38 +67,50 @@ public class Tracker implements AutoCloseable {
 
     /**
      * Вставляет в таблицу строку с данными.
+     * Используется PreparedStatement, чтобы не допустить применения SQL Injection.
      * @param idName имя.
      * @param description описание.
      * @param comments комментарий.
      * @throws SQLException исключение.
      */
     public void insert(final String idName, final String description, final String comments) throws SQLException {
-        final String str = String.format("INSERT INTO %s (name, description, create_date, comments)\n"
-                + "VALUES ('%s', '%s', '%s'::DATE, '%s');", dbName, idName, description,
-                new Date(System.currentTimeMillis()), comments);
-        statement.executeUpdate(str);
+        final String str = "INSERT INTO " + dbName + " (name, description, create_date, comments) VALUES (?, ?, ?, ?)";
+        try (final PreparedStatement insertStatement = conn.prepareStatement(str)) {
+            insertStatement.setString(1, idName);
+            insertStatement.setString(2, description);
+            insertStatement.setDate(3, new Date(System.currentTimeMillis()));
+            insertStatement.setString(4, comments);
+            insertStatement.executeUpdate();
+        }
     }
 
     /**
-     * @param columnName имя столбца.
+     * Заменяет в строке старое значение на новое.
+     * Используется PreparedStatement, чтобы не допустить применения SQL Injection.
      * @param newValue новое значение.
      * @param oldValue старое значение.
      * @throws SQLException исключение.
      */
-    public void update(final String columnName, final String newValue, final String oldValue) throws SQLException {
-        final String str = String.format("UPDATE %s SET %s = '%s' WHERE %s = '%s'", dbName, columnName, newValue,
-                columnName, oldValue);
-        statement.executeUpdate(str);
+    public void update(final String newValue, final String oldValue) throws SQLException {
+        final String str = "UPDATE " + dbName + " SET name = ? WHERE name = ?";
+        try (final PreparedStatement updateStatement = conn.prepareStatement(str)) {
+            updateStatement.setString(1, newValue);
+            updateStatement.setString(2, oldValue);
+            updateStatement.executeUpdate();
+        }
     }
 
     /**
-     * @param columnName имя столбца.
-     * @param value значение.
+     * Используется PreparedStatement, чтобы не допустить применения SQL Injection.
+     * @param deletedValue значение.
      * @throws SQLException исключение.
      */
-    public void delete(final String columnName, final String value) throws SQLException {
-        final String str = String.format("DELETE FROM %s WHERE %s = '%s'", dbName, columnName, value);
-        statement.executeUpdate(str);
+    public void delete(final String deletedValue) throws SQLException {
+        final String str = "DELETE FROM " + dbName + " WHERE name = ?";
+        try (final PreparedStatement deleteStatement = conn.prepareStatement(str)) {
+            deleteStatement.setString(1, deletedValue);
+            deleteStatement.executeUpdate();
+        }
     }
 
     /**
@@ -108,13 +118,15 @@ public class Tracker implements AutoCloseable {
      * @throws SQLException исключение.
      */
     public void findAll() throws SQLException {
-        resultSet = statement.executeQuery(String.format("SELECT * FROM %s", dbName));
-        while (resultSet.next()) {
-            System.out.println(resultSet.getInt("id"));
-            System.out.println(resultSet.getString("name"));
-            System.out.println(resultSet.getString("description"));
-            System.out.println(resultSet.getString("create_date"));
-            System.out.println(resultSet.getString("comments"));
+        try (final Statement statement = conn.createStatement()) {
+            final ResultSet resultSet = statement.executeQuery("SELECT * FROM items");
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt("id"));
+                System.out.println(resultSet.getString("name"));
+                System.out.println(resultSet.getString("description"));
+                System.out.println(resultSet.getString("create_date"));
+                System.out.println(resultSet.getString("comments"));
+            }
         }
     }
 
@@ -129,10 +141,10 @@ public class Tracker implements AutoCloseable {
             t.insert("John", "java_junior", "likes_to_sleep_instead_of_work");
             t.insert("Chris", "front_end", "JS");
             t.insert("Mike", "administrator", "hates_doing_his_job");
-            t.update("name", "Peter", "Mike");
+            t.update("Peter", "Mike");
             t.findAll();
             System.out.println("====================");
-            t.delete("name", "Chris");
+            t.delete("Chris");
             t.findAll();
         }
     }
@@ -142,8 +154,6 @@ public class Tracker implements AutoCloseable {
      */
     @Override
     public void close() throws Exception {
-        resultSet.close();
-        statement.close();
         conn.close();
     }
 }
