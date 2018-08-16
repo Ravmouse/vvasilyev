@@ -136,9 +136,8 @@ public class Tracker implements AutoCloseable {
      * @throws Exception исключение.
      */
     public static void main(String[] args) throws Exception {
-        final String config = "C:\\projects\\vvasilyev\\chapter_007\\src\\main\\java\\ru\\job4j\\h4jdbc"
-                + "\\t1tracker\\config.txt";
-        try (final Tracker t = new Tracker(config)) {
+        final String config = Tracker.class.getResource("config.txt").toExternalForm();
+        try (final Tracker t = new Tracker(config.substring(config.indexOf("C"), config.length()))) {
             t.insert("John", "java_junior", "likes_to_sleep_instead_of_work");
             t.insert("Chris", "front_end", "JS");
             t.insert("Mike", "administrator", "hates_doing_his_job");
