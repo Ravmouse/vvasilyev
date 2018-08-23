@@ -1,0 +1,3 @@
+jdbc:sqlite:C:\projects\vvasilyev\chapter_007\src\main\resources\ru\job4j\h4jdbc\t2jdbcoptimization\sql_job4j_4_opt.s3db
+DROP TABLE IF EXISTS entry;
+CREATE TABLE entry (id SERIAL PRIMARY KEY, field INT);
