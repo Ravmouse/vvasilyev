@@ -60,7 +60,8 @@ public class SAXFieldCount extends DefaultHandler {
         for (int i = 0; i < list.size(); i++) {
             entryList.add(new StoreXML.Entry(list.get(i)));
         }
-        final String path = "C:\\projects\\vvasilyev\\chapter_007\\src\\main\\resources\\ru\\job4j\\h4jdbc\\t2jdbcoptimization\\";
+        String path = SAXFieldCount.class.getResource("scheme.xml").toExternalForm();
+        path = path.substring(path.indexOf("C"), path.lastIndexOf("/") + 1);
         StoreXML xml = new StoreXML(path + "file.xml");
         xml.save(new StoreXML.Entries(entryList));
 

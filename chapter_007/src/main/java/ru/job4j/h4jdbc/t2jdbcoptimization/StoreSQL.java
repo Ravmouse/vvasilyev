@@ -56,10 +56,8 @@ public class StoreSQL implements AutoCloseable {
      */
     public void generate(int n) {
         final Random rnd = new Random();
-        String str;
         for (int i = 0; i < n; i++) {
-            str = "INSERT INTO entry (field) VALUES (?)";
-            try (final PreparedStatement insertStatement = connection.prepareStatement(str)) {
+            try (final PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO entry (field) VALUES (?)")) {
                 connection.setAutoCommit(false);
                 insertStatement.setInt(1, rnd.nextInt(100));
                 insertStatement.executeUpdate();
