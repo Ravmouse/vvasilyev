@@ -47,11 +47,13 @@ ON c.id = p.company_id WHERE NOT p.company_id = 5
 ORDER BY p.company_id;
 
 -- 2.
-SELECT MAX(count) FROM (
+SELECT company_name, MAX(count) FROM (
 	SELECT c.name AS company_name, count(p.company_id) AS count
 	FROM person p
 	INNER JOIN company c
 	ON c.id = p.company_id
 	GROUP BY p.company_id, c.name
-	ORDER BY count DESC
-) x;
+) x
+GROUP BY company_name, count
+ORDER BY count DESC
+LIMIT 1;
