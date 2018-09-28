@@ -24,7 +24,7 @@ public class DataBaseConnection implements AutoCloseable {
     /**
      * Отображение вакансий типа "название_вакансии" - "время_публикации".
      */
-    private Map<String, String> jobMap = new LinkedHashMap<>();
+    final Map<String, String> jobMap = new LinkedHashMap<>();
     /**
      * Логгер.
      */
@@ -43,7 +43,7 @@ public class DataBaseConnection implements AutoCloseable {
         PropertyConfigurator.configure(Utils.getResourcePath("log4j.properties"));
         connection = getConnection(prop.getProperty("jdbc.url"), prop);
         connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-        infoState = getTrueOrFalse(); //При 1-ом запуске getTrueOrFalse() должен вернуть false, а после остальных-true.
+        infoState = retrieveBoolValue(); //При 1-ом запуске retrieveBoolValue() должен вернуть false, а после остальных-true.
     }
 
     /**
@@ -51,7 +51,7 @@ public class DataBaseConnection implements AutoCloseable {
      * @return true или false.
      * @throws SQLException в случае возникновения исключения.
      */
-    private boolean getTrueOrFalse() throws SQLException {
+    private boolean retrieveBoolValue() throws SQLException {
         boolean result = false;
         try (final Statement st = connection.createStatement()) {
             try (final ResultSet resultSet = st.executeQuery("SELECT * FROM info")) {
@@ -67,7 +67,7 @@ public class DataBaseConnection implements AutoCloseable {
      * После 1-го запуска приложения установить в табл. true, чтобы при след.запусках данные собирались только за день.
      * @throws SQLException в случае возникновения исключения.
      */
-    private void setTrue() throws SQLException {
+    private void changeBoolValue() throws SQLException {
         final String str = "UPDATE info SET is_launched = ?";
         try (final PreparedStatement st = connection.prepareStatement(str)) {
             st.setBoolean(1, true);
@@ -89,15 +89,15 @@ public class DataBaseConnection implements AutoCloseable {
                 st.executeUpdate();
             }
         }
-        if (!infoState) { //Если infoState == false, значит это 1-ый запуск, - нужно вызвать setTrue()
-            setTrue();    //и установить true в БД.
+        if (!infoState) { //Если infoState == false, значит это 1-ый запуск, - нужно вызвать changeBoolValue()
+            changeBoolValue();    //и установить true в БД.
         }
     }
 
     /**
      * Получение данных из БД и запись их в Map.
      */
-    public void getDataFromDB() {
+    public void requestAllData() {
         try (final Statement st = connection.createStatement()) {
             try (final ResultSet rs = st.executeQuery("SELECT * FROM job_offers")) {
                 while (rs.next()) {
@@ -108,13 +108,6 @@ public class DataBaseConnection implements AutoCloseable {
         } catch (SQLException sql) {
             sql.printStackTrace();
         }
-    }
-
-    /**
-     * @return ссылку на Map.
-     */
-    public Map<String, String> getJobMap() {
-        return jobMap;
     }
 
     /**

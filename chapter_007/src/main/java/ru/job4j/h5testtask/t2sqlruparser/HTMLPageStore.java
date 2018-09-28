@@ -4,8 +4,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Map;
+import static ru.job4j.h5testtask.t2sqlruparser.Utils.convertFromLettersToDigits;
+import static ru.job4j.h5testtask.t2sqlruparser.Utils.isPeriodPassed;
 
 /**
  * В классе осуществляется соединение со страницей sql.ru и получение информации.
@@ -49,84 +50,5 @@ public class HTMLPageStore {
             }
             System.out.println("-----------------------------------");
         } while ((date == null) || period.equals("Y") ? !isPeriodPassed(formattedDate, "Y") : !isPeriodPassed(formattedDate, "D"));
-    }
-
-    /**
-     * @param value строковое представление даты, которое нужно преобразовать в формат "ГГГГ-ММ-ДД".
-     * @return результат преобразования.
-     */
-    private static String convertFromLettersToDigits(String value) {
-        String result;
-        if (value.contains("сегодня")) {
-            result = LocalDate.now().toString();
-        } else if (value.contains("вчера")) {
-            result = LocalDate.now().minusDays(1).toString();
-        } else {
-            int startMonth = value.indexOf(" ") + 1; //Где начинается 1-ая буква слова "МЕС"
-            int endMonth = startMonth + 3; //Где заканчивается 3-я буква слова...
-            String month = value.substring(startMonth, endMonth);
-            switch (month) {
-                case "янв": month = "01";
-                            break;
-                case "фев": month = "02";
-                            break;
-                case "мар": month = "03";
-                            break;
-                case "апр": month = "04";
-                            break;
-                case "май": month = "05";
-                            break;
-                case "июн": month = "06";
-                            break;
-                case "июл": month = "07";
-                            break;
-                case "авг": month = "08";
-                            break;
-                case "сен": month = "09";
-                            break;
-                case "окт": month = "10";
-                            break;
-                case "ноя": month = "11";
-                            break;
-                default   : month = "12";
-                            break;
-            }
-            String year = value.substring(endMonth + 1, endMonth + 3);
-            String day = value.substring(0, value.indexOf(" "));
-            if (day.length() == 1) {
-                day = String.format("0%s", day); //Если день - это одна цифра, то прибавить к этой цифре ноль.
-            }
-            result = String.format("20%s-%s-%s", year, month, day);
-        }
-        return result;
-    }
-
-    /**
-     * @param currDate дата для отсчета, прошел ли год или день.
-     * @param period строка "Y" или "D".
-     * @return true или false.
-     */
-    private static boolean isPeriodPassed(String currDate, String period) {
-        boolean result = false;
-        int currY = Integer.parseInt(currDate.substring(0, 4));
-        int currM = Integer.parseInt(currDate.substring(5, 7));
-        int currD = Integer.parseInt(currDate.substring(8, 10));
-        //Если period равен "Y", то записывается дата год назад, а, если равен "D", то - день назад.
-        final String periodDate = period.equals("Y")
-                ? LocalDate.now().minusYears(1).toString() : LocalDate.now().minusDays(1).toString();
-        int yY = Integer.parseInt(periodDate.substring(0, 4));
-        int mM = Integer.parseInt(periodDate.substring(5, 7));
-        int dD = Integer.parseInt(periodDate.substring(8, 10));
-
-        if (currY == yY) {
-            if (currM == mM && currD <= dD) {
-                result = true;
-            } else if (currM < mM) {
-                result = true;
-            }
-        } else if (currY < yY) {
-            result = true;
-        }
-        return result;
     }
 }

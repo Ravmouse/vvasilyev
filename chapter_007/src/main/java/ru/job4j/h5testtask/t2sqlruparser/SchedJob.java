@@ -47,10 +47,10 @@ public class SchedJob implements Job {
      @Override
      public void execute(JobExecutionContext jec) {
          try (final DataBaseConnection dbc = new DataBaseConnection(prop)) {
-             HTMLPageStore html = new HTMLPageStore(dbc.getJobMap());
+             HTMLPageStore html = new HTMLPageStore(dbc.jobMap);
              try {
                  if (dbc.isInfoState()) {
-                     dbc.getDataFromDB();
+                     dbc.requestAllData();
                      html.connectAndGetOffer("D");
                  } else {
                      html.connectAndGetOffer("Y");
