@@ -33,10 +33,10 @@ public class SimpleLock {
      */
     public void lock() throws InterruptedException {
         synchronized (this) {
-			Thread currThread = Thread.currentThread();
-            while (blocked && currThread != blocker) {
-                wait();
-            }
+			Thread currThread = Thread.currentThread(); //Возвращ. ссылка на текущ. поток и записывается в currThread
+            while (blocked && currThread != blocker) {  //2-ая часть условия сделана для реентерабельности:
+                wait();                                 //чтобы тот же самый поток смог миновать цикл, поскольку
+            }                                           //currThread будет равен blocker.
             blocked = true;
 			blocker = currThread;
 			holdCount++;
