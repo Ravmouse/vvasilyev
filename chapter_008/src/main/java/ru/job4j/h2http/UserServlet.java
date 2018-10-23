@@ -1,5 +1,6 @@
 package ru.job4j.h2http;
 
+import ru.job4j.h4waitnotifynotifyall.t3lock.SimpleLock;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ public class UserServlet extends HttpServlet { //Presentation
      * Строка для вывода клиенту в GET-запросе.
      */
     private String text;
+    private SimpleLock lock = new SimpleLock();
 
     /**
      * @param servletConfig servletConfig.
@@ -67,13 +69,25 @@ public class UserServlet extends HttpServlet { //Presentation
         try {
             actionFunc.get(key).accept(req);
         } catch (VersionUserException | NotExistedUserException e) { //Пробрасывается исключение.
+            try {
+                lock.lock(); //Если поток дошел сюда первым, то он "захватывает" lock первым.
+            } catch (InterruptedException exp) {
+                exp.printStackTrace();
+            }
             text = e.getMessage(); //Получается сообщение из исключения.
             doGet(req, res); //Вызывается doGet(), чтобы отправить ответ клиенту с сообщением исключения.
             text = Arrays.toString(logic.findAll()); //Если после POST-запроса клиент сделает GET-запрос, то нужно
-            return;                                   //снова отобразить список User'ов.
+            lock.unlock();                           //"Отпускает" lock.
+            return;                                  //снова отобразить список User'ов.
         }
-        text = Arrays.toString(logic.findAll()); //Если искл. не было, то сюда записываем всех User'ов и отображаем в
-        doGet(req, res);                          //doGet().
+        try {
+            lock.lock();                             //Если первый поток - это тот, который не выкидывает искл., то
+        } catch (InterruptedException e) {           //он "захватывает" lock первым.
+            e.printStackTrace();
+        }
+        text = Arrays.toString(logic.findAll());     //Если искл. не было, то сюда записываем всех User'ов и отображаем
+        doGet(req, res);                             //в doGet().
+        lock.unlock();                               //"Отпускает" lock.
     }
 
     /**
@@ -99,10 +113,7 @@ public class UserServlet extends HttpServlet { //Presentation
      * @throws NotExistedUserException если User'а с таким id не существует.
      */
     private Consumer<HttpServletRequest> updateUser() throws VersionUserException, NotExistedUserException {
-        return request -> {
-            final List<String> list = parseRequest(request);
-            logic.update(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4));
-        };
+        return request -> logic.update(parseRequest(request));
     }
 
     /**

@@ -1,5 +1,7 @@
 package ru.job4j.h2http;
 
+import java.util.List;
+
 /**
  * Интерфейс.
  */
@@ -14,13 +16,9 @@ public interface Validate {
     void add(String id, String name, String login, String email, String createDate);
 
     /**
-     * @param id id.
-     * @param name имя.
-     * @param login логин.
-     * @param email эл.почта.
-     * @param createDate дата создания.
+     * @param list список строк со значениями User'а.
      */
-    void update(String id, String name, String login, String email, String createDate);
+    void update(List<String> list);
 
     /**
      * @param id id User'а, которого нужно удалить.

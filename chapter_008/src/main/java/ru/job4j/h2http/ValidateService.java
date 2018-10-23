@@ -44,23 +44,15 @@ public class ValidateService implements Validate { //Logic
 
     /**
      * По id находится User, затем у него изменяются все остальные его поля. Создание нового User не нужно.
-     * @param id id.
-     * @param name имя.
-     * @param login логин.
-     * @param email эл.почта.
-     * @param createDate дата создания.
+     * @param list список строк со значениями User'а.
      * @throws VersionUserException исключение.
+     * @throws NotExistedUserException исключение.
      */
-    @Override
-    public void update(String id, String name, String login, String email, String createDate)
-            throws VersionUserException, NotExistedUserException {
-        int userId = Integer.parseInt(id);
+    public void update(List<String> list) throws VersionUserException, NotExistedUserException {
+        int userId = Integer.parseInt(list.get(0));
         final User user = this.findById(userId);
         checkUserVersion(userId);
-        user.setName(name);
-        user.setLogin(login);
-        user.setEmail(email);
-        user.setCreateDate(createDate);
+        user.setFields(list);
         store.update(userId, user);
     }
 

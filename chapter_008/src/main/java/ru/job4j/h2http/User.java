@@ -1,5 +1,6 @@
 package ru.job4j.h2http;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -61,39 +62,21 @@ public class User {
     }
 
     /**
-     * @param name имя User'а.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @param login логин User'а.
-     */
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    /**
-     * @param email эл.почта User'а.
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    /**
-     * @param createDate дата создания User'а.
-     */
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
-
-    /**
      * @return строковое представление.
      */
     @Override
     public String toString() {
         return String.format("id = %d, name = %s, login = %s, e-mail = %s, date = %s\n",
                               id, name, login, email, createDate);
+    }
+
+    /**
+     * @param list список строк со значениями User'а.
+     */
+    public void setFields(List<String> list) {
+        this.name = list.get(1);
+        this.login = list.get(2);
+        this.email= list.get(3);
+        this.createDate= list.get(4);
     }
 }
