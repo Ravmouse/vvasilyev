@@ -1,6 +1,5 @@
 package ru.job4j.h2http;
 
-import ru.job4j.h4waitnotifynotifyall.t3lock.SimpleLock;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,11 +27,6 @@ public class UserServlet extends HttpServlet { //Presentation
      * выполнения соответствующих методов.
      */
     private final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
-    /**
-     * Строка для вывода клиенту в GET-запросе.
-     */
-    private String text;
-    private SimpleLock lock = new SimpleLock();
 
     /**
      * @param servletConfig servletConfig.
@@ -53,7 +47,11 @@ public class UserServlet extends HttpServlet { //Presentation
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setContentType("text/html");
         PrintWriter writer = new PrintWriter(res.getOutputStream());
-        writer.append(text);
+        if (req.getAttribute("text") == null) {
+            writer.append(Arrays.toString(logic.findAll()));
+        } else {
+            writer.append(req.getAttribute("text").toString());
+        }
         writer.flush();
     }
 
@@ -64,30 +62,20 @@ public class UserServlet extends HttpServlet { //Presentation
      */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        final String text;
         res.setContentType("text/html");
-        String key = req.getParameter("action");
+        final String key = req.getParameter("action");
         try {
             actionFunc.get(key).accept(req);
         } catch (VersionUserException | NotExistedUserException e) { //Пробрасывается исключение.
-            try {
-                lock.lock(); //Если поток дошел сюда первым, то он "захватывает" lock первым.
-            } catch (InterruptedException exp) {
-                exp.printStackTrace();
-            }
-            text = e.getMessage(); //Получается сообщение из исключения.
-            doGet(req, res); //Вызывается doGet(), чтобы отправить ответ клиенту с сообщением исключения.
-            text = Arrays.toString(logic.findAll()); //Если после POST-запроса клиент сделает GET-запрос, то нужно
-            lock.unlock();                           //"Отпускает" lock.
-            return;                                  //снова отобразить список User'ов.
+            text = e.getMessage();                                   //Получается сообщение из исключения.
+            req.setAttribute("text", text);                          //Устанавливается аттрибут в запросе.
+            doGet(req, res);                                         //Вызывается doGet(), чтобы отправить ответ клиенту
+            return;                                                  //с сообщением исключения.
         }
-        try {
-            lock.lock();                             //Если первый поток - это тот, который не выкидывает искл., то
-        } catch (InterruptedException e) {           //он "захватывает" lock первым.
-            e.printStackTrace();
-        }
-        text = Arrays.toString(logic.findAll());     //Если искл. не было, то сюда записываем всех User'ов и отображаем
-        doGet(req, res);                             //в doGet().
-        lock.unlock();                               //"Отпускает" lock.
+        text = Arrays.toString(logic.findAll()); //Если искл. не было, то находим всех User'ов.
+        req.setAttribute("text", text);          //Устанавливаем аттрибут в запросе,
+        doGet(req, res);                         //который направляем в doGet().
     }
 
     /**
