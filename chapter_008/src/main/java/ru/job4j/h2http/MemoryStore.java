@@ -14,7 +14,7 @@ public class MemoryStore implements Store { //Persistence
     /**
      * Статическое поле.
      */
-    private final static MemoryStore MEMORY = new MemoryStore();
+    private static final MemoryStore MEMORY = new MemoryStore();
     /**
      * Потокобезопасное отображение.
      */
@@ -33,11 +33,16 @@ public class MemoryStore implements Store { //Persistence
         return MEMORY;
     }
 
+
     /**
-     * @param user User, который нужно добавить.
+     * @param name имя.
+     * @param login логин.
+     * @param email эл.почта.
+     * @param createDate дата создания.
      */
     @Override
-    public void add(final User user) {
+    public void add(final String name, final String login, final String email, final String createDate) {
+        final User user = new User(name, login, email, createDate);
         users.put(user.getId(), user);
     }
 
@@ -51,11 +56,12 @@ public class MemoryStore implements Store { //Persistence
     }
 
     /**
+     * @param id id User'а.
      * @param user User, которого нужно удалить.
      */
     @Override
-    public void delete(final User user) {
-        users.remove(user.getId(), user);
+    public void delete(int id, final User user) {
+        users.remove(id, user);
     }
 
     /**

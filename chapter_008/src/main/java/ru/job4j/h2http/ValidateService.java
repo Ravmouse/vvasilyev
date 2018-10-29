@@ -9,7 +9,7 @@ public class ValidateService implements Validate { //Logic
     /**
      * Статическое поле.
      */
-    private final static ValidateService VALIDATE = new ValidateService();
+    private static final ValidateService VALIDATE = new ValidateService();
     /**
      * Ссылка на класс MemoryStore, где хранятся данные.
      */
@@ -30,43 +30,41 @@ public class ValidateService implements Validate { //Logic
 
     /**
      * Создание нового User'а с параметрами запроса.
-     * @param id id.
      * @param name имя.
      * @param login логин.
      * @param email эл.почта.
      * @param createDate дата создания.
      */
     @Override
-    public void add(String id, String name, String login, String email, String createDate) {
-        int userId = Integer.parseInt(id);
-        store.add(new User(userId, name, login, email, createDate));
+    public void add(String name, String login, String email, String createDate) {
+        store.add(name, login, email, createDate);
     }
 
     /**
      * По id находится User, затем у него изменяются все остальные его поля. Создание нового User не нужно.
+     * @param id id User'а.
      * @param list список строк со значениями User'а.
      * @throws VersionUserException исключение.
      * @throws NotExistedUserException исключение.
      */
-    public void update(List<String> list) throws VersionUserException, NotExistedUserException {
-        int userId = Integer.parseInt(list.get(0));
-        final User user = this.findById(userId);
-        checkUserVersion(userId);
-        user.setFields(list);
-        store.update(userId, user);
+    public void update(int id, List<String> list) throws VersionUserException, NotExistedUserException {
+        final User user = this.findById(id);
+        checkUserVersion(id);
+        user.changeFields(list);
+        store.update(id, user);
     }
 
     /**
+     * Если User не найден, то пробрасывается исключение.
      * @param id id User'а, которого нужно удалить.
      * @throws VersionUserException исключение для 2-х потоков.
      * @throws NotExistedUserException если User'а с таким id не существует.
      */
     @Override
-    public void delete(String id) throws VersionUserException, NotExistedUserException {
-        int userId = Integer.parseInt(id);
-        final User user = this.findById(userId); //Если User не найден, то пробрасывается исключение.
-        checkUserVersion(userId);
-        store.delete(user);
+    public void delete(int id) throws VersionUserException, NotExistedUserException {
+        final User user = this.findById(id);
+        checkUserVersion(id);
+        store.delete(id, user);
     }
 
     /**

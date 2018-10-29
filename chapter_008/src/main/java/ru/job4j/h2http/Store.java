@@ -7,9 +7,12 @@ import java.util.List;
  */
 public interface Store {
     /**
-     * @param user User, который нужно добавить.
+     * @param name имя.
+     * @param login логин.
+     * @param email эл.почта.
+     * @param createDate дата создания.
      */
-    void add(final User user);
+    void add(final String name, final String login, final String email, final String createDate);
 
     /**
      * @param id id User'а, которого нужно найти.
@@ -18,9 +21,10 @@ public interface Store {
     void update(int id, final User user);
 
     /**
+     * @param id id User'а.
      * @param user User, которого нужно удалить.
      */
-    void delete(final User user);
+    void delete(int id, final User user);
 
     /**
      * @return список User'ов.

@@ -7,23 +7,23 @@ import java.util.List;
  */
 public interface Validate {
     /**
-     * @param id id.
      * @param name имя.
      * @param login логин.
      * @param email эл.почта.
      * @param createDate дата создания.
      */
-    void add(String id, String name, String login, String email, String createDate);
+    void add(String name, String login, String email, String createDate);
 
     /**
+     * @param id id User'а.
      * @param list список строк со значениями User'а.
      */
-    void update(List<String> list);
+    void update(int id, List<String> list);
 
     /**
      * @param id id User'а, которого нужно удалить.
      */
-    void delete(String id);
+    void delete(int id);
 
     /**
      * Возвращается массив, чтобы было проще отобразить его с помощью Arrays.toString().

@@ -31,16 +31,19 @@ public class User {
      * Версия.
      */
     private AtomicInteger version = new AtomicInteger(0);
+    /**
+     * Для подсчета и хранения кол-ва созданных пользователей.
+     */
+    private static final AtomicInteger COUNT = new AtomicInteger(0);
 
     /**
-     * @param id id.
      * @param name имя.
      * @param login логин.
      * @param email эл.почта.
      * @param createDate дата создания.
      */
-    public User(int id, String name, String login, String email, String createDate) {
-        this.id = id;
+    public User(String name, String login, String email, String createDate) {
+        this.id = COUNT.incrementAndGet();
         this.name = name;
         this.login = login;
         this.email = email;
@@ -73,10 +76,38 @@ public class User {
     /**
      * @param list список строк со значениями User'а.
      */
-    public void setFields(List<String> list) {
-        this.name = list.get(1);
-        this.login = list.get(2);
-        this.email= list.get(3);
-        this.createDate= list.get(4);
+    public void changeFields(List<String> list) {
+        this.name = list.get(0);
+        this.login = list.get(1);
+        this.email = list.get(2);
+        this.createDate = list.get(3);
+    }
+
+    /**
+     * @return имя.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return логин.
+     */
+    public String getLogin() {
+        return login;
+    }
+
+    /**
+     * @return эл.почта.
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @return дата создания.
+     */
+    public String getCreateDate() {
+        return createDate;
     }
 }

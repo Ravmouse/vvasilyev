@@ -21,12 +21,12 @@ public class UserServlet extends HttpServlet { //Presentation
     /**
      * Ссылка на класс ValidateService, где данные проверяются.
      */
-    private final ValidateService logic = ValidateService.getInstance();
+    /*private*/ protected final ValidateService logic = ValidateService.getInstance();
     /**
      * Хэш-отображение с экземплярами классов, реализующих интерфейс Consumer, которые получаются после
      * выполнения соответствующих методов.
      */
-    private final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
+    /*private*/ final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
 
     /**
      * @param servletConfig servletConfig.
@@ -75,7 +75,7 @@ public class UserServlet extends HttpServlet { //Presentation
         }
         text = Arrays.toString(logic.findAll()); //Если искл. не было, то находим всех User'ов.
         req.setAttribute("text", text);          //Устанавливаем аттрибут в запросе,
-        doGet(req, res);                         //который направляем в doGet().
+//        doGet(req, res);                         //который направляем в doGet().
     }
 
     /**
@@ -88,7 +88,7 @@ public class UserServlet extends HttpServlet { //Presentation
             @Override
             public void accept(HttpServletRequest request) {
                 final List<String> list = parseRequest(request);
-                logic.add(list.get(0), list.get(1), list.get(2), list.get(3), list.get(4));
+                logic.add(list.get(0), list.get(1), list.get(2), list.get(3));
             }
         };
     }
@@ -101,7 +101,10 @@ public class UserServlet extends HttpServlet { //Presentation
      * @throws NotExistedUserException если User'а с таким id не существует.
      */
     private Consumer<HttpServletRequest> updateUser() throws VersionUserException, NotExistedUserException {
-        return request -> logic.update(parseRequest(request));
+        return request -> {
+            int id = Integer.parseInt(request.getParameter("id"));
+            logic.update(id, parseRequest(request));
+        };
     }
 
     /**
@@ -111,7 +114,7 @@ public class UserServlet extends HttpServlet { //Presentation
      * @throws NotExistedUserException если User'а с таким id не существует.
      */
     private Consumer<HttpServletRequest> deleteUser() throws VersionUserException, NotExistedUserException {
-        return request -> logic.delete(request.getParameter("id"));
+        return request -> logic.delete(Integer.parseInt(request.getParameter("id")));
     }
 
     /**
@@ -127,7 +130,6 @@ public class UserServlet extends HttpServlet { //Presentation
         } catch (IOException io) {
             io.printStackTrace();
         }
-        list.add(request.getParameter("id"));
         list.add(request.getParameter("name"));
         list.add(request.getParameter("login"));
         list.add(decodedString);
