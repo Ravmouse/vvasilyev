@@ -15,15 +15,15 @@
     </servlet>
     <servlet>
         <servlet-name>list</servlet-name>
-        <servlet-class>ru.job4j.h3servlet.UsersServlet</servlet-class>
+        <servlet-class>ru.job4j.h4jsp.ListServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>create</servlet-name>
-        <servlet-class>ru.job4j.h3servlet.UserCreateServlet</servlet-class>
+        <servlet-class>ru.job4j.h4jsp.CreateServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>edit</servlet-name>
-        <servlet-class>ru.job4j.h3servlet.UserUpdateServlet</servlet-class>
+        <servlet-name>update</servlet-name>
+        <servlet-class>ru.job4j.h4jsp.UpdateServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -43,7 +43,7 @@
         <url-pattern>/create</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>edit</servlet-name>
-        <url-pattern>/edit</url-pattern>
+        <servlet-name>update</servlet-name>
+        <url-pattern>/update</url-pattern>
     </servlet-mapping>
 </web-app>
