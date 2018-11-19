@@ -26,7 +26,7 @@ public class UsersServlet extends UserServlet {
         res.setContentType("text/html");
         final PrintWriter writer = new PrintWriter(res.getOutputStream());
         final StringBuilder sb = new StringBuilder();
-        for (User user : logic.findAll()) {
+        for (User user : LOGIC.findAll()) {
             sb.append("<tr>"
                             + "<td>" + user.toString() + "</td>"
                             + "<td>"

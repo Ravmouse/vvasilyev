@@ -5,10 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletConfig;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +19,15 @@ public class UserServlet extends HttpServlet { //Presentation
     /**
      * Ссылка на класс ValidateService, где данные проверяются.
      */
-    /*private*/ protected final ValidateService logic = ValidateService.getInstance();
+    /*private*/ public static final Validate LOGIC = ValidateService.getInstance();
     /**
-     * Хэш-отображение с экземплярами классов, реализующих интерфейс Consumer, которые получаются после
+     * Хэш-отображение с экземплярами классов, реализующими интерфейс Consumer, которые получаются после
      * выполнения соответствующих методов.
      */
-    /*private*/ final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
+    private final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
 
     /**
+     * Добавление в хэш-отображение ключей и значений.
      * @param servletConfig servletConfig.
      */
     @Override
@@ -46,13 +45,6 @@ public class UserServlet extends HttpServlet { //Presentation
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setContentType("text/html");
-        PrintWriter writer = new PrintWriter(res.getOutputStream());
-        if (req.getAttribute("text") == null) {
-            writer.append(Arrays.toString(logic.findAll()));
-        } else {
-            writer.append(req.getAttribute("text").toString());
-        }
-        writer.flush();
     }
 
     /**
@@ -70,12 +62,7 @@ public class UserServlet extends HttpServlet { //Presentation
         } catch (VersionUserException | NotExistedUserException e) { //Пробрасывается исключение.
             text = e.getMessage();                                   //Получается сообщение из исключения.
             req.setAttribute("text", text);                          //Устанавливается аттрибут в запросе.
-            doGet(req, res);                                         //Вызывается doGet(), чтобы отправить ответ клиенту
-            return;                                                  //с сообщением исключения.
         }
-        text = Arrays.toString(logic.findAll()); //Если искл. не было, то находим всех User'ов.
-        req.setAttribute("text", text);          //Устанавливаем аттрибут в запросе,
-//        doGet(req, res);                         //который направляем в doGet().
     }
 
     /**
@@ -87,8 +74,7 @@ public class UserServlet extends HttpServlet { //Presentation
         return new Consumer<HttpServletRequest>() {
             @Override
             public void accept(HttpServletRequest request) {
-                final List<String> list = parseRequest(request);
-                logic.add(list.get(0), list.get(1), list.get(2), list.get(3));
+                LOGIC.add(parseRequest(request));
             }
         };
     }
@@ -103,7 +89,7 @@ public class UserServlet extends HttpServlet { //Presentation
     private Consumer<HttpServletRequest> updateUser() throws VersionUserException, NotExistedUserException {
         return request -> {
             int id = Integer.parseInt(request.getParameter("id"));
-            logic.update(id, parseRequest(request));
+            LOGIC.update(id, parseRequest(request));
         };
     }
 
@@ -114,7 +100,7 @@ public class UserServlet extends HttpServlet { //Presentation
      * @throws NotExistedUserException если User'а с таким id не существует.
      */
     private Consumer<HttpServletRequest> deleteUser() throws VersionUserException, NotExistedUserException {
-        return request -> logic.delete(Integer.parseInt(request.getParameter("id")));
+        return request -> LOGIC.delete(Integer.parseInt(request.getParameter("id")));
     }
 
     /**
@@ -133,7 +119,7 @@ public class UserServlet extends HttpServlet { //Presentation
         list.add(request.getParameter("name"));
         list.add(request.getParameter("login"));
         list.add(decodedString);
-        list.add(request.getParameter("createDate"));
+        list.add(request.getParameter("comments"));
         return list;
     }
 }

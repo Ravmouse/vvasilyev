@@ -1,5 +1,5 @@
 package ru.job4j.h2http;
-
+import ru.job4j.h4jsp.DBStore;
 import java.util.List;
 
 /**
@@ -12,8 +12,10 @@ public class ValidateService implements Validate { //Logic
     private static final ValidateService VALIDATE = new ValidateService();
     /**
      * Ссылка на класс MemoryStore, где хранятся данные.
+     * Ссылка на класс, откуда осуществляется подключение к БД.
      */
-    final MemoryStore store = MemoryStore.getInstance();
+//    private final Store store = MemoryStore.getInstance();
+    private final Store store = DBStore.getInstance();
 
     /**
      * Приватный конструктор.
@@ -29,71 +31,60 @@ public class ValidateService implements Validate { //Logic
     }
 
     /**
-     * Создание нового User'а с параметрами запроса.
-     * @param name имя.
-     * @param login логин.
-     * @param email эл.почта.
-     * @param createDate дата создания.
+     * @param list список строк для добавления данных в хранилище.
+     * @throws NotExistedUserException исключение.
      */
     @Override
-    public void add(String name, String login, String email, String createDate) {
-        store.add(name, login, email, createDate);
+    public void add(final List<String> list) throws NotExistedUserException {
+        for (String s : list) {
+            if (s.equals("")) {
+                throw new NotExistedUserException("EmptyCreate");
+            }
+        }
+        store.add(list);
     }
 
     /**
-     * По id находится User, затем у него изменяются все остальные его поля. Создание нового User не нужно.
-     * @param id id User'а.
-     * @param list список строк со значениями User'а.
+     * @param id   номер.
+     * @param list список строк для изменения данных в хранилище.
      * @throws VersionUserException исключение.
      * @throws NotExistedUserException исключение.
      */
-    public void update(int id, List<String> list) throws VersionUserException, NotExistedUserException {
-        final User user = this.findById(id);
-        checkUserVersion(id);
-        user.changeFields(list);
-        store.update(id, user);
+    public void update(int id, final List<String> list) throws NotExistedUserException {
+        for (String s : list) {
+            if (s.equals("")) {
+                throw new NotExistedUserException("EmptyUpdate");
+            }
+        }
+        store.update(id, list);
     }
 
     /**
-     * Если User не найден, то пробрасывается исключение.
-     * @param id id User'а, которого нужно удалить.
-     * @throws VersionUserException исключение для 2-х потоков.
-     * @throws NotExistedUserException если User'а с таким id не существует.
+     * @param id номер, по которому удаляется строка в хранилище.
+     * @throws VersionUserException исключение.
+     * @throws NotExistedUserException исключение.
      */
     @Override
     public void delete(int id) throws VersionUserException, NotExistedUserException {
-        final User user = this.findById(id);
-        checkUserVersion(id);
-        store.delete(id, user);
+        store.delete(id);
     }
 
     /**
-     * Возвращается массив User'ов, чтобы было проще отобразить его с помощью Arrays.toString().
-     * @return массив User'ов.
+     * @return список юзеров.
      */
     @Override
-    public User[] findAll() {
-        final List<User> usersList = store.findAll();
-        final User[] arr = new User[usersList.size()];
-        int i = 0;
-        for (User u : usersList) {
-            arr[i++] = u;
-        }
-        return arr;
+    public List<User> findAll() {
+        return store.findAll();
     }
 
     /**
-     * @param id номер User'а.
-     * @return ссылку на найденного User'а.
-     * @throws NotExistedUserException если User'а с таким id не существует.
+     * @param id номер.
+     * @return юзера по его номеру.
+     * @throws NotExistedUserException исключение.
      */
     @Override
     public User findById(int id) throws NotExistedUserException {
-        User user = store.findById(id);
-        if (user == null) {
-            throw new NotExistedUserException("The user with such id is not existed!");
-        }
-        return user;
+        return store.findById(id);
     }
 
     /**
@@ -105,8 +96,8 @@ public class ValidateService implements Validate { //Logic
      * @throws VersionUserException если 1-ый поток уже обновил значение User.
      */
     private void checkUserVersion(int id) throws VersionUserException {
-        int expect = store.users.get(id).getVersion().get();
-        boolean done = store.users.get(id).getVersion().compareAndSet(expect, ++expect);
+        int expect = store.findById(id).getVersion().get();
+        boolean done = store.findById(id).getVersion().compareAndSet(expect, ++expect);
         if (!done) {
             throw new VersionUserException("The thread is not allowed to perform any actions on the user!");
         }

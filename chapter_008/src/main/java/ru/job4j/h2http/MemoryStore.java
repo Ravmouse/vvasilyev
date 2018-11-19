@@ -18,7 +18,7 @@ public class MemoryStore implements Store { //Persistence
     /**
      * Потокобезопасное отображение.
      */
-    final Map<Integer, User> users = new ConcurrentHashMap<>();
+    private final Map<Integer, User> users = new ConcurrentHashMap<>();
 
     /**
      * Приватный конструктор.
@@ -34,34 +34,26 @@ public class MemoryStore implements Store { //Persistence
     }
 
 
-    /**
-     * @param name имя.
-     * @param login логин.
-     * @param email эл.почта.
-     * @param createDate дата создания.
-     */
     @Override
-    public void add(final String name, final String login, final String email, final String createDate) {
-        final User user = new User(name, login, email, createDate);
-        users.put(user.getId(), user);
+    public void add(final List<String> liste) {
+//        final User user = new User(name, login, email, createDate);
+//        users.put(user.getId(), user);
     }
 
     /**
      * @param id id User'а, которого нужно найти.
-     * @param user User, который нужно заменить.
      */
     @Override
-    public void update(int id, final User user) {
-        users.replace(id, user);
+    public void update(int id, final List<String> list) {
+//        users.replace(id, user);
     }
 
     /**
      * @param id id User'а.
-     * @param user User, которого нужно удалить.
      */
     @Override
-    public void delete(int id, final User user) {
-        users.remove(id, user);
+    public void delete(int id) {
+//        users.remove(id, user);
     }
 
     /**

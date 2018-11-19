@@ -1,39 +1,30 @@
 package ru.job4j.h2http;
-
 import java.util.List;
 
 /**
- * Интерфейс.
+ * Интерфейс для целей хранения, получения, удаления данных в памяти (Heap) или БД.
  */
 public interface Store {
     /**
-     * @param name имя.
-     * @param login логин.
-     * @param email эл.почта.
-     * @param createDate дата создания.
+     * @param list список строк для добавления данных в хранилище.
      */
-    void add(final String name, final String login, final String email, final String createDate);
-
+    void add(final List<String> list);
     /**
-     * @param id id User'а, которого нужно найти.
-     * @param user User, который нужно заменить.
+     * @param id номер.
+     * @param list список строк для изменения данных в хранилище.
      */
-    void update(int id, final User user);
-
+    void update(int id, final List<String> list);
     /**
-     * @param id id User'а.
-     * @param user User, которого нужно удалить.
+     * @param id номер, по которому удаляется строка в хранилище.
      */
-    void delete(int id, final User user);
-
+    void delete(int id);
     /**
-     * @return список User'ов.
+     * @return список юзеров.
      */
     List<User> findAll();
-
     /**
-     * @param id номер User'а.
-     * @return User'а по его номеру.
+     * @param id номер.
+     * @return юзера по его номеру.
      */
     User findById(int id);
 }

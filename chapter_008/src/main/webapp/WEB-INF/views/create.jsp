@@ -20,15 +20,15 @@
                 <td><input type="text" name="email"></td>
             </tr>
             <tr>
-                <td>Date of creation: </td>
-                <td><input type="text" name="createDate"></td>
+                <td>Comments: </td>
+                <td><input type="text" name="comments"></td>
             </tr>
             <tr>
                 <td></td>
                 <td align="center"><input type="submit" value="Add"></td>
             </tr>
         </form>
-        <form action="<%=request.getContextPath()%>/list">
+        <form action="<%=request.getContextPath()%>/">
             <tr>
                 <td></td>
                 <td align="center"><input type="submit" value="Show all users"></td>

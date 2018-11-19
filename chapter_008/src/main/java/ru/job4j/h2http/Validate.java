@@ -1,39 +1,30 @@
 package ru.job4j.h2http;
-
 import java.util.List;
 
 /**
- * Интерфейс.
+ * Интерфейс для целей проверки данных перед их добавлением/изменением в БД.
  */
 public interface Validate {
     /**
-     * @param name имя.
-     * @param login логин.
-     * @param email эл.почта.
-     * @param createDate дата создания.
+     * @param list список строк для добавления данных в хранилище.
      */
-    void add(String name, String login, String email, String createDate);
-
+    void add(final List<String> list);
     /**
-     * @param id id User'а.
-     * @param list список строк со значениями User'а.
+     * @param id   номер.
+     * @param list список строк для изменения данных в хранилище.
      */
-    void update(int id, List<String> list);
-
+    void update(int id, final List<String> list);
     /**
-     * @param id id User'а, которого нужно удалить.
+     * @param id номер, по которому удаляется строка в хранилище.
      */
     void delete(int id);
-
     /**
-     * Возвращается массив, чтобы было проще отобразить его с помощью Arrays.toString().
-     * @return массив User'ов.
+     * @return список юзеров.
      */
-    User[] findAll();
-
+    List<User> findAll();
     /**
-     * @param id номер User'а.
-     * @return ссылку на найденного User'а.
+     * @param id номер.
+     * @return юзера по его номеру.
      */
     User findById(int id);
 }

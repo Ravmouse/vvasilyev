@@ -32,7 +32,7 @@ public class UpdateServlet extends UserServlet {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setContentType("text/html");
-        final User user = logic.findById(Integer.parseInt(req.getParameter("id")));
+        final User user = LOGIC.findById(Integer.parseInt(req.getParameter("id")));
         req.setAttribute("user", user);
         try {
             req.getRequestDispatcher("update.jsp").forward(req, res);

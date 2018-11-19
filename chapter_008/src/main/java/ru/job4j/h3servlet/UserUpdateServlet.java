@@ -25,7 +25,7 @@ public class UserUpdateServlet extends UserServlet {
         res.setContentType("text/html");
         final PrintWriter pw = new PrintWriter(res.getOutputStream());
         final String id = req.getParameter("id");
-        final User user = logic.findById(Integer.parseInt(id));
+        final User user = LOGIC.findById(Integer.parseInt(id));
         pw.append("<!DOCTYPE html>"
                     + "<html lang=\"en\">"
                         + "<head>"

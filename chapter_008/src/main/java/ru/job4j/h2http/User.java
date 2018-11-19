@@ -1,5 +1,4 @@
 package ru.job4j.h2http;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,6 +27,10 @@ public class User {
      */
     private String createDate;
     /**
+     * Комментарии.
+     */
+    private String comments;
+    /**
      * Версия.
      */
     private AtomicInteger version = new AtomicInteger(0);
@@ -51,6 +54,23 @@ public class User {
     }
 
     /**
+     * @param id id.
+     * @param name имя.
+     * @param login логин.
+     * @param email эл.почта.
+     * @param createDate дата создания.
+     * @param comments комментарии.
+     */
+    public User(int id, final String name, final String login, final String email, final String createDate, final String comments) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.email = email;
+        this.createDate = createDate;
+        this.comments = comments;
+    }
+
+    /**
      * @return id User'а.
      */
     public int getId() {
@@ -69,8 +89,8 @@ public class User {
      */
     @Override
     public String toString() {
-        return String.format("id = %d, name = %s, login = %s, e-mail = %s, date = %s\n",
-                              id, name, login, email, createDate);
+        return String.format("ID = %d, Name = %s, Login = %s, E-mail = %s, Create date = %s, Comments = %s",
+                              id, name, login, email, createDate, comments);
     }
 
     /**
@@ -109,5 +129,12 @@ public class User {
      */
     public String getCreateDate() {
         return createDate;
+    }
+
+    /**
+     * @return комментарии.
+     */
+    public String getComments() {
+        return comments;
     }
 }
