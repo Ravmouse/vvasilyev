@@ -1,0 +1,11 @@
+﻿CREATE DATABASE sql_job4j_7_users;
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255),
+  login VARCHAR(255),
+  email VARCHAR (255),
+  createDate TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
+  comments VARCHAR(1000)
+);
