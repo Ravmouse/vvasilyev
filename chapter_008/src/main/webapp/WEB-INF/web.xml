@@ -15,15 +15,15 @@
     </servlet>
     <servlet>
         <servlet-name>list</servlet-name>
-        <servlet-class>ru.job4j.h4jsp.ListServlet</servlet-class>
+        <servlet-class>ru.job4j.h5mvcjstl.ListServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>create</servlet-name>
-        <servlet-class>ru.job4j.h4jsp.CreateServlet</servlet-class>
-    </servlet>
+    <!--<servlet>-->
+        <!--<servlet-name>create</servlet-name>-->
+        <!--<servlet-class>ru.job4j.h4jsp.CreateServlet</servlet-class>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>update</servlet-name>
-        <servlet-class>ru.job4j.h4jsp.UpdateServlet</servlet-class>
+        <servlet-class>ru.job4j.h5mvcjstl.UpdateServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -36,12 +36,12 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>list</servlet-name>
-        <url-pattern>/list</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>create</servlet-name>
-        <url-pattern>/create</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>create</servlet-name>-->
+        <!--<url-pattern>/create</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>update</servlet-name>
         <url-pattern>/update</url-pattern>
