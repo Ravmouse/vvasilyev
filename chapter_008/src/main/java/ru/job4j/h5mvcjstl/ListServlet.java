@@ -1,7 +1,11 @@
 package ru.job4j.h5mvcjstl;
 
+import org.apache.log4j.Logger;
 import ru.job4j.h2http.UserServlet;
 import ru.job4j.h2http.ValidateService;
+import ru.job4j.h6filter.Role;
+import ru.job4j.utils.Utils;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,19 +16,26 @@ import java.io.IOException;
  */
 public class ListServlet extends UserServlet {
     /**
+     * Логгер.
+     */
+    public static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
+
+    /**
      * Этот метод - для захода на страницу просмотра всех пользователей, введя http://localhost:8080/chapter_008/.
-     * Перенаправляет на list.jsp.
      * @param req запрос.
      * @param res ответ.
      * @throws IOException исключение.
      */
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         req.setAttribute("users", ValidateService.getInstance().findAll());
-        try {
-            req.getRequestDispatcher("/WEB-INF/views/list.jsp").forward(req, res);
-        } catch (ServletException e) {
-            e.printStackTrace();
+        final Role role = (Role) req.getSession().getAttribute("role");
+        if (role.getName().equals("User")) {
+            req.setAttribute("login", req.getSession().getAttribute("login"));
+            req.getRequestDispatcher("/WEB-INF/views/userList.jsp").forward(req, res);
+        } else {
+            req.setAttribute("roles", ValidateService.getInstance().findAllRoles());
+            req.getRequestDispatcher("/WEB-INF/views/adminList.jsp").forward(req, res);
         }
     }
 
@@ -46,7 +57,7 @@ public class ListServlet extends UserServlet {
                 req.getRequestDispatcher("/WEB-INF/views/emptyUpdate.jsp").forward(req, res);
             }
         } catch (ServletException e) {
-            e.printStackTrace();
+            LOGGER.warn("Exception in ListServlet class", e);
         }
     }
 }

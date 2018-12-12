@@ -3,11 +3,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Класс пользователя.
+ * Класс юзера.
  */
 public class User {
     /**
-     * id.
+     * Номер.
      */
     private final int id;
     /**
@@ -19,7 +19,7 @@ public class User {
      */
     private String login;
     /**
-     * Эл.почта.
+     * Электронная почта.
      */
     private String email;
     /**
@@ -31,18 +31,26 @@ public class User {
      */
     private String comments;
     /**
+     * Пароль.
+     */
+    private String password;
+    /**
+     * Роль.
+     */
+    private String role;
+    /**
      * Версия.
      */
     private AtomicInteger version = new AtomicInteger(0);
     /**
-     * Для подсчета и хранения кол-ва созданных пользователей.
+     * Для подсчета и хранения кол-ва созданных юзеров.
      */
     private static final AtomicInteger COUNT = new AtomicInteger(0);
 
     /**
      * @param name имя.
      * @param login логин.
-     * @param email эл.почта.
+     * @param email электронная почта.
      * @param createDate дата создания.
      */
     public User(String name, String login, String email, String createDate) {
@@ -54,10 +62,10 @@ public class User {
     }
 
     /**
-     * @param id id.
+     * @param id номер.
      * @param name имя.
      * @param login логин.
-     * @param email эл.почта.
+     * @param email электронная почта.
      * @param createDate дата создания.
      * @param comments комментарии.
      */
@@ -71,30 +79,52 @@ public class User {
     }
 
     /**
-     * @return id User'а.
+     * @param id номер.
+     * @param name имя.
+     * @param login логин.
+     * @param email электронная почта.
+     * @param createDate дата создания.
+     * @param comments комментарии.
+     * @param password пароль.
+     * @param role роль.
+     */
+    public User(int id, final String name, final String login, final String email, final String createDate,
+                final String comments, final String password, final String role) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.email = email;
+        this.createDate = createDate;
+        this.comments = comments;
+        this.password = password;
+        this.role = role;
+    }
+
+    /**
+     * @return номер юзера.
      */
     public int getId() {
         return id;
     }
 
     /**
-     * @return версию User'а.
+     * @return версию юзера.
      */
     public AtomicInteger getVersion() {
         return version;
     }
 
     /**
-     * @return строковое представление.
+     * @return строковое представление объекта.
      */
     @Override
     public String toString() {
-        return String.format("ID = %d, Name = %s, Login = %s, E-mail = %s, Create date = %s, Comments = %s",
-                              id, name, login, email, createDate, comments);
+        return String.format("ID = %d, Name = %s, Login = %s, E-mail = %s, Create date = %s, Comments = %s, Password = %s, Role = %s",
+                              id, name, login, email, createDate, comments, password, role);
     }
 
     /**
-     * @param list список строк со значениями User'а.
+     * @param list список строк со значениями юзера.
      */
     public void changeFields(List<String> list) {
         this.name = list.get(0);
@@ -118,7 +148,7 @@ public class User {
     }
 
     /**
-     * @return эл.почта.
+     * @return электронная почта.
      */
     public String getEmail() {
         return email;
@@ -136,5 +166,19 @@ public class User {
      */
     public String getComments() {
         return comments;
+    }
+
+    /**
+     * @return пароль.
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @return роль.
+     */
+    public String getRole() {
+        return role;
     }
 }

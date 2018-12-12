@@ -1,5 +1,9 @@
 package ru.job4j.h2http;
 
+import org.apache.log4j.Logger;
+import ru.job4j.utils.Utils;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +29,11 @@ public class UserServlet extends HttpServlet { //Presentation
      * выполнения соответствующих методов.
      */
     private final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
+    /**
+     * Логгер.
+     */
+    public static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
+
 
     /**
      * Добавление в хэш-отображение ключей и значений.
@@ -43,9 +52,7 @@ public class UserServlet extends HttpServlet { //Presentation
      * @throws IOException исключение.
      */
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setContentType("text/html");
-    }
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException { }
 
     /**
      * @param req запрос.
@@ -55,7 +62,6 @@ public class UserServlet extends HttpServlet { //Presentation
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         final String text;
-        res.setContentType("text/html");
         final String key = req.getParameter("action");
         try {
             actionFunc.get(key).accept(req);
@@ -104,22 +110,24 @@ public class UserServlet extends HttpServlet { //Presentation
     }
 
     /**
-     * @param request запрос.
+     * @param req запрос.
      * @return список параметров из запроса.
      */
-    private List<String> parseRequest(HttpServletRequest request) {
+    private List<String> parseRequest(HttpServletRequest req) {
         List<String> list = new ArrayList<>();
         String decodedString = null;
         try {
             //Декодирование, чтобы был символ @, а не %40.
-            decodedString = URLDecoder.decode(request.getParameter("email"), "UTF-8");
+            decodedString = URLDecoder.decode(req.getParameter("email"), "UTF-8");
         } catch (IOException io) {
-            io.printStackTrace();
+            LOGGER.warn("Exception in UserServlet class", io);
         }
-        list.add(request.getParameter("name"));
-        list.add(request.getParameter("login"));
+        list.add(req.getParameter("name"));
+        list.add(req.getParameter("login"));
         list.add(decodedString);
-        list.add(request.getParameter("comments"));
+        list.add(req.getParameter("comments"));
+        list.add(req.getParameter("password"));
+        list.add(req.getParameter("role"));
         return list;
     }
 }

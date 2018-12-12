@@ -17,6 +17,7 @@
     </head>
     <body>
         <h2 align="center" style="color: darkred">User App</h2>
+        <h4 align="center" style="color: darkblue">Hello! You're logged in as ${login}</h4>
         <table style="border: hidden">
             <tr>
                 <td style="border: hidden">
@@ -29,6 +30,8 @@
                             <td>E-mail</td>
                             <td>Create date</td>
                             <td>Comments</td>
+                            <td>Password</td>
+                            <td>Role</td>
                         </tr>
                         <c:forEach items="${users}" var="user">
                             <tr>
@@ -38,15 +41,15 @@
                                 <td><c:out value="${user.email}"/></td>
                                 <td><c:out value="${user.createDate}"/></td>
                                 <td><c:out value="${user.comments}"/></td>
+                                <td><c:out value="${user.password}"/></td>
+                                <td><c:out value="${user.role}"/></td>
                                 <td style="border: hidden">
-                                    <form action="${pageContext.servletContext.contextPath}/update?id=${user.id}" method="post">
-                                        <input type="submit" value="Update"/>
-                                    </form>
-                                </td>
-                                <td style="border: hidden">
-                                    <form action="${pageContext.servletContext.contextPath}/?action=delete&id=${user.id}" method="post">
-                                        <input type="submit" value="Delete"/>
-                                    </form>
+                                    <%--Поместить кнопку Update только напротив одного юзера--%>
+                                    <c:if test="${user.login == login}">
+                                        <form action="${pageContext.servletContext.contextPath}/update?id=${user.id}" method="post">
+                                            <input type="submit" value="Update"/>
+                                        </form>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -54,27 +57,10 @@
                 </td>
                 <td style="border: hidden; vertical-align: top">
                     <table style="border: hidden">
-                        <h4>Add a new user</h4>
-                        <form action="${pageContext.servletContext.contextPath}/?action=add" method="post">
-                            <tr>
-                                <td style="border: hidden">Name: </td>
-                                <td style="border: hidden"><input type="text" name="name"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: hidden">Login: </td>
-                                <td style="border: hidden"><input type="text" name="login"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: hidden">E-mail: </td>
-                                <td style="border: hidden"><input type="text" name="email"></td>
-                            </tr>
-                            <tr>
-                                <td style="border: hidden">Comments: </td>
-                                <td style="border: hidden"><input type="text" name="comments"></td>
-                            </tr>
+                        <form action="${pageContext.servletContext.contextPath}/logout" method="post">
                             <tr>
                                 <td style="border: hidden"></td>
-                                <td align="center" style="border: hidden"><input type="submit" value="Add"></td>
+                                <td align="center" style="border: hidden"><input type="submit" value="Exit"></td>
                             </tr>
                         </form>
                     </table>

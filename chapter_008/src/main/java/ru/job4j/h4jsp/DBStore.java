@@ -1,9 +1,12 @@
 package ru.job4j.h4jsp;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import ru.job4j.utils.Utils;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import ru.job4j.h2http.Store;
 import ru.job4j.h2http.User;
+import ru.job4j.h6filter.Role;
+import ru.job4j.utils.Utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,11 +33,13 @@ public class DBStore implements AutoCloseable, Store {
     /**
      * SQL-запрос на добавление данных.
      */
-    private static final String ADD_SQL = "INSERT INTO users (name, login, email, comments) VALUES (?, ?, ?, ?)";
+    private static final String ADD_SQL
+            = "INSERT INTO users (name, login, email, comments, password, role) VALUES (?, ?, ?, ?, ?, ?)";
     /**
      * SQL-запрос на обновление данных.
      */
-    private static final String UPDATE_SQL = "UPDATE users SET name = ?, login = ?, email = ?, comments = ? WHERE id = ?";
+    private static final String UPDATE_SQL
+            = "UPDATE users SET name = ?, login = ?, email = ?, comments = ?, password = ?, role = ? WHERE id = ?";
     /**
      * SQL-запрос на удаление данных.
      */
@@ -42,16 +47,32 @@ public class DBStore implements AutoCloseable, Store {
     /**
      * SQL-запрос на выборку всех данных.
      */
-    private static final String SELECT_ALL_SQL = "SELECT * FROM users";
+    private static final String SELECT_ALL_SQL = "SELECT u.id, u.name, u.login, u.email, u.createdate,"
+    + "u.comments, u.password, r.role_name FROM users u LEFT OUTER JOIN roles r ON u.role = r.id ORDER BY u.id";
     /**
      * SQL-запрос на получение данных для одного юзера.
      */
-    private static final String SELECT_BY_ID_SQL = "SELECT * FROM users WHERE id = ?";
+    private static final String SELECT_BY_ID_SQL = "SELECT u.id, u.name, u.login, u.email, u.createdate,"
+    + "u.comments, u.password, r.role_name FROM users u LEFT OUTER JOIN roles r ON u.role = r.id WHERE u.id = ? ORDER BY u.id";
+    /**
+     * SQL-запрос на выборку всех ролей.
+     */
+    private static final String SELECT_ALL_ROLES = "SELECT * FROM roles ORDER BY role_name";
+    /**
+     * SQL-запрос на нахождение строки в БД по логину и паролю и получению роли.
+     */
+    private static final String FIND_ROLE_BY_LOGIN_AND_PASSWORD =
+            "SELECT r.role_name FROM users u LEFT OUTER JOIN roles r ON u.role = r.id WHERE u.login = ? AND u.password = ?";
+    /**
+     * Логгер.
+     */
+    public static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
 
     /**
      * Приватный конструктор.
      */
     private DBStore() {
+        BasicConfigurator.configure();
         final Properties properties = Utils.createAndLoadProp("ru/job4j/h4jsp/app.properties");
         SOURCE.setDriverClassName("org.postgresql.Driver");
         SOURCE.setUrl(properties.getProperty("jdbc.url"));
@@ -70,55 +91,53 @@ public class DBStore implements AutoCloseable, Store {
     }
 
     /**
-     * @param list список строк для добавления данных в хранилище.
+     * @param list   список строк для добавления данных в хранилище.
+     * @param number номер для таблицы users, которая ссылается на таблицу roles.
      */
     @Override
-    public void add(final List<String> list) {
-        try (final Connection conn = SOURCE.getConnection()) {
-            try (final PreparedStatement statement = conn.prepareStatement(ADD_SQL)) {
-                int i = 1;
-                for (String s : list) {
-                    statement.setString(i++, s);
-                }
-                statement.executeUpdate();
+    public void add(final List<String> list, int number) {
+        try (final Connection conn = SOURCE.getConnection(); final PreparedStatement statement = conn.prepareStatement(ADD_SQL)) {
+            int i = 1;
+            for (String s : list) {
+                statement.setString(i++, s);
             }
+            statement.setInt(i, number);
+            statement.executeUpdate();
         } catch (SQLException sql) {
-            sql.printStackTrace();
+            LOGGER.warn("Exception in add() method", sql);
         }
     }
 
     /**
-     * @param id   номер.
-     * @param list список строк для изменения данных в хранилище.
+     * @param id     номер юзера.
+     * @param list   список строк для изменения данных в хранилище.
+     * @param number номер для таблицы users, которая ссылается на таблицу roles.
      */
     @Override
-    public void update(int id, final List<String> list) {
-        try (final Connection conn = SOURCE.getConnection()) {
-            try (final PreparedStatement st = conn.prepareStatement(UPDATE_SQL)) {
-                int i = 1;
-                for (String s : list) {
-                    st.setString(i++, s);
-                }
-                st.setInt(5, id);
-                st.executeUpdate();
+    public void update(int id, final List<String> list, int number) {
+        try (final Connection conn = SOURCE.getConnection(); final PreparedStatement st = conn.prepareStatement(UPDATE_SQL)) {
+            int i = 1;
+            for (String s : list) {
+                st.setString(i++, s);
             }
+            st.setInt(6, number);
+            st.setInt(7, id);
+            st.executeUpdate();
         } catch (SQLException sql) {
-            sql.printStackTrace();
+            LOGGER.warn("Exception in update() method", sql);
         }
     }
 
     /**
-     * @param id номер, по которому удаляется строка в хранилище.
+     * @param id номер, по которому удаляется строка из хранилища.
      */
     @Override
     public void delete(int id) {
-        try (final Connection conn = SOURCE.getConnection()) {
-            try (final PreparedStatement st = conn.prepareStatement(DELETE_SQL)) {
-                st.setInt(1, id);
-                st.executeUpdate();
-            }
+        try (final Connection conn = SOURCE.getConnection(); final PreparedStatement st = conn.prepareStatement(DELETE_SQL)) {
+            st.setInt(1, id);
+            st.executeUpdate();
         } catch (SQLException sql) {
-            sql.printStackTrace();
+            LOGGER.warn("Exception in delete() method", sql);
         }
     }
 
@@ -128,50 +147,92 @@ public class DBStore implements AutoCloseable, Store {
     @Override
     public List<User> findAll() {
         final List<User> result = new ArrayList<>();
-        try (final Connection conn = SOURCE.getConnection()) {
-            try (final Statement st = conn.createStatement()) {
-                try (final ResultSet rs = st.executeQuery(SELECT_ALL_SQL)) {
-                    while (rs.next()) {
-                        result.add(new User(rs.getInt("id"),
-                                            rs.getString("name"),
-                                            rs.getString("login"),
-                                            rs.getString("email"),
-                                            rs.getString("createDate"),
-                                            rs.getString("comments")
-                        ));
-                    }
-                }
+        try (final Connection conn = SOURCE.getConnection();
+             final Statement st = conn.createStatement();
+             final ResultSet rs = st.executeQuery(SELECT_ALL_SQL)) {
+            while (rs.next()) {
+                result.add(new User(rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("login"),
+                        rs.getString("email"),
+                        rs.getString("createDate"),
+                        rs.getString("comments"),
+                        rs.getString("password"),
+                        rs.getString("role_name")
+                ));
             }
         } catch (SQLException sql) {
-            sql.printStackTrace();
+            LOGGER.warn("Exception in findAll() method", sql);
         }
         return result;
     }
 
     /**
-     * @param id номер.
+     * @param id номер юзера для нахождения в хранилище.
      * @return юзера по его номеру.
      */
     @Override
     public User findById(int id) {
         User result = null;
-        try (final Connection conn = SOURCE.getConnection()) {
-            try (final PreparedStatement st = conn.prepareStatement(SELECT_BY_ID_SQL)) {
-                st.setInt(1, id);
-                try (final ResultSet rs = st.executeQuery()) {
-                    while (rs.next()) {
-                        result = new User(rs.getInt("id"),
-                                rs.getString("name"),
-                                rs.getString("login"),
-                                rs.getString("email"),
-                                rs.getString("createDate"),
-                                rs.getString("comments")
-                        );
-                    }
+        try (final Connection conn = SOURCE.getConnection();
+             final PreparedStatement st = conn.prepareStatement(SELECT_BY_ID_SQL)) {
+            st.setInt(1, id);
+            try (final ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    result = new User(rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("login"),
+                            rs.getString("email"),
+                            rs.getString("createDate"),
+                            rs.getString("comments"),
+                            rs.getString("password"),
+                            rs.getString("role_name")
+                    );
                 }
             }
         } catch (SQLException sql) {
-            sql.printStackTrace();
+            LOGGER.warn("Exception in findById() method", sql);
+        }
+        return result;
+    }
+
+    /**
+     * @param login    логин юзера.
+     * @param password пароль юзера.
+     * @return роль юзера.
+     */
+    @Override
+    public Role findRoleByLoginPassword(final String login, final String password) {
+        Role result = null;
+        try (final Connection conn = SOURCE.getConnection();
+             final PreparedStatement st = conn.prepareStatement(FIND_ROLE_BY_LOGIN_AND_PASSWORD)) {
+            st.setString(1, login);
+            st.setString(2, password);
+            try (final ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    result = new Role(rs.getString("role_name"));
+                }
+            }
+        } catch (SQLException sql) {
+            LOGGER.warn("Exception in findRoleByLoginPassword() method", sql);
+        }
+        return result;
+    }
+
+    /**
+     * @return список ролей.
+     */
+    @Override
+    public List<Role> findAllRoles() {
+        final List<Role> result = new ArrayList<>();
+        try (final Connection conn = SOURCE.getConnection();
+             final Statement st = conn.createStatement();
+             final ResultSet rs = st.executeQuery(SELECT_ALL_ROLES)) {
+            while (rs.next()) {
+                result.add(new Role(rs.getString("role_name")));
+            }
+        } catch (SQLException sql) {
+            LOGGER.warn("Exception in findAllRoles() method", sql);
         }
         return result;
     }

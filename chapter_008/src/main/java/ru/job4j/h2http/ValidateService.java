@@ -1,5 +1,6 @@
 package ru.job4j.h2http;
 import ru.job4j.h4jsp.DBStore;
+import ru.job4j.h6filter.Role;
 import java.util.List;
 
 /**
@@ -36,37 +37,64 @@ public class ValidateService implements Validate { //Logic
      */
     @Override
     public void add(final List<String> list) throws NotExistedUserException {
+        if (list != null) {
+            store.add(list, getRoleNumber(list));
+        }
+    }
+
+    /**
+     * @param id   номер юзера.
+     * @param list список строк для изменения данных в хранилище.
+     * @throws NotExistedUserException исключение.
+     */
+    @Override
+    public void update(int id, final List<String> list) throws NotExistedUserException {
+        if (list != null) {
+            store.update(id, list, getRoleNumber(list));
+        }
+    }
+
+    /**
+     * Проверяет, нет ли пустых строк в list. Если есть, то пробрасывется исключение.
+     * В зависимости от того какое название роли в последней строке list, возвращается порядковый номер роли из БД roles.
+     * @param list список строк для изменения данных в хранилище.
+     * @return порядковый номер роли.
+     * @throws NotExistedUserException исключение.
+     */
+    private int getRoleNumber(final List<String> list) throws NotExistedUserException {
+        int i = 0; //Счетчик количества элементов в list.
+        int number = 0; //Номер для таблицы users, которая ссылается на таблицу roles.
         for (String s : list) {
             if (s.equals("")) {
                 throw new NotExistedUserException("EmptyCreate");
             }
-        }
-        store.add(list);
-    }
-
-    /**
-     * @param id   номер.
-     * @param list список строк для изменения данных в хранилище.
-     * @throws VersionUserException исключение.
-     * @throws NotExistedUserException исключение.
-     */
-    public void update(int id, final List<String> list) throws NotExistedUserException {
-        for (String s : list) {
-            if (s.equals("")) {
-                throw new NotExistedUserException("EmptyUpdate");
+            if (i++ == 5) {
+                switch (s) {
+                    case "Administrator": number = 1;
+                        break;
+                    case "Anonymous": number = 2;
+                        break;
+                    case "Moderator": number = 3;
+                        break;
+                    default: number = 4;
+                        break;
+                }
             }
         }
-        store.update(id, list);
+        list.remove(i - 1); //Удалить из list последний элемент с названием роли.
+        return number;
     }
 
     /**
-     * @param id номер, по которому удаляется строка в хранилище.
+     * @param id номер, по которому удаляется строка из хранилища.
      * @throws VersionUserException исключение.
      * @throws NotExistedUserException исключение.
      */
     @Override
     public void delete(int id) throws VersionUserException, NotExistedUserException {
-        store.delete(id);
+        if (id > 0) {
+            store.delete(id);
+        }
     }
 
     /**
@@ -78,13 +106,38 @@ public class ValidateService implements Validate { //Logic
     }
 
     /**
-     * @param id номер.
+     * @param id номер юзера для нахождения в хранилище.
      * @return юзера по его номеру.
      * @throws NotExistedUserException исключение.
      */
     @Override
     public User findById(int id) throws NotExistedUserException {
         return store.findById(id);
+    }
+
+    /**
+     * @return список ролей.
+     */
+    @Override
+    public List<Role> findAllRoles() {
+        return store.findAllRoles();
+    }
+
+    /**
+     * @param login    логин юзера.
+     * @param password пароль юзера.
+     * @return роль юзера.
+     * @throws NotExistedUserException исключение.
+     */
+    @Override
+    public Role findRoleByLoginPassword(String login, String password) throws NotExistedUserException {
+        Role result;
+        if (login != null && password != null) {
+            result = store.findRoleByLoginPassword(login, password);
+        } else {
+            throw new NotExistedUserException("Invalid login and (-or) password");
+        }
+        return result;
     }
 
     /**
