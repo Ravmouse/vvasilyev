@@ -19,7 +19,7 @@ import java.util.Properties;
 /**
  * В классе используется Connection pool dbcp2. В каждом методе происходит взятие коннекта из пула или создание нового.
  * @author Vitaly Vasilyev, date: 14.11.2018, e-mail: rav.energ@rambler.ru
- * @version 1.0
+ * @version 1.2
  */
 public class DBStore implements AutoCloseable, Store {
     /**
@@ -91,17 +91,13 @@ public class DBStore implements AutoCloseable, Store {
     }
 
     /**
-     * @param list   список строк для добавления данных в хранилище.
-     * @param number номер для таблицы users, которая ссылается на таблицу roles.
+     * Здесь юзер без id, поскольку id будет сгенерирован БД.
+     * @param user юзер, чьи данные нужно добавить в БД.
      */
     @Override
-    public void add(final List<String> list, int number) {
+    public void add(final User user) {
         try (final Connection conn = SOURCE.getConnection(); final PreparedStatement statement = conn.prepareStatement(ADD_SQL)) {
-            int i = 1;
-            for (String s : list) {
-                statement.setString(i++, s);
-            }
-            statement.setInt(i, number);
+            setStatementValues(statement, user);
             statement.executeUpdate();
         } catch (SQLException sql) {
             LOGGER.warn("Exception in add() method", sql);
@@ -109,32 +105,43 @@ public class DBStore implements AutoCloseable, Store {
     }
 
     /**
-     * @param id     номер юзера.
-     * @param list   список строк для изменения данных в хранилище.
-     * @param number номер для таблицы users, которая ссылается на таблицу roles.
+     * Здесь юзер с id, т.к. id нужен для поиска юзера в БД среди существующих.
+     * @param user юзер, чьи данные нужно обновить в БД.
      */
     @Override
-    public void update(int id, final List<String> list, int number) {
-        try (final Connection conn = SOURCE.getConnection(); final PreparedStatement st = conn.prepareStatement(UPDATE_SQL)) {
-            int i = 1;
-            for (String s : list) {
-                st.setString(i++, s);
-            }
-            st.setInt(6, number);
-            st.setInt(7, id);
-            st.executeUpdate();
+    public void update(final User user) {
+        try (final Connection conn = SOURCE.getConnection(); final PreparedStatement statement = conn.prepareStatement(UPDATE_SQL)) {
+            setStatementValues(statement, user);
+            statement.setInt(7, user.getId());
+            statement.executeUpdate();
         } catch (SQLException sql) {
             LOGGER.warn("Exception in update() method", sql);
         }
     }
 
     /**
-     * @param id номер, по которому удаляется строка из хранилища.
+     * В прекомпилированном запросе устанавливаются параметры.
+     * @param statement ссылка на прекомпилированный запрос.
+     * @param user юзер.
+     * @throws SQLException искл.
+     */
+    private void setStatementValues(final PreparedStatement statement, final User user) throws SQLException {
+        statement.setString(1, user.getName());
+        statement.setString(2, user.getLogin());
+        statement.setString(3, user.getEmail());
+        statement.setString(4, user.getComments());
+        statement.setString(5, user.getPassword());
+        statement.setInt(6, user.getRole().getId());
+    }
+
+    /**
+     * Здесь юзер только с id и ничем более.
+     * @param user юзер, чьи данные нужно удалить из БД.
      */
     @Override
-    public void delete(int id) {
+    public void delete(final User user) {
         try (final Connection conn = SOURCE.getConnection(); final PreparedStatement st = conn.prepareStatement(DELETE_SQL)) {
-            st.setInt(1, id);
+            st.setInt(1, user.getId());
             st.executeUpdate();
         } catch (SQLException sql) {
             LOGGER.warn("Exception in delete() method", sql);
@@ -142,6 +149,7 @@ public class DBStore implements AutoCloseable, Store {
     }
 
     /**
+     * Здесь юзеры создаются со всеми полями своего класса, в т.ч. с createDate.
      * @return список юзеров.
      */
     @Override
@@ -158,8 +166,7 @@ public class DBStore implements AutoCloseable, Store {
                         rs.getString("createDate"),
                         rs.getString("comments"),
                         rs.getString("password"),
-                        rs.getString("role_name")
-                ));
+                        new Role(rs.getString("role_name"))));
             }
         } catch (SQLException sql) {
             LOGGER.warn("Exception in findAll() method", sql);
@@ -186,8 +193,7 @@ public class DBStore implements AutoCloseable, Store {
                             rs.getString("createDate"),
                             rs.getString("comments"),
                             rs.getString("password"),
-                            rs.getString("role_name")
-                    );
+                            new Role(rs.getString("role_name")));
                 }
             }
         } catch (SQLException sql) {
@@ -197,17 +203,17 @@ public class DBStore implements AutoCloseable, Store {
     }
 
     /**
-     * @param login    логин юзера.
-     * @param password пароль юзера.
+     * Сюда юзер передается только с логином и паролем.
+     * @param user юзер, чью роль нужно найти.
      * @return роль юзера.
      */
     @Override
-    public Role findRoleByLoginPassword(final String login, final String password) {
+    public Role findRole(final User user) {
         Role result = null;
         try (final Connection conn = SOURCE.getConnection();
              final PreparedStatement st = conn.prepareStatement(FIND_ROLE_BY_LOGIN_AND_PASSWORD)) {
-            st.setString(1, login);
-            st.setString(2, password);
+            st.setString(1, user.getLogin());
+            st.setString(2, user.getPassword());
             try (final ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     result = new Role(rs.getString("role_name"));
@@ -220,6 +226,7 @@ public class DBStore implements AutoCloseable, Store {
     }
 
     /**
+     * Все роли загружаются из БД в список ролей.
      * @return список ролей.
      */
     @Override

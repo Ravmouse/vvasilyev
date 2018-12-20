@@ -1,6 +1,7 @@
 package ru.job4j.h2http;
-import java.util.List;
+
 import java.util.concurrent.atomic.AtomicInteger;
+import ru.job4j.h6filter.Role;
 
 /**
  * Класс юзера.
@@ -9,7 +10,7 @@ public class User {
     /**
      * Номер.
      */
-    private final int id;
+    private int id;
     /**
      * Имя.
      */
@@ -37,48 +38,52 @@ public class User {
     /**
      * Роль.
      */
-    private String role;
+    private Role role;
     /**
      * Версия.
      */
     private AtomicInteger version = new AtomicInteger(0);
-    /**
-     * Для подсчета и хранения кол-ва созданных юзеров.
-     */
-    private static final AtomicInteger COUNT = new AtomicInteger(0);
 
     /**
+     * Конструктор для метода add() в классе ValidateService, где id юзера не нужен, т.к. id - SERIAL PRIMARY KEY.
      * @param name имя.
      * @param login логин.
      * @param email электронная почта.
-     * @param createDate дата создания.
+     * @param comments комментарии.
+     * @param password пароль.
+     * @param role роль.
      */
-    public User(String name, String login, String email, String createDate) {
-        this.id = COUNT.incrementAndGet();
+    public User(String name, String login, String email, String comments, String password, Role role) {
         this.name = name;
         this.login = login;
         this.email = email;
-        this.createDate = createDate;
+        this.comments = comments;
+        this.password = password;
+        this.role = role;
     }
 
     /**
+     * Конструктор для метода update() в классе ValidateService, где нужен id юзера, чтобы его найти в БД.
      * @param id номер.
      * @param name имя.
      * @param login логин.
      * @param email электронная почта.
-     * @param createDate дата создания.
      * @param comments комментарии.
+     * @param password пароль.
+     * @param role роль.
      */
-    public User(int id, final String name, final String login, final String email, final String createDate, final String comments) {
+    public User(int id, String name, String login, String email, String comments, String password, Role role) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.email = email;
-        this.createDate = createDate;
         this.comments = comments;
+        this.password = password;
+        this.role = role;
     }
 
     /**
+     * Конструктор для класса DBStore при получении всех юзеров из БД.
      * @param id номер.
      * @param name имя.
      * @param login логин.
@@ -88,8 +93,7 @@ public class User {
      * @param password пароль.
      * @param role роль.
      */
-    public User(int id, final String name, final String login, final String email, final String createDate,
-                final String comments, final String password, final String role) {
+    public User(int id, String name, String login, String email, String createDate, String comments, String password, Role role) {
         this.id = id;
         this.name = name;
         this.login = login;
@@ -98,6 +102,24 @@ public class User {
         this.comments = comments;
         this.password = password;
         this.role = role;
+    }
+
+    /**
+     * Конструктор для метода delete() в классе ValidateService, где другие параметры кроме id не нужны.
+     * @param id номер.
+     */
+    public User(int id) {
+        this.id = id;
+    }
+
+    /**
+     * Конструктор для метода findRole() в классе ValidateService, где нужны только login и password юзера.
+     * @param login логин.
+     * @param password пароль.
+     */
+    public User(String login, String password) {
+        this.login = login;
+        this.password = password;
     }
 
     /**
@@ -120,17 +142,7 @@ public class User {
     @Override
     public String toString() {
         return String.format("ID = %d, Name = %s, Login = %s, E-mail = %s, Create date = %s, Comments = %s, Password = %s, Role = %s",
-                              id, name, login, email, createDate, comments, password, role);
-    }
-
-    /**
-     * @param list список строк со значениями юзера.
-     */
-    public void changeFields(List<String> list) {
-        this.name = list.get(0);
-        this.login = list.get(1);
-        this.email = list.get(2);
-        this.createDate = list.get(3);
+                              id, name, login, email, createDate, comments, password, role.getName());
     }
 
     /**
@@ -178,7 +190,7 @@ public class User {
     /**
      * @return роль.
      */
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 }

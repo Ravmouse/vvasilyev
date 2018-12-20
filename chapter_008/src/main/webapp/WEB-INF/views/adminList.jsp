@@ -42,7 +42,7 @@
                                 <td><c:out value="${user.createDate}"/></td>
                                 <td><c:out value="${user.comments}"/></td>
                                 <td><c:out value="${user.password}"/></td>
-                                <td><c:out value="${user.role}"/></td>
+                                <td><c:out value="${user.role.name}"/></td>
                                 <td style="border: hidden">
                                     <form action="${pageContext.servletContext.contextPath}/update?id=${user.id}" method="post">
                                         <input type="submit" value="Update"/>

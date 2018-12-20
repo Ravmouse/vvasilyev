@@ -1,15 +1,12 @@
 package ru.job4j.h2http;
 
-import org.apache.log4j.Logger;
 import ru.job4j.utils.Utils;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletConfig;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,17 +20,12 @@ public class UserServlet extends HttpServlet { //Presentation
     /**
      * Ссылка на класс ValidateService, где данные проверяются.
      */
-    /*private*/ public static final Validate LOGIC = ValidateService.getInstance();
+    public static final Validate LOGIC = ValidateService.getInstance();
     /**
      * Хэш-отображение с экземплярами классов, реализующими интерфейс Consumer, которые получаются после
      * выполнения соответствующих методов.
      */
     private final Map<String, Consumer<HttpServletRequest>> actionFunc = new HashMap<>();
-    /**
-     * Логгер.
-     */
-    public static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
-
 
     /**
      * Добавление в хэш-отображение ключей и значений.
@@ -60,7 +52,7 @@ public class UserServlet extends HttpServlet { //Presentation
      * @throws IOException исключение.
      */
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         final String text;
         final String key = req.getParameter("action");
         try {
@@ -112,22 +104,24 @@ public class UserServlet extends HttpServlet { //Presentation
     /**
      * @param req запрос.
      * @return список параметров из запроса.
+     * @throws NotExistedUserException искл.
      */
-    private List<String> parseRequest(HttpServletRequest req) {
+    private List<String> parseRequest(HttpServletRequest req) throws NotExistedUserException {
         List<String> list = new ArrayList<>();
-        String decodedString = null;
-        try {
-            //Декодирование, чтобы был символ @, а не %40.
-            decodedString = URLDecoder.decode(req.getParameter("email"), "UTF-8");
-        } catch (IOException io) {
-            LOGGER.warn("Exception in UserServlet class", io);
-        }
+        String decodedString = Utils.convert(req.getParameter("email"), "UTF-8");
         list.add(req.getParameter("name"));
         list.add(req.getParameter("login"));
         list.add(decodedString);
         list.add(req.getParameter("comments"));
         list.add(req.getParameter("password"));
         list.add(req.getParameter("role"));
+        for (String s : list) {
+            if (s.equals("") && req.getParameter("action").equals("add")) {
+                throw new NotExistedUserException("EmptyCreate");
+            } else if (s.equals("") && req.getParameter("action").equals("update")) {
+                throw new NotExistedUserException("EmptyUpdate");
+            }
+        }
         return list;
     }
 }

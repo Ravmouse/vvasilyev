@@ -42,11 +42,11 @@
                             <c:when test="${loginRole.name != 'User'}">
                                 <select name="role">
                                     <%--Раскрывающийся список появляется с тем значением, которое присутствует у юзера--%>
-                                    <option selected value="${user.role}">${user.role}</option>
+                                    <option selected value="${user.role.name}">${user.role.name}</option>
                                     <%--Это - цикл по тем значениям, которые содержатся в БД в таблице roles--%>
                                     <c:forEach items="${roles}" var="role">
                                         <%--Для каждого значения из таблицы roles, если это значение не равно значению юзера--%>
-                                        <c:if test="${role.name != user.role}">
+                                        <c:if test="${role.name != user.role.name}">
                                             <%--То это значение поместить в раскрывающийся список, а повторяющееся значение не помещать--%>
                                             <option value="${role.name}">${role.name}</option>
                                         </c:if>
@@ -56,10 +56,10 @@
                             <%--Если роль юзера равна User--%>
                             <c:when test="${loginRole.name == 'User'}">
                                 <select name="role" disabled>
-                                    <option selected value="${user.role}">${user.role}</option>
+                                    <option selected value="${user.role.name}">${user.role.name}</option>
                                 </select>
                                 <%--Элемент нужен только для того, чтобы присвоить ему имя и значение неактивного select--%>
-                                <input type="hidden" name="role" value="${user.role}"/>
+                                <input type="hidden" name="role" value="${user.role.name}"/>
                             </c:when>
                         </c:choose>
                     </td>

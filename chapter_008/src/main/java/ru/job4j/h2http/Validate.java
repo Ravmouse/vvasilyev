@@ -37,5 +37,5 @@ public interface Validate {
      * @param password пароль юзера.
      * @return роль юзера.
      */
-    Role findRoleByLoginPassword(String login, String password);
+    Role findRole(String login, String password);
 }

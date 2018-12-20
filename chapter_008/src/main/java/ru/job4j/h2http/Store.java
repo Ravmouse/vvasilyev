@@ -3,24 +3,21 @@ import ru.job4j.h6filter.Role;
 import java.util.List;
 
 /**
- * Интерфейс для целей хранения, получения, удаления данных в памяти (Heap) или БД.
+ * Интерфейс для целей хранения, получения, удаления данных из памяти (Heap) или БД.
  */
 public interface Store {
     /**
-     * @param list список строк для добавления данных в хранилище.
-     * @param number номер для таблицы users, которая ссылается на таблицу roles.
+     * @param user юзер, чьи данные нужно добавить в БД.
      */
-    void add(final List<String> list, int number);
+    void add(final User user);
     /**
-     * @param id номер юзера.
-     * @param list список строк для изменения данных в хранилище.
-     * @param number номер для таблицы users, которая ссылается на таблицу roles.
+     * @param user юзер, чьи данные нужно обновить в БД.
      */
-    void update(int id, final List<String> list, int number);
+    void update(final User user);
     /**
-     * @param id номер, по которому удаляется строка из хранилища.
+     * @param user юзер, чьи данные нужно удалить из БД.
      */
-    void delete(int id);
+    void delete(final User user);
     /**
      * @return список юзеров.
      */
@@ -35,9 +32,8 @@ public interface Store {
      */
     List<Role> findAllRoles();
     /**
-     * @param login логин юзера.
-     * @param password пароль юзера.
+     * @param user юзер, чью роль нужно найти.
      * @return роль юзера.
      */
-    Role findRoleByLoginPassword(String login, String password);
+    Role findRole(final User user);
 }

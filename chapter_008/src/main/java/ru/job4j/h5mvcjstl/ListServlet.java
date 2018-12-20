@@ -5,7 +5,6 @@ import ru.job4j.h2http.UserServlet;
 import ru.job4j.h2http.ValidateService;
 import ru.job4j.h6filter.Role;
 import ru.job4j.utils.Utils;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +45,7 @@ public class ListServlet extends UserServlet {
      * @throws IOException исключение.
      */
     @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         super.doPost(req, res);
         try {
             if (req.getAttribute("text") == null) {

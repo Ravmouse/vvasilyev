@@ -34,13 +34,11 @@ public class LoginPassServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         final String login = req.getParameter("login");
         final String password = req.getParameter("password");
-        Role role = ValidateService.getInstance().findRoleByLoginPassword(login, password);
+        Role role = ValidateService.getInstance().findRole(login, password);
         if (role != null) {
             HttpSession session = req.getSession();
-            synchronized (session) {
-                session.setAttribute("login", login);
-                session.setAttribute("role", role);
-            }
+            session.setAttribute("login", login);
+            session.setAttribute("role", role);
             res.sendRedirect(String.format("%s/", req.getContextPath()));
         } else {
             req.setAttribute("message", "Wrong login or password!");

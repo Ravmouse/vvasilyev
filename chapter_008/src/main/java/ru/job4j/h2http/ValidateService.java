@@ -1,4 +1,5 @@
 package ru.job4j.h2http;
+
 import ru.job4j.h4jsp.DBStore;
 import ru.job4j.h6filter.Role;
 import java.util.List;
@@ -8,14 +9,12 @@ import java.util.List;
  */
 public class ValidateService implements Validate { //Logic
     /**
-     * Статическое поле.
+     * Статическое поле - ссылка на конструктор  этого класса.
      */
     private static final ValidateService VALIDATE = new ValidateService();
     /**
-     * Ссылка на класс MemoryStore, где хранятся данные.
      * Ссылка на класс, откуда осуществляется подключение к БД.
      */
-//    private final Store store = MemoryStore.getInstance();
     private final Store store = DBStore.getInstance();
 
     /**
@@ -33,68 +32,37 @@ public class ValidateService implements Validate { //Logic
 
     /**
      * @param list список строк для добавления данных в хранилище.
-     * @throws NotExistedUserException исключение.
      */
     @Override
-    public void add(final List<String> list) throws NotExistedUserException {
-        if (list != null) {
-            store.add(list, getRoleNumber(list));
-        }
+    public void add(final List<String> list) {
+        store.add(new User(list.get(0),
+                           list.get(1),
+                           list.get(2),
+                           list.get(3),
+                           list.get(4),
+                           new Role(list.get(5))));
     }
 
     /**
-     * @param id   номер юзера.
+     * @param id   номер юзера. Id проверять не надо, т.к. юзер всегда присутствует на экране.
      * @param list список строк для изменения данных в хранилище.
-     * @throws NotExistedUserException исключение.
      */
     @Override
-    public void update(int id, final List<String> list) throws NotExistedUserException {
-        if (list != null) {
-            store.update(id, list, getRoleNumber(list));
-        }
+    public void update(int id, final List<String> list) {
+        store.update(new User(id, list.get(0),
+                                  list.get(1),
+                                  list.get(2),
+                                  list.get(3),
+                                  list.get(4),
+                                  new Role(list.get(5))));
     }
 
     /**
-     * Проверяет, нет ли пустых строк в list. Если есть, то пробрасывется исключение.
-     * В зависимости от того какое название роли в последней строке list, возвращается порядковый номер роли из БД roles.
-     * @param list список строк для изменения данных в хранилище.
-     * @return порядковый номер роли.
-     * @throws NotExistedUserException исключение.
-     */
-    private int getRoleNumber(final List<String> list) throws NotExistedUserException {
-        int i = 0; //Счетчик количества элементов в list.
-        int number = 0; //Номер для таблицы users, которая ссылается на таблицу roles.
-        for (String s : list) {
-            if (s.equals("")) {
-                throw new NotExistedUserException("EmptyCreate");
-            }
-            if (i++ == 5) {
-                switch (s) {
-                    case "Administrator": number = 1;
-                        break;
-                    case "Anonymous": number = 2;
-                        break;
-                    case "Moderator": number = 3;
-                        break;
-                    default: number = 4;
-                        break;
-                }
-            }
-        }
-        list.remove(i - 1); //Удалить из list последний элемент с названием роли.
-        return number;
-    }
-
-    /**
-     * @param id номер, по которому удаляется строка из хранилища.
-     * @throws VersionUserException исключение.
-     * @throws NotExistedUserException исключение.
+     * @param id номер, по которому удаляется строка из хранилища. Id проверять не надо, т.к. номер юзера всегда > 0.
      */
     @Override
-    public void delete(int id) throws VersionUserException, NotExistedUserException {
-        if (id > 0) {
-            store.delete(id);
-        }
+    public void delete(int id) {
+        store.delete(new User(id));
     }
 
     /**
@@ -108,10 +76,9 @@ public class ValidateService implements Validate { //Logic
     /**
      * @param id номер юзера для нахождения в хранилище.
      * @return юзера по его номеру.
-     * @throws NotExistedUserException исключение.
      */
     @Override
-    public User findById(int id) throws NotExistedUserException {
+    public User findById(int id) {
         return store.findById(id);
     }
 
@@ -127,16 +94,11 @@ public class ValidateService implements Validate { //Logic
      * @param login    логин юзера.
      * @param password пароль юзера.
      * @return роль юзера.
-     * @throws NotExistedUserException исключение.
      */
     @Override
-    public Role findRoleByLoginPassword(String login, String password) throws NotExistedUserException {
+    public Role findRole(String login, String password) {
         Role result;
-        if (login != null && password != null) {
-            result = store.findRoleByLoginPassword(login, password);
-        } else {
-            throw new NotExistedUserException("Invalid login and (-or) password");
-        }
+        result = store.findRole(new User(login, password));
         return result;
     }
 
