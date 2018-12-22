@@ -1,6 +1,6 @@
 package ru.job4j.h2http;
 
-import ru.job4j.h4jsp.DBStore;
+import ru.job4j.h7mockito.DBStore;
 import ru.job4j.h6filter.Role;
 import java.util.List;
 

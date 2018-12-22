@@ -130,6 +130,13 @@ public class User {
     }
 
     /**
+     * @param id номер.
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    /**
      * @return версию юзера.
      */
     public AtomicInteger getVersion() {
@@ -192,5 +199,17 @@ public class User {
      */
     public Role getRole() {
         return role;
+    }
+
+    /**
+     * @param user юзер с данными для присвоения.
+     */
+    public void exchange(final User user) {
+        this.name = user.name;
+        this.login = user.login;
+        this.email = user.email;
+        this.comments = user.comments;
+        this.password = user.password;
+        this.role = user.role;
     }
 }

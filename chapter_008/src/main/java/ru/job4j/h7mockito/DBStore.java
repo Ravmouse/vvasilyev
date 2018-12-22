@@ -1,4 +1,4 @@
-package ru.job4j.h4jsp;
+package ru.job4j.h7mockito;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.BasicConfigurator;
@@ -71,7 +71,7 @@ public class DBStore implements AutoCloseable, Store {
     /**
      * Приватный конструктор.
      */
-    private DBStore() {
+    public DBStore() {
         BasicConfigurator.configure();
         final Properties properties = Utils.createAndLoadProp("ru/job4j/h4jsp/app.properties");
         SOURCE.setDriverClassName("org.postgresql.Driver");
