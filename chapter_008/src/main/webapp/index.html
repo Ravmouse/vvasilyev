@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>BootStrap Example</title>
@@ -20,6 +19,15 @@
             }
             return false;
         }
+        function addRow() {
+            var result = true;
+            var name = document.getElementById("name").value;
+            var surname = document.getElementById("surname").value;
+            var desc = document.getElementById("desc").value;
+            $('#table tr:last').after('<tr><td>' + name + '</td>><td>' + surname + '</td>><td>'
+                + $('input:checked').val() + '</td>><td>' + desc + '</td></tr>');
+            return result;
+        }
     </script>
 </head>
 <body>
@@ -37,8 +45,8 @@
             </div>
             <div class="form-group">
                 <label>Sex:</label><br/>
-                <label class="radio-inline"><input type="radio" name="optradio" checked>Male</label>
-                <label class="radio-inline"><input type="radio" name="optradio">Female</label>
+                <label class="radio-inline"><input type="radio" name="optradio" checked value="Male">Male</label>
+                <label class="radio-inline"><input type="radio" name="optradio" value="Female">Female</label>
             </div>
             <div class="form-group">
                 <label for="desc">Description:</label>
@@ -47,7 +55,7 @@
             <button class="btn btn-primary" onclick="return validate();">Submit</button>
         </form>
         <br/>
-        <table class="table table-striped">
+        <table class="table table-striped" id="table">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -58,19 +66,12 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>John</td>
-                    <td>Smith</td>
-                    <td>Male</td>
-                    <td>Outlaw</td>
                 </tr>
                 <tr>
-                    <td>Candy</td>
-                    <td>Suxx</td>
-                    <td>Female</td>
-                    <td>Hot</td>
                 </tr>
             </tbody>
         </table>
+        <button class="btn btn-success" onclick="return addRow();">Add</button>
     </div>
 </body>
 </html>
