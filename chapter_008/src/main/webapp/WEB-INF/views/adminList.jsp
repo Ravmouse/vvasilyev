@@ -49,7 +49,7 @@
                                     </form>
                                 </td>
                                 <td style="border: hidden">
-                                    <form action="${pageContext.servletContext.contextPath}/?action=delete&id=${user.id}" method="post">
+                                    <form action="${pageContext.servletContext.contextPath}/list?action=delete&id=${user.id}" method="post">
                                         <input type="submit" value="Delete"/>
                                     </form>
                                 </td>
@@ -60,7 +60,7 @@
                 <td style="border: hidden; vertical-align: top">
                     <table style="border: hidden">
                         <tr><td style="border: hidden"></td><td style="border: hidden"><h4>Add a new user</h4></td></tr>
-                        <form action="${pageContext.servletContext.contextPath}/?action=add" method="post">
+                        <form action="${pageContext.servletContext.contextPath}/list?action=add" method="post">
                             <tr>
                                 <td style="border: hidden">Name: </td>
                                 <td style="border: hidden"><input name="name"></td>

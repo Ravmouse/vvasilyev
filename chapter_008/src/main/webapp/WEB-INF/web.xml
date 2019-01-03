@@ -4,15 +4,19 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
-    <servlet>
-        <servlet-name>EchoServlet</servlet-name>
-        <servlet-class>ru.job4j.h1structclientservapp.EchoServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UserServlet</servlet-name>
-        <servlet-class>ru.job4j.h2http.UserServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <!--<servlet>-->
+        <!--<servlet-name>EchoServlet</servlet-name>-->
+        <!--<servlet-class>ru.job4j.h1structclientservapp.EchoServlet</servlet-class>-->
+    <!--</servlet>-->
+    <!--<servlet>-->
+        <!--<servlet-name>UserServlet</servlet-name>-->
+        <!--<servlet-class>ru.job4j.h2http.UserServlet</servlet-class>-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
     <servlet>
         <servlet-name>list</servlet-name>
         <servlet-class>ru.job4j.h5mvcjstl.ListServlet</servlet-class>
@@ -29,18 +33,22 @@
         <servlet-name>logout</servlet-name>
         <servlet-class>ru.job4j.h6filter.Logout</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>json</servlet-name>
+        <servlet-class>ru.job4j.h8htmlcssjs.JsonController</servlet-class>
+    </servlet>
 
-    <servlet-mapping>
-        <servlet-name>EchoServlet</servlet-name>
-        <url-pattern>/echo</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/users</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>EchoServlet</servlet-name>-->
+        <!--<url-pattern>/echo</url-pattern>-->
+    <!--</servlet-mapping>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>UserServlet</servlet-name>-->
+        <!--<url-pattern>/users</url-pattern>-->
+    <!--</servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>list</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/list</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>update</servlet-name>
@@ -53,6 +61,10 @@
     <servlet-mapping>
         <servlet-name>logout</servlet-name>
         <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>json</servlet-name>
+        <url-pattern>/json</url-pattern>
     </servlet-mapping>
 
     <filter>

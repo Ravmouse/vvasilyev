@@ -1,6 +1,8 @@
 package ru.job4j.utils;
 
 import ru.job4j.h6filter.Role;
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,5 +106,32 @@ public class Utils {
             }
         }
         return rsl;
+    }
+
+    /**
+     * Получается тело запроса как символьные данные, далее строка разбивается на массив строк,
+     * потом формируется StringBuilder как JSON-объект.
+     * @param req запрос, содержимое которого нужно прочесть.
+     * @return собранную строку в виде StringBuilder.
+     */
+    public static StringBuilder getRequestBody(HttpServletRequest req) {
+        String line = "";
+        final StringBuilder sb = new StringBuilder("{\"");
+        try (final BufferedReader reader = req.getReader()) {
+            line = reader.readLine();
+        } catch (final IOException io) {
+            io.printStackTrace();
+        }
+        final String[] array = line.split("&");
+        for (int i = 0; i < array.length; i++) {
+            sb.append(array[i].substring(0, array[i].indexOf("=")));
+            sb.append("\":\"");
+            sb.append(array[i].substring(array[i].indexOf("=") + 1));
+            if (i != array.length - 1) {
+                sb.append("\",\"");
+            }
+        }
+        sb.append("\"}");
+        return sb;
     }
 }

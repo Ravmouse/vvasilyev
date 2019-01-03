@@ -7,7 +7,7 @@
     <body>
         <h2 align="center" style="color: darkred">Update the user</h2>
         <table align="center">
-            <form action="${pageContext.servletContext.contextPath}/?action=update&id=${user.id}" method="post">
+            <form action="${pageContext.servletContext.contextPath}/list?action=update&id=${user.id}" method="post">
                 <tr>
                     <td>Name: </td>
                     <td><input name="name" value="${user.name}" size="30"></td>
