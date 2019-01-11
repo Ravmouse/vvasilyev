@@ -24,6 +24,14 @@ public class User {
      */
     private String email;
     /**
+     * Страна.
+     */
+    private String country;
+    /**
+     * Город.
+     */
+    private String city;
+    /**
      * Дата создания.
      */
     private String createDate;
@@ -49,14 +57,19 @@ public class User {
      * @param name имя.
      * @param login логин.
      * @param email электронная почта.
+     * @param country страна.
+     * @param city город.
      * @param comments комментарии.
      * @param password пароль.
      * @param role роль.
      */
-    public User(String name, String login, String email, String comments, String password, Role role) {
+    public User(String name, String login, String email, String country, String city, String comments,
+                String password, Role role) {
         this.name = name;
         this.login = login;
         this.email = email;
+        this.country = country;
+        this.city = city;
         this.comments = comments;
         this.password = password;
         this.role = role;
@@ -68,15 +81,20 @@ public class User {
      * @param name имя.
      * @param login логин.
      * @param email электронная почта.
+     * @param country страна.
+     * @param city город.
      * @param comments комментарии.
      * @param password пароль.
      * @param role роль.
      */
-    public User(int id, String name, String login, String email, String comments, String password, Role role) {
+    public User(int id, String name, String login, String email, String country, String city, String comments,
+                String password, Role role) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.email = email;
+        this.country = country;
+        this.city = city;
         this.comments = comments;
         this.password = password;
         this.role = role;
@@ -88,16 +106,21 @@ public class User {
      * @param name имя.
      * @param login логин.
      * @param email электронная почта.
+     * @param country страна.
+     * @param city город.
      * @param createDate дата создания.
      * @param comments комментарии.
      * @param password пароль.
      * @param role роль.
      */
-    public User(int id, String name, String login, String email, String createDate, String comments, String password, Role role) {
+    public User(int id, String name, String login, String email, String country, String city, String createDate,
+                String comments, String password, Role role) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.email = email;
+        this.country = country;
+        this.city = city;
         this.createDate = createDate;
         this.comments = comments;
         this.password = password;
@@ -171,6 +194,20 @@ public class User {
      */
     public String getEmail() {
         return email;
+    }
+
+    /**
+     * @return страну.
+     */
+    public String getCountry() {
+        return country;
+    }
+
+    /**
+     * @return город.
+     */
+    public String getCity() {
+        return city;
     }
 
     /**

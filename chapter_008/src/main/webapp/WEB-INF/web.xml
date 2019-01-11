@@ -4,19 +4,19 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
-    <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
+    <!--<welcome-file-list>-->
+        <!--<welcome-file>index.html</welcome-file>-->
+    <!--</welcome-file-list>-->
 
-    <!--<servlet>-->
-        <!--<servlet-name>EchoServlet</servlet-name>-->
-        <!--<servlet-class>ru.job4j.h1structclientservapp.EchoServlet</servlet-class>-->
-    <!--</servlet>-->
-    <!--<servlet>-->
-        <!--<servlet-name>UserServlet</servlet-name>-->
-        <!--<servlet-class>ru.job4j.h2http.UserServlet</servlet-class>-->
-        <!--<load-on-startup>1</load-on-startup>-->
-    <!--</servlet>-->
+    <!--&lt;!&ndash;<servlet>&ndash;&gt;-->
+        <!--&lt;!&ndash;<servlet-name>EchoServlet</servlet-name>&ndash;&gt;-->
+        <!--&lt;!&ndash;<servlet-class>ru.job4j.h1structclientservapp.EchoServlet</servlet-class>&ndash;&gt;-->
+    <!--&lt;!&ndash;</servlet>&ndash;&gt;-->
+    <!--&lt;!&ndash;<servlet>&ndash;&gt;-->
+        <!--&lt;!&ndash;<servlet-name>UserServlet</servlet-name>&ndash;&gt;-->
+        <!--&lt;!&ndash;<servlet-class>ru.job4j.h2http.UserServlet</servlet-class>&ndash;&gt;-->
+        <!--&lt;!&ndash;<load-on-startup>1</load-on-startup>&ndash;&gt;-->
+    <!--&lt;!&ndash;</servlet>&ndash;&gt;-->
     <servlet>
         <servlet-name>list</servlet-name>
         <servlet-class>ru.job4j.h5mvcjstl.ListServlet</servlet-class>
@@ -36,6 +36,10 @@
     <servlet>
         <servlet-name>json</servlet-name>
         <servlet-class>ru.job4j.h8htmlcssjs.JsonController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>cc</servlet-name>
+        <servlet-class>ru.job4j.h8htmlcssjs.CountryAndCityController</servlet-class>
     </servlet>
 
     <!--<servlet-mapping>-->
@@ -65,6 +69,10 @@
     <servlet-mapping>
         <servlet-name>json</servlet-name>
         <url-pattern>/json</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>cc</servlet-name>
+        <url-pattern>/cc</url-pattern>
     </servlet-mapping>
 
     <filter>

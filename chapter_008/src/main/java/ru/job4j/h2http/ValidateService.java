@@ -40,7 +40,9 @@ public class ValidateService implements Validate { //Logic
                            list.get(2),
                            list.get(3),
                            list.get(4),
-                           new Role(list.get(5))));
+                           list.get(5),
+                           list.get(6),
+                           new Role(list.get(7))));
     }
 
     /**
@@ -54,7 +56,9 @@ public class ValidateService implements Validate { //Logic
                                   list.get(2),
                                   list.get(3),
                                   list.get(4),
-                                  new Role(list.get(5))));
+                                  list.get(5),
+                                  list.get(6),
+                                  new Role(list.get(7))));
     }
 
     /**

@@ -112,6 +112,8 @@ public class UserServlet extends HttpServlet { //Presentation
         list.add(req.getParameter("name"));
         list.add(req.getParameter("login"));
         list.add(decodedString);
+        list.add(req.getParameter("country"));
+        list.add(req.getParameter("city"));
         list.add(req.getParameter("comments"));
         list.add(req.getParameter("password"));
         list.add(req.getParameter("role"));

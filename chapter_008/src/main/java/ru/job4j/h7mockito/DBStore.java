@@ -21,7 +21,7 @@ import java.util.Properties;
  * @author Vitaly Vasilyev, date: 14.11.2018, e-mail: rav.energ@rambler.ru
  * @version 1.2
  */
-public class DBStore implements AutoCloseable, Store {
+public class DBStore implements AutoCloseable, Store { //id, name, login, email, country, city, createdate, comments, password, role
     /**
      * Пул коннектов.
      */
@@ -34,12 +34,12 @@ public class DBStore implements AutoCloseable, Store {
      * SQL-запрос на добавление данных.
      */
     private static final String ADD_SQL
-            = "INSERT INTO users (name, login, email, comments, password, role) VALUES (?, ?, ?, ?, ?, ?)";
+            = "INSERT INTO users (name, login, email, country, city, comments, password, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     /**
      * SQL-запрос на обновление данных.
      */
     private static final String UPDATE_SQL
-            = "UPDATE users SET name = ?, login = ?, email = ?, comments = ?, password = ?, role = ? WHERE id = ?";
+            = "UPDATE users SET name = ?, login = ?, email = ?, country = ?, city = ?, comments = ?, password = ?, role = ? WHERE id = ?";
     /**
      * SQL-запрос на удаление данных.
      */
@@ -47,12 +47,12 @@ public class DBStore implements AutoCloseable, Store {
     /**
      * SQL-запрос на выборку всех данных.
      */
-    private static final String SELECT_ALL_SQL = "SELECT u.id, u.name, u.login, u.email, u.createdate,"
+    private static final String SELECT_ALL_SQL = "SELECT u.id, u.name, u.login, u.email, u.country, u.city, u.createdate,"
     + "u.comments, u.password, r.role_name FROM users u LEFT OUTER JOIN roles r ON u.role = r.id ORDER BY u.id";
     /**
      * SQL-запрос на получение данных для одного юзера.
      */
-    private static final String SELECT_BY_ID_SQL = "SELECT u.id, u.name, u.login, u.email, u.createdate,"
+    private static final String SELECT_BY_ID_SQL = "SELECT u.id, u.name, u.login, u.email, u.country, u.city, u.createdate,"
     + "u.comments, u.password, r.role_name FROM users u LEFT OUTER JOIN roles r ON u.role = r.id WHERE u.id = ? ORDER BY u.id";
     /**
      * SQL-запрос на выборку всех ролей.
@@ -112,7 +112,7 @@ public class DBStore implements AutoCloseable, Store {
     public void update(final User user) {
         try (final Connection conn = SOURCE.getConnection(); final PreparedStatement statement = conn.prepareStatement(UPDATE_SQL)) {
             setStatementValues(statement, user);
-            statement.setInt(7, user.getId());
+            statement.setInt(9, user.getId());
             statement.executeUpdate();
         } catch (SQLException sql) {
             LOGGER.warn("Exception in update() method", sql);
@@ -129,9 +129,11 @@ public class DBStore implements AutoCloseable, Store {
         statement.setString(1, user.getName());
         statement.setString(2, user.getLogin());
         statement.setString(3, user.getEmail());
-        statement.setString(4, user.getComments());
-        statement.setString(5, user.getPassword());
-        statement.setInt(6, user.getRole().getId());
+        statement.setString(4, user.getCountry());
+        statement.setString(5, user.getCity());
+        statement.setString(6, user.getComments());
+        statement.setString(7, user.getPassword());
+        statement.setInt(8, user.getRole().getId());
     }
 
     /**
@@ -163,6 +165,8 @@ public class DBStore implements AutoCloseable, Store {
                         rs.getString("name"),
                         rs.getString("login"),
                         rs.getString("email"),
+                        rs.getString("country"),
+                        rs.getString("city"),
                         rs.getString("createDate"),
                         rs.getString("comments"),
                         rs.getString("password"),
@@ -190,6 +194,8 @@ public class DBStore implements AutoCloseable, Store {
                             rs.getString("name"),
                             rs.getString("login"),
                             rs.getString("email"),
+                            rs.getString("country"),
+                            rs.getString("city"),
                             rs.getString("createDate"),
                             rs.getString("comments"),
                             rs.getString("password"),

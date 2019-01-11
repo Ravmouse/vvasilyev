@@ -31,10 +31,10 @@ public class ListServlet extends UserServlet {
         final Role role = (Role) req.getSession().getAttribute("role");
         if (role.getName().equals("User")) {
             req.setAttribute("login", req.getSession().getAttribute("login"));
-            req.getRequestDispatcher("/WEB-INF/views/userList.jsp").forward(req, res);
+            req.getRequestDispatcher("/WEB-INF/views/userBootstrap.jsp").forward(req, res);
         } else {
             req.setAttribute("roles", ValidateService.getInstance().findAllRoles());
-            req.getRequestDispatcher("/WEB-INF/views/adminList.jsp").forward(req, res);
+            req.getRequestDispatcher("/WEB-INF/views/adminBootstrap.jsp").forward(req, res);
         }
     }
 

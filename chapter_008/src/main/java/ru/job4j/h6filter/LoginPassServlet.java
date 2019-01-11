@@ -39,9 +39,9 @@ public class LoginPassServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("login", login);
             session.setAttribute("role", role);
-            res.sendRedirect(String.format("%s/", req.getContextPath()));
+            res.sendRedirect(String.format("%s/list", req.getContextPath()));
         } else {
-            req.setAttribute("message", "Wrong login or password!");
+            req.setAttribute("message", "Invalid login or password!");
             doGet(req, res);
         }
     }

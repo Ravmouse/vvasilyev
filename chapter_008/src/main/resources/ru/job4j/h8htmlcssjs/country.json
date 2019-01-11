@@ -1,0 +1,10 @@
+{"countries" :
+[
+  {"name" : "Russian Federation",
+    "cities" : ["Moscow", "Bryansk", "Saint Petersburg"]},
+  {"name" : "Brazil",
+    "cities" : ["Rio de Janeiro", "Recife", "Salvador"]},
+  {"name" : "China",
+    "cities" : ["Hong Kong", "Beijing", "Macau"]}
+]
+}

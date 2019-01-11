@@ -42,6 +42,6 @@ public class UpdateServlet extends UserServlet {
         req.setAttribute("loginRole", loginRole); //Установить атрибут в запросе.
         req.setAttribute("user", ValidateService.getInstance().findById(Integer.parseInt(req.getParameter("id"))));
         req.setAttribute("roles", ValidateService.getInstance().findAllRoles());
-        req.getRequestDispatcher("/WEB-INF/views/update.jsp").forward(req, res);
+        req.getRequestDispatcher("/WEB-INF/views/updBootstrap.jsp").forward(req, res);
     }
 }
