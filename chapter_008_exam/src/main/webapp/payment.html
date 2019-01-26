@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Payment</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <script src="resources/js/script.js"></script>
+        <script>
+            var price = localStorage.getItem("price");
+            var place = localStorage.getItem("place");
+            $(document).ready(function () {
+                // В <h4> c id = title добавляются значения цены и места, причем цена разбивается на 2 значения.
+                var e = $("#title").append("Вы выбрали" + '<br/>' + "ряд " + place.substring(0, 1) +" место " + place.substring(1, 2)
+                    + '<br/>' + "сумма: " + price +" рублей");
+                // В значение <input type="hidden"> кладется место.
+                document.getElementById("place").value = place;
+            })
+        </script>
+    </head>
+    <body>
+        <div class="container col-md-2 col-centered">
+            <h4 class="text-center" id="title"></h4>
+            <h4 class="text-center">Введите Ваши данные</h4>
+            <form method="post" action="hall">
+                <h3 class="text-center" id="data"></h3>
+                <div class="form-group">
+                    <label for="name">Имя</label><br>
+                    <input class="form-control" id="name" placeholder="Введите имя" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="surname">Фамилия</label><br>
+                    <input class="form-control" id="surname" placeholder="Введите фамилию" name="surname">
+                </div>
+                <div class="form-group">
+                    <label for="patron">Отчество</label><br>
+                    <input class="form-control" id="patron" placeholder="Введите отчество" name="patron">
+                </div>
+                <div class="form-group">
+                    <label for="mobile">Номер телефона</label><br>
+                    <input class="form-control" id="mobile" placeholder="Введите номер телефона" name="mobile">
+                </div>
+                <button type="button" class="btn btn-outline-success" onclick="if (validate() === true) this.form.submit()">Оплатить</button>
+                <input type="hidden" name="place" value="" id="place">
+            </form>
+        </div>
+    </body>
+</html>

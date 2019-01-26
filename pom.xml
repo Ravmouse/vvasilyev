@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
     <modelVersion>4.0.0</modelVersion>
     <groupId>ru.job4j</groupId>
@@ -21,7 +22,8 @@
         <module>chapter_006</module>
         <module>chapter_007</module>
         <module>chapter_008</module>
-	</modules>
+        <module>chapter_008_exam</module>
+  </modules>
 	
     <dependencies>
         <dependency>
