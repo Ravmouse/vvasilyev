@@ -1,5 +1,7 @@
 package ru.job4j.model;
 
+import java.util.Objects;
+
 /**
  * @author Vitaly Vasilyev, date: 17.01.2019, e-mail: rav.energ@rambler.ru
  * @version 1.0
@@ -74,5 +76,38 @@ public class Account {
      */
     public Seat getSeat() {
         return seat;
+    }
+
+    /**
+     * @return строковое представление.
+     */
+    @Override
+    public String toString() {
+        return String.format("name=%s, surname=%s, patron=%s, mobile=%s, seat=%s", name, surname, patron, mobile, seat);
+    }
+
+    /**
+     * @return хэш-код.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, surname, patron, mobile, seat);
+    }
+
+    /**
+     * @param obj экз. класса для сравнения.
+     * @return true или false.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Account)) {
+            return false;
+        }
+        Account acc = (Account) obj;
+        return name.equals(acc.name) && surname.equals(acc.surname) && patron.equals(acc.patron)
+                & mobile.equals(acc.mobile) && seat.equals(acc.seat);
     }
 }

@@ -12,4 +12,22 @@
         <servlet-name>HallServlet</servlet-name>
         <url-pattern>/hall</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>checkPlaceServlet</servlet-name>
+        <servlet-class>ru.job4j.controller.CheckPlaceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>checkPlaceServlet</servlet-name>
+        <url-pattern>/check</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>hallFilter</filter-name>
+        <filter-class>ru.job4j.filter.HallFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>hallFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
 </web-app>

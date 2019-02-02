@@ -56,7 +56,7 @@
                 localStorage.setItem("price", price.val());
                 window.location.href = 'payment.html';
             }
-            function validateRadio() {
+            function isPlaceSelected() {
                 var rsl;
                 var elements = document.querySelectorAll('input');
                 var count = 0;
@@ -146,7 +146,7 @@
                 </table>
             </div>
             <div class="row float-right">
-                <button type="button" class="btn btn-outline-success" onclick="if (validateRadio() === true) nextPage();">Далее</button>
+                <button type="button" class="btn btn-outline-success" onclick="if (isPlaceSelected()) nextPage();">Далее</button>
             </div>
             <div class="row float-left">
                 <button type="button" class="btn btn-outline-primary" onclick="cancelUpd();">Отмена update</button>

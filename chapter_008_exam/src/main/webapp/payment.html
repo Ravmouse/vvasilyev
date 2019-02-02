@@ -18,34 +18,63 @@
                     + '<br/>' + "сумма: " + price +" рублей");
                 // В значение <input type="hidden"> кладется место.
                 document.getElementById("place").value = place;
-            })
+            });
+            function sendData() {
+                $.ajax({
+                    url: './hall',
+                    method: 'POST',
+                    data: {name : $('#name').val(), surname : $('#surname').val(), patron : $('#patron').val(),
+                        mobile : $('#mobile').val(), place : $('#place').val()},
+                    success: function () {
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
+            /* После того, как пользователь ввел свои данные и нажал на кнопку Оплатить, посылается запрос в БД
+             * (в виде JSON) с проверкой, свободно ли выбранное место до сих пор или нет */
+            function isThePlaceEmpty() {
+                var ajx = false;
+                $.ajax({
+                    url: './check',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {place : $('#place').val()},
+                    async: false,
+                    success: function (data) {
+                        ajx = data.status == 0;
+                        if (!ajx) {
+                            alert("К сожалению выбранное Вами место уже занято!");
+                            window.location.href = 'index.html';
+                        }
+                    }
+                });
+                return ajx;
+            }
         </script>
     </head>
     <body>
         <div class="container col-md-2 col-centered">
             <h4 class="text-center" id="title"></h4>
             <h4 class="text-center">Введите Ваши данные</h4>
-            <form method="post" action="hall">
-                <h3 class="text-center" id="data"></h3>
-                <div class="form-group">
-                    <label for="name">Имя</label><br>
-                    <input class="form-control" id="name" placeholder="Введите имя" name="name">
-                </div>
-                <div class="form-group">
-                    <label for="surname">Фамилия</label><br>
-                    <input class="form-control" id="surname" placeholder="Введите фамилию" name="surname">
-                </div>
-                <div class="form-group">
-                    <label for="patron">Отчество</label><br>
-                    <input class="form-control" id="patron" placeholder="Введите отчество" name="patron">
-                </div>
-                <div class="form-group">
-                    <label for="mobile">Номер телефона</label><br>
-                    <input class="form-control" id="mobile" placeholder="Введите номер телефона" name="mobile">
-                </div>
-                <button type="button" class="btn btn-outline-success" onclick="if (validate() === true) this.form.submit()">Оплатить</button>
-                <input type="hidden" name="place" value="" id="place">
-            </form>
+            <h3 class="text-center" id="data"></h3>
+            <div class="form-group">
+                <label for="name">Имя</label><br>
+                <input class="form-control" id="name" placeholder="Введите имя" name="name">
+            </div>
+            <div class="form-group">
+                <label for="surname">Фамилия</label><br>
+                <input class="form-control" id="surname" placeholder="Введите фамилию" name="surname">
+            </div>
+            <div class="form-group">
+                <label for="patron">Отчество</label><br>
+                <input class="form-control" id="patron" placeholder="Введите отчество" name="patron">
+            </div>
+            <div class="form-group">
+                <label for="mobile">Номер телефона</label><br>
+                <input class="form-control" id="mobile" placeholder="Введите номер телефона" name="mobile">
+            </div>
+            <button type="button" class="btn btn-outline-success" onclick="if (isThePlaceEmpty() && validate()) sendData();">Оплатить</button>
+            <input type="hidden" name="place" value="" id="place">
         </div>
     </body>
 </html>

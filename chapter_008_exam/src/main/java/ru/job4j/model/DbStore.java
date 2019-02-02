@@ -38,6 +38,10 @@ public class DbStore implements AutoCloseable, Store {
      */
     private static final String UPDATE_SEATS = "UPDATE seats SET status = 1 WHERE number = ?";
     /**
+     * SQL-запрос на выборку определенного места в зале из БД.
+     */
+    private static final String CHECK_SEAT = "SELECT * FROM seats WHERE number = ?";
+    /**
      * Логгер.
      */
     private static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
@@ -125,6 +129,27 @@ public class DbStore implements AutoCloseable, Store {
             }
         } catch (SQLException sql) {
             LOGGER.warn("Exception is caught during selecting all the elements", sql);
+        }
+        return rsl;
+    }
+
+    /**
+     * @param number номер места в к/т.
+     * @return экз. класса Seat.
+     */
+    @Override
+    public Seat checkSeat(int number) {
+        Seat rsl = null;
+        try (final Connection connection = SOURCE.getConnection();
+             final PreparedStatement statement = connection.prepareStatement(CHECK_SEAT)) {
+            statement.setInt(1, number);
+            try (final ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    rsl = new Seat(rs.getInt("number"), rs.getInt("price"), rs.getInt("status"));
+                }
+            }
+        } catch (SQLException sql) {
+            LOGGER.warn("Exception is caught during selecting the specific element", sql);
         }
         return rsl;
     }

@@ -1,11 +1,11 @@
 package ru.job4j.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.job4j.model.Account;
 import ru.job4j.service.Validate;
 import ru.job4j.service.ValidateService;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +30,6 @@ public class HallServlet  extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final String seats = mapper.writeValueAsString(SERVICE.selectAll());
-        response.setContentType("text/json");
         response.getWriter().write(seats);
     }
 
@@ -42,21 +41,26 @@ public class HallServlet  extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int number = Integer.parseInt(request.getParameter("place"));
-        SERVICE.add(number, parseRequest(request));
-        response.sendRedirect(String.format("%s/", request.getContextPath()));
+        SERVICE.add(parseRequestedString(request));
     }
 
     /**
      * @param request запрос, из которого нужно получить параметры.
-     * @return список строк.
+     * @return экземпляр класса Account.
      */
-    private List<String> parseRequest(HttpServletRequest request) {
-        List<String> list = new ArrayList<>();
-        list.add(request.getParameter("name"));
-        list.add(request.getParameter("surname"));
-        list.add(request.getParameter("patron"));
-        list.add(request.getParameter("mobile"));
-        return list;
+    private Account parseRequestedString(HttpServletRequest request) {
+        Account rsl;
+        String line = "";
+        try (final BufferedReader reader = request.getReader()) {
+            line = reader.readLine();
+        } catch (final IOException io) {
+            io.printStackTrace();
+        }
+        final String[] array = line.split("&");
+        for (int i = 0; i < array.length; i++) {
+            array[i] = array[i].substring(array[i].indexOf("=") + 1);
+        }
+        rsl = new Account(array[0], array[1], array[2], array[3], SERVICE.getSeats().get(Integer.parseInt(array[4])));
+        return rsl;
     }
 }

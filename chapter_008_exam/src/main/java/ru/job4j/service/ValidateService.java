@@ -41,13 +41,10 @@ public class ValidateService implements Validate {
     }
 
     /**
-     * @param seatNumber номер места.
-     * @param data       список данных зрителя.
+     * @param account аккаунт зрителя.
      */
     @Override
-    public void add(int seatNumber, final List<String> data) {
-        final Seat seat = seats.get(seatNumber);
-        final Account account = new Account(data.get(0), data.get(1), data.get(2), data.get(3), seat);
+    public void add(Account account) {
         store.add(account);
     }
 
@@ -61,5 +58,22 @@ public class ValidateService implements Validate {
             seats.put(seat.getNumber(), seat);
         }
         return rsl;
+    }
+
+    /**
+     * @param number номер места в зале.
+     * @return ссылку на экз.класса Seat.
+     */
+    @Override
+    public Seat checkSeat(int number) {
+        return store.checkSeat(number);
+    }
+
+    /**
+     * @return хэш-отображение.
+     */
+    @Override
+    public Map<Integer, Seat> getSeats() {
+        return seats;
     }
 }
