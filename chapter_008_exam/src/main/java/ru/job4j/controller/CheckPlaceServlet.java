@@ -30,9 +30,7 @@ public class CheckPlaceServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         final ObjectMapper mapper = new ObjectMapper();
         int number = getNumber(request);
-        System.out.println(number);
         final String str = mapper.writeValueAsString(SERVICE.checkSeat(number));
-        System.out.println(str);
         response.getWriter().write(str);
     }
 
