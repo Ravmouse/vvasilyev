@@ -1,5 +1,7 @@
 package ru.job4j.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import ru.job4j.h6filter.Role;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
@@ -18,9 +20,15 @@ import java.util.Properties;
  * Утилиты.
  */
 public class Utils {
+
+    /**
+     * Логгер.
+     */
+    private static final Logger LOGGER = Logger.getLogger(Utils.class);
+
     /**
      * Находится файл-ресурс и от начала его пути удаляется строка "file:/".
-     * @param fileName имя файла-ресурса.
+     * @param fileName имя файла-ресурса, которое должно начинаться с ru/job4j/h6filter/ или ru/job4j/h8htmlcssjs/ и т.д.
      * @return путь до файла-ресурса.
      */
     public static String getResourcePath(final String fileName) {
@@ -133,5 +141,23 @@ public class Utils {
         }
         sb.append("\"}");
         return sb;
+    }
+
+    /**
+     * Этот метод для параметров запроса, которые должны быть преобразованы к JSON типу, например, после
+     * применения метода JSON.stringify() в html-файле. ObjectMapper создает объект обобщенного типа.
+     * @param request запрос.
+     * @param clazz класс объекта, экземпляр которого нужно создать.
+     * @param <T> обобщенный класс.
+     * @return экземпляр объекта.
+     * @throws IOException исключение.
+     */
+    public static <T> T createGenObjFromReqWithJxn(HttpServletRequest request, Class<T> clazz) throws IOException {
+        String line;
+        try (final BufferedReader br = request.getReader()) {
+            line = br.readLine();
+        }
+        final ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(line, clazz);
     }
 }
