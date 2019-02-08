@@ -11,44 +11,28 @@
         <script src="resources/js/script.js"></script>
         <script>
             var price = localStorage.getItem("price");
-            var place = localStorage.getItem("place");
+            var seat = localStorage.getItem("place");
             $(document).ready(function () {
                 // В <h4> c id = title добавляются значения цены и места, причем цена разбивается на 2 значения.
-                var e = $("#title").append("Вы выбрали" + '<br/>' + "ряд " + place.substring(0, 1) +" место " + place.substring(1, 2)
+                var e = $("#title").append("Вы выбрали" + '<br/>' + "ряд " + seat.substring(0, 1) +" место " + seat.substring(1, 2)
                     + '<br/>' + "сумма: " + price +" рублей");
                 // В значение <input type="hidden"> кладется место.
-                document.getElementById("place").value = place;
+                document.getElementById("seat").value = seat;
             });
             function sendData() {
                 $.ajax({
                     url: './hall',
                     method: 'POST',
-                    data: {name : $('#name').val(), surname : $('#surname').val(), patron : $('#patron').val(),
-                        mobile : $('#mobile').val(), place : $('#place').val()},
-                    success: function () {
+                    dataType: 'json',
+                    data: JSON.stringify({name : $('#name').val(), surname : $('#surname').val(), patron : $('#patron').val(),
+                        mobile : $('#mobile').val(), seat : $('#seat').val()}),
+                    success: function (data) {
+                        if (data.result == -1) {
+                            alert("К сожалению выбранное Вами место уже занято!");
+                        }
                         window.location.href = 'index.html';
                     }
                 });
-            }
-            /* После того, как пользователь ввел свои данные и нажал на кнопку Оплатить, посылается запрос в БД
-             * (в виде JSON) с проверкой, свободно ли выбранное место до сих пор или нет */
-            function isThePlaceEmpty() {
-                var ajx = false;
-                $.ajax({
-                    url: './check',
-                    method: 'POST',
-                    dataType: 'json',
-                    data: {place : $('#place').val()},
-                    async: false,
-                    success: function (data) {
-                        ajx = data.status == 0;
-                        if (!ajx) {
-                            alert("К сожалению выбранное Вами место уже занято!");
-                            window.location.href = 'index.html';
-                        }
-                    }
-                });
-                return ajx;
             }
         </script>
     </head>
@@ -73,8 +57,8 @@
                 <label for="mobile">Номер телефона</label><br>
                 <input class="form-control" id="mobile" placeholder="Введите номер телефона" name="mobile">
             </div>
-            <button type="button" class="btn btn-outline-success" onclick="if (isThePlaceEmpty() && validate()) sendData();">Оплатить</button>
-            <input type="hidden" name="place" value="" id="place">
+            <button type="button" class="btn btn-outline-success" onclick="if (validate()) sendData();">Оплатить</button>
+            <input type="hidden" name="seat" value="" id="seat">
         </div>
     </body>
 </html>

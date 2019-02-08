@@ -37,4 +37,11 @@ WHERE id IN (3, 5, 7);
 
 UPDATE seats
 SET status = 1
-WHERE number = 33;
+WHERE number = 21;
+
+ALTER TABLE accounts 
+ADD CONSTRAINT seat_un UNIQUE (seat);
+
+DELETE FROM accounts;
+
+INSERT INTO accounts (name, surname, patron, mobile, seat) VALUES ('ted', 'ted', 'ted', '555', 21);

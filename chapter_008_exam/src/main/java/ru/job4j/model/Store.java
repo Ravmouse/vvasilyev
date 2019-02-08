@@ -10,14 +10,9 @@ public interface Store {
     /**
      * @param account зритель в к/т.
      */
-    void add(final Account account);
+    int add(final Account account);
     /**
      * @return список всех мест в к/т.
      */
     List<Seat> selectAll();
-    /**
-     * @param number номер места в к/т.
-     * @return экз. класса Seat.
-     */
-    Seat checkSeat(int number);
 }

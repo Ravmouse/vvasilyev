@@ -38,10 +38,6 @@ public class DbStore implements AutoCloseable, Store {
      */
     private static final String UPDATE_SEATS = "UPDATE seats SET status = 1 WHERE number = ?";
     /**
-     * SQL-запрос на выборку определенного места в зале из БД.
-     */
-    private static final String CHECK_SEAT = "SELECT * FROM seats WHERE number = ?";
-    /**
      * Логгер.
      */
     private static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
@@ -72,10 +68,12 @@ public class DbStore implements AutoCloseable, Store {
 
     /**
      * @param account зритель в к/т.
+     * @return 0, если транзакция была успешной и -1, если - нет.
      */
     @Override
-    public void add(Account account) {
-        int number = account.getSeat().getNumber();
+    public int add(Account account) {
+        int rsl;
+        int number = account.getSeat();
         Connection conn = null;
         PreparedStatement insertSt = null, updateSt = null;
         try {
@@ -93,13 +91,15 @@ public class DbStore implements AutoCloseable, Store {
             updateSt.executeUpdate();
 
             conn.commit();
+            rsl = 0;
         } catch (SQLException sql) {
             try {
                 conn.rollback();
             } catch (SQLException e) {
                 LOGGER.warn("Exception is caught during rolling back of the transaction", e);
             }
-            LOGGER.warn("Exception is caught during writing the Account elements", sql);
+            LOGGER.warn("Unable to add the account to the DataBase\n", sql);
+            rsl = -1;
         } finally {
             try {
                 if (insertSt != null) {
@@ -113,6 +113,7 @@ public class DbStore implements AutoCloseable, Store {
                 LOGGER.warn("Exception is caught during closing the resources", e);
             }
         }
+        return rsl;
     }
 
     /**
@@ -129,27 +130,6 @@ public class DbStore implements AutoCloseable, Store {
             }
         } catch (SQLException sql) {
             LOGGER.warn("Exception is caught during selecting all the elements", sql);
-        }
-        return rsl;
-    }
-
-    /**
-     * @param number номер места в к/т.
-     * @return экз. класса Seat.
-     */
-    @Override
-    public Seat checkSeat(int number) {
-        Seat rsl = null;
-        try (final Connection connection = SOURCE.getConnection();
-             final PreparedStatement statement = connection.prepareStatement(CHECK_SEAT)) {
-            statement.setInt(1, number);
-            try (final ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                    rsl = new Seat(rs.getInt("number"), rs.getInt("price"), rs.getInt("status"));
-                }
-            }
-        } catch (SQLException sql) {
-            LOGGER.warn("Exception is caught during selecting the specific element", sql);
         }
         return rsl;
     }

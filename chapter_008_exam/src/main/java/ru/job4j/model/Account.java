@@ -26,21 +26,12 @@ public class Account {
     /**
      * Место в зрительном зале.
      */
-    private Seat seat;
+    private int seat;
 
     /**
-     * @param name имя.
-     * @param surname фамилия.
-     * @param patron отчество.
-     * @param mobile номер телефона.
-     * @param seat место.
+     *
      */
-    public Account(String name, String surname, String patron, String mobile, Seat seat) {
-        this.name = name;
-        this.surname = surname;
-        this.patron = patron;
-        this.mobile = mobile;
-        this.seat = seat;
+    public Account() {
     }
 
     /**
@@ -51,10 +42,24 @@ public class Account {
     }
 
     /**
+     * @param name имя.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
      * @return фамилию.
      */
     public String getSurname() {
         return surname;
+    }
+
+    /**
+     * @param surname фамилия.
+     */
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     /**
@@ -65,6 +70,13 @@ public class Account {
     }
 
     /**
+     * @param patron отчество.
+     */
+    public void setPatron(String patron) {
+        this.patron = patron;
+    }
+
+    /**
      * @return номер телефона.
      */
     public String getMobile() {
@@ -72,10 +84,24 @@ public class Account {
     }
 
     /**
+     * @param mobile номер телефона.
+     */
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    /**
      * @return место.
      */
-    public Seat getSeat() {
+    public int getSeat() {
         return seat;
+    }
+
+    /**
+     * @param seat место.
+     */
+    public void setSeat(int seat) {
+        this.seat = seat;
     }
 
     /**
@@ -83,7 +109,7 @@ public class Account {
      */
     @Override
     public String toString() {
-        return String.format("name=%s, surname=%s, patron=%s, mobile=%s, seat=%s", name, surname, patron, mobile, seat);
+        return String.format("name=%s, surname=%s, patron=%s, mobile=%s, seat=%d", name, surname, patron, mobile, seat);
     }
 
     /**
@@ -108,6 +134,6 @@ public class Account {
         }
         Account acc = (Account) obj;
         return name.equals(acc.name) && surname.equals(acc.surname) && patron.equals(acc.patron)
-                & mobile.equals(acc.mobile) && seat.equals(acc.seat);
+                & mobile.equals(acc.mobile) && seat == acc.seat;
     }
 }

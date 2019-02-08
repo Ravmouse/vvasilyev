@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -14,7 +13,6 @@ import java.io.IOException;
  * @version 1.0
  */
 public class HallFilter implements Filter {
-
     /**
      * @param request запрос.
      * @param response ответ.
@@ -24,11 +22,8 @@ public class HallFilter implements Filter {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        if (httpRequest.getMethod().equals("GET")) {
-            httpResponse.setContentType("text/html");
-        }
+        httpResponse.setContentType("text/html");
         chain.doFilter(request, response);
     }
 }
