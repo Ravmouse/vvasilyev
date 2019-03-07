@@ -24,7 +24,7 @@ public class Search {
             final File file = queue.poll();
             if (!file.isDirectory()) {
                 for (String s : exts) {
-                    if (file.getName().contains(s)) {
+                    if (file.getName().substring(file.getName().lastIndexOf(".") + 1).equals(s)) {
                         files.add(file);
                     }
                 }
