@@ -9,4 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>chapter_009</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.job4j</groupId>
+            <artifactId>chapter_008</artifactId>
+            <version>2.0</version>
+        </dependency>
+    </dependencies>
 </project>
