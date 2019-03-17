@@ -15,17 +15,6 @@ import static org.junit.Assert.assertThat;
  */
 public class AbuseClassTest {
     /**
-     *
-     */
-    @Test
-    public void testFindAndReplace() {
-        String origin = "go back go home live there go left go right go";
-        String word = "go";
-        String something = AbuseClass.findAndReplace(origin, word);
-        assertThat(something, is("back home live there left right"));
-    }
-
-    /**
      * @throws IOException искл.
      */
     @Test
@@ -33,7 +22,7 @@ public class AbuseClassTest {
         InputStream in = new ByteArrayInputStream("good hacker programmer trojan".getBytes());
         OutputStream out = new ByteArrayOutputStream();
         String[] abuse = {"hacker", "trojan"};
-        AbuseClass.dropAbuses(in, out, abuse);
+        new AbuseClass().dropAbuses(in, out, abuse);
         assertThat(out.toString(), is("good programmer"));
     }
 }
