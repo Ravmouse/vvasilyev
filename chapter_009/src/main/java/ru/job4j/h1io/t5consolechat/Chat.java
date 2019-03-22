@@ -21,11 +21,11 @@ public class Chat {
     /**
      * Список строк из текстового файла.
      */
-    private final List<String> compAnswers = new ArrayList<>();
+    private final List<String> answers = new ArrayList<>();
     /**
      * Логгер.
      */
-    private static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
+    private static final Logger LOG = Logger.getLogger(Utils.getNameOfTheClass());
 
     /**
      * @throws IOException искл.
@@ -33,7 +33,7 @@ public class Chat {
     public Chat() throws IOException{
         PropertyConfigurator.configure(Utils.getResourcePath("ru/job4j/h1io/t5consolechat/log4j.properties"));
         Path path = Paths.get(Utils.getResourcePath("ru/job4j/h1io/t5consolechat/answers.txt"));
-        Files.lines(path).forEach(compAnswers::add);
+        Files.lines(path).forEach(answers::add);
     }
 
     /**
@@ -41,23 +41,23 @@ public class Chat {
      */
     public void start() throws IOException {
         System.out.println("*** Консольный чат! ***");
-        LOGGER.info("*** Консольный чат! ***");
+        LOG.info("*** Консольный чат! ***");
         int index;
-        Random rnd = new Random();
+        final Random rnd = new Random();
         boolean enabled = true;
-        String userAnswer = "";
+        String input = "";
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            while (!userAnswer.toLowerCase().equals("закончить")) {
+            while (!"закончить".equals(input.toLowerCase())) {
                 if (enabled) {
-                    index = rnd.nextInt(compAnswers.size());
-                    System.out.println(String.format("AI: %s", compAnswers.get(index)));
-                    LOGGER.info(String.format("AI: %s", compAnswers.get(index)));
+                    index = rnd.nextInt(answers.size());
+                    System.out.println(String.format("AI: %s", answers.get(index)));
+                    LOG.info(String.format("AI: %s", answers.get(index)));
                 }
-                userAnswer = br.readLine();
-                LOGGER.info(String.format("User: %s", userAnswer));
-                if (userAnswer.equals("стоп")) {
+                input = br.readLine();
+                LOG.info(String.format("User: %s", input));
+                if (input.equals("стоп")) {
                     enabled = false;
-                } else if (userAnswer.equals("продолжить")) {
+                } else if (input.equals("продолжить")) {
                     enabled = true;
                 }
             }
