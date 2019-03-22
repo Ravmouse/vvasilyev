@@ -1,0 +1,8 @@
+hello-Hello, dear friend, I'm Oracle!
+how are you?-Not so bad, thank you!
+how old are you?-I'm very old.
+tell me something interesting-A long time ago in a galaxy far far away...
+what is it you like?-You're not gonna believe in this, but I like working.
+where do you live?-Here, in RAM.
+what's the time now?-I don't have an idea..
+exit-OK, good buy!
