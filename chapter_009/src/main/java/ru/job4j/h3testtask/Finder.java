@@ -47,9 +47,6 @@ public class Finder {
                 }
             }
         }
-        if (files.isEmpty()) {
-            throw new RuntimeException("Файл не был найден.");
-        }
         return files;
     }
 
