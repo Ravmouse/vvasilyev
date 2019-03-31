@@ -1,16 +1,14 @@
 package ru.job4j.h1io.t4archiveproj;
 
-import org.apache.log4j.Logger;
-import ru.job4j.utils.Utils;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.function.*;
+import java.util.function.Consumer;
 
 /**
  * @author Vitaly Vasilyev, date: 07.03.2019, e-mail: rav.energ@rambler.ru
@@ -26,10 +24,6 @@ public class Args {
      */
     private final Map<String, Consumer<String>> methods = new HashMap<>();
     /**
-     * Логгер.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Utils.getNameOfTheClass());
-    /**
      * Директория, которую нужно заархивировать.
      */
     private File path;
@@ -38,31 +32,39 @@ public class Args {
      */
     private List<File> files = new ArrayList<>();
     /**
-     * Переменная, которая сигнализирует, есть ли введеный путь для архивации или нет.
-     */
-    private boolean existedDir;
-    /**
      * Имя zip-архива.
      */
     private String output;
+    /**
+     * Консьюмеры для валидации экземпляра класса File.
+     */
+    private final List<Consumer<File>> checkers = Arrays.asList(
+            path -> {
+                if (!path.exists()) {
+                    throw new RuntimeException("Директория не существует!");
+                }
+            },
+            path -> {
+                if (!path.isDirectory()) {
+                    throw new RuntimeException("Это - файл, а не директория!");
+                }
+            }
+    );
 
     /**
      * @param args массив строк.
      */
     public Args(String[] args) {
         if (args == null || args.length != 6) {
-            LOGGER.warn("Неверное количество аргументов!");
-        } else {
-            this.args = args;
-            methods.put("-d", directory());
-            methods.put("-i", include());
-            methods.put("-o", output());
-            parseArgs("-d");
-            if (existedDir) {
-                parseArgs("-i");
-                parseArgs("-o");
-            }
+            throw new RuntimeException("Неверное количество аргументов!");
         }
+        this.args = args;
+        methods.put("-d", directory());
+        methods.put("-i", include());
+        methods.put("-o", output());
+        parseArgs("-d");
+        parseArgs("-i");
+        parseArgs("-o");
     }
 
     /**
@@ -84,15 +86,7 @@ public class Args {
     public Consumer<String> directory() {
         return dirName -> {
             path = new File(dirName);
-            if (path.exists()) {
-                if (path.isDirectory()) {
-                    existedDir = true;
-                } else {
-                    LOGGER.warn("Это - файл, а не директория!");
-                }
-            } else {
-                LOGGER.warn("Директория не существует!");
-            }
+            this.checkers.forEach(c -> c.accept(path));
         };
     }
 
@@ -118,8 +112,9 @@ public class Args {
                         addByName(fileName, file, files);
                     }
                 } else {
-                    for (File f : file.listFiles()) {
-                        queue.offer(f);
+                    File[] dirs = file.listFiles();
+                    if (dirs != null) {
+                        Arrays.stream(dirs).forEach(queue::offer);
                     }
                 }
             }
@@ -154,14 +149,5 @@ public class Args {
      */
     public Consumer<String> output() {
         return projectName -> this.output = projectName;
-    }
-
-    /**
-     * @param args аргументы.
-     * @throws IOException искл.
-     */
-    public static void main(String[] args) throws IOException {
-        Args a = new Args(args);
-        new Zip().output(a.output, a.path, a.files);
     }
 }
