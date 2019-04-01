@@ -1,4 +1,4 @@
-package ru.job4j.h1io;
+package ru.job4j.h1io.t1checkbytestream;
 
 import org.junit.Test;
 import java.io.ByteArrayInputStream;

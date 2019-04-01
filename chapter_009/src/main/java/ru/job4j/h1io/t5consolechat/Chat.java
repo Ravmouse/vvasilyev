@@ -30,7 +30,7 @@ public class Chat {
     /**
      * @throws IOException искл.
      */
-    public Chat() throws IOException{
+    public Chat() throws IOException {
         PropertyConfigurator.configure(Utils.getResourcePath("ru/job4j/h1io/t5consolechat/log4j.properties"));
         Path path = Paths.get(Utils.getResourcePath("ru/job4j/h1io/t5consolechat/answers.txt"));
         Files.lines(path).forEach(answers::add);
@@ -64,6 +64,10 @@ public class Chat {
         }
     }
 
+    /**
+     * @param args аргументы.
+     * @throws IOException искл.
+     */
     public static void main(String[] args) throws IOException {
         new Chat().start();
     }
