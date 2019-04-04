@@ -20,7 +20,7 @@ public class Zip {
      * @param files список файлов.
      * @throws IOException искл.
      */
-    public static void output(final String projectName, final File path, final List<File> files) throws IOException {
+    public void output(final String projectName, final File path, final List<File> files) throws IOException {
         try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(projectName))) {
             for (File f : files) {
                 zout.putNextEntry(new ZipEntry(f.getPath().substring(f.getPath().indexOf(path.getName()))));

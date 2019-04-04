@@ -2,6 +2,7 @@ package ru.job4j.h1io.t4archiveproj;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,13 +32,24 @@ public class Args {
      */
     private List<File> files = new ArrayList<>();
     /**
-     * Переменная, которая сигнализирует, есть ли введеный путь для архивации или нет.
-     */
-    private boolean existedDir;
-    /**
      * Имя zip-архива.
      */
     private String output;
+    /**
+     * Консьюмеры для валидации экземпляра класса File.
+     */
+    private final List<Consumer<File>> checkers = Arrays.asList(
+            path -> {
+                if (!path.exists()) {
+                    throw new RuntimeException("Директория не существует!");
+                }
+            },
+            path -> {
+                if (!path.isDirectory()) {
+                    throw new RuntimeException("Это - файл, а не директория!");
+                }
+            }
+    );
 
     /**
      * @param args массив строк.
@@ -45,17 +57,14 @@ public class Args {
     public Args(String[] args) {
         if (args == null || args.length != 6) {
             throw new RuntimeException("Неверное количество аргументов!");
-        } else {
-            this.args = args;
-            methods.put("-d", directory());
-            methods.put("-i", include());
-            methods.put("-o", output());
-            parseArgs("-d");
-            if (existedDir) {
-                parseArgs("-i");
-                parseArgs("-o");
-            }
         }
+        this.args = args;
+        methods.put("-d", directory());
+        methods.put("-i", include());
+        methods.put("-o", output());
+        parseArgs("-d");
+        parseArgs("-i");
+        parseArgs("-o");
     }
 
     /**
@@ -77,15 +86,7 @@ public class Args {
     public Consumer<String> directory() {
         return dirName -> {
             path = new File(dirName);
-            if (path.exists()) {
-                if (path.isDirectory()) {
-                    existedDir = true;
-                } else {
-                    throw new RuntimeException("Это - файл, а не директория!");
-                }
-            } else {
-                throw new RuntimeException("Директория не существует!");
-            }
+            this.checkers.forEach(c -> c.accept(path));
         };
     }
 
@@ -113,9 +114,7 @@ public class Args {
                 } else {
                     File[] dirs = file.listFiles();
                     if (dirs != null) {
-                        for (File f : dirs) {
-                            queue.offer(f);
-                        }
+                        Arrays.stream(dirs).forEach(queue::offer);
                     }
                 }
             }
