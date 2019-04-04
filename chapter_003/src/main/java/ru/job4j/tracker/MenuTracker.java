@@ -126,8 +126,8 @@ public class MenuTracker {
                 }
             }
             System.out.println("\nWhat would you like to edit?");
-            String question = input.ask("1 - The name of the Item;\n2 - The description of the Item;\n" +
-                                        "3 - The comment of the Item;\n4 - All the parameters;\n");
+            String question = input.ask("1 - The name of the Item;\n2 - The description of the Item;\n"
+                                        + "3 - The comment of the Item;\n4 - All the parameters;\n");
             switch (question) {
                 case "1": answer = input.ask("Please, enter a new name of the Item: ");
                           foundItem.setName(answer);
@@ -145,6 +145,7 @@ public class MenuTracker {
                           String desc = input.ask("Please, enter a new description of the Item: ");
                           String comm = input.ask("Please, enter a new comment of the Item: ");
                           tracker.replace(new Item(id, name, desc, System.currentTimeMillis(), comm));
+                default:
             }
             System.out.println("-- The Item has been edited. --\n");
         }
@@ -272,7 +273,6 @@ public class MenuTracker {
          */
         public void execute(Input input, Tracker tracker) {
             System.out.println("\n-- Exiting program --");
-            return;
         }
     }
 }

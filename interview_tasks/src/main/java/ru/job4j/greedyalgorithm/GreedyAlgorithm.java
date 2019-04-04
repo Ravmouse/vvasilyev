@@ -36,7 +36,7 @@ public class GreedyAlgorithm {
      */
     public int countMaxWeight(int[] weights) {
         Arrays.sort(weights);                       //Сначала сортируем массив.
-        if (weights[weights.length -1] > maxOne) {  //Смотрим вес последнего элемента.
+        if (weights[weights.length - 1] > maxOne) {  //Смотрим вес последнего элемента.
             LOGGER.warn(String.format("Вес одного из блинов превышает %d фунтов", maxOne));
             return -1;
         }
@@ -109,7 +109,7 @@ public class GreedyAlgorithm {
 //        int[] array = {1,1,3,4,4,5,5,7,9,9};
 //        int[] array = {1,2};
 //        int[] array = {1,3,4,4,5,7,8,8,9};
-        int[] array = {2,2,2,4,4,4,7,8};
+        int[] array = {2, 2, 2, 4, 4, 4, 7, 8};
 //        int[] array = {1,2,3,6};
         int max = new GreedyAlgorithm().countMaxWeight(array);
         LOGGER.info("Максимально доступный вес: " + max);

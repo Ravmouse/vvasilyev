@@ -58,4 +58,12 @@ public class User {
         }
         return name != null ? name.equals(user.name) : user.name == null;
     }
+
+    /**
+     * @return hashcode.
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

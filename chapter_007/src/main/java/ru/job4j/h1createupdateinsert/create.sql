@@ -3,7 +3,7 @@ CREATE DATABASE sql_test;
 
 CREATE TABLE roles (
 	role_id SERIAL PRIMARY KEY,
-	role_name VARCHAR(255)
+	role VARCHAR(255)
 );
 
 CREATE TABLE users (
@@ -52,7 +52,7 @@ CREATE TABLE attaches (
 	item_id INT REFERENCES items(item_id)
 );
 
-INSERT INTO roles (role_name) VALUES ('Administrator');
+INSERT INTO roles (role) VALUES ('Administrator');
 INSERT INTO users (user_name, role_id) VALUES ('Bill', 1);
 INSERT INTO rules (rule_name) VALUES ('Full Access');
 INSERT INTO roles_rules (role_id, rule_id) VALUES (1, 1);
