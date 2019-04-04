@@ -24,7 +24,7 @@ public class DbStore implements AutoCloseable, Store {
     /**
      * Ссылка на BasicDataSource.
      */
-    private final BasicDataSource SOURCE = new BasicDataSource();
+    private static final BasicDataSource SOURCE = new BasicDataSource();
     /**
      * SQL-запрос на добавление аккаунта в БД.
      */
@@ -108,7 +108,9 @@ public class DbStore implements AutoCloseable, Store {
                 if (updateSt != null) {
                     updateSt.close();
                 }
-                conn.close();
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException e) {
                 LOGGER.warn("Exception is caught during closing the resources", e);
             }

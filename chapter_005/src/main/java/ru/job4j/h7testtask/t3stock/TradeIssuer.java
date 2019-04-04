@@ -50,8 +50,8 @@ public class TradeIssuer {
      * меньший по значению ключ.
      */
     private void checkOtherMap() {
-        TreeMap<Double, Order> askTreeMap = new TreeMap<>((object_1, object_2) -> Double.compare(object_2, object_1));
-        TreeMap<Double, Order> bidTreeMap = new TreeMap<>((object_1, object_2) -> Double.compare(object_2, object_1));
+        TreeMap<Double, Order> askTreeMap = new TreeMap<>((objOne, objTwo) -> Double.compare(objTwo, objOne));
+        TreeMap<Double, Order> bidTreeMap = new TreeMap<>((objOne, objTwo) -> Double.compare(objTwo, objOne));
         askTreeMap.putAll(askPriceStock);
         bidTreeMap.putAll(bidPriceStock);
         Double askKey;
@@ -98,8 +98,8 @@ public class TradeIssuer {
      */
     public void print() {
         System.out.println("\n" + title + "\nASK\tPRICE\tBID");
-        final TreeSet<Double> askTree = new TreeSet<>((object_1, object_2) -> Double.compare(object_2, object_1));
-        final TreeSet<Double> bidTree = new TreeSet<>((object_1, object_2) -> Double.compare(object_2, object_1));
+        final TreeSet<Double> askTree = new TreeSet<>((objOne, objTwo) -> Double.compare(objTwo, objOne));
+        final TreeSet<Double> bidTree = new TreeSet<>((objOne, objTwo) -> Double.compare(objTwo, objOne));
         askTree.addAll(askPriceStock.keySet());
         bidTree.addAll(bidPriceStock.keySet());
         while (!askTree.isEmpty() && !bidTree.isEmpty()) {

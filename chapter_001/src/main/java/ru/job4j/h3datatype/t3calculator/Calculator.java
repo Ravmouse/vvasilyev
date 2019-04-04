@@ -1,9 +1,8 @@
-﻿package ru.job4j.h3datatype.t3calculator;
+package ru.job4j.h3datatype.t3calculator;
+
 /**
- * Класс Calculator.
- * @author Vitaly Vasilyev (rav.energ@rambler.ru)
- * @version $Id$
- * @since 0.1
+ * @author Vitaly Vasilyev, date: 05.04.2019, e-mail: rav.energ@rambler.ru
+ * @version 1.0
  */
 public class Calculator {
     /**

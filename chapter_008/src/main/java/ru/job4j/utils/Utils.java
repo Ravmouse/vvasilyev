@@ -20,12 +20,6 @@ import java.util.Properties;
  * Утилиты.
  */
 public class Utils {
-
-    /**
-     * Логгер.
-     */
-    private static final Logger LOGGER = Logger.getLogger(Utils.class);
-
     /**
      * Находится файл-ресурс и от начала его пути удаляется строка "file:/".
      * @param fileName имя файла-ресурса, которое должно начинаться с ru/job4j/h6filter/ или ru/job4j/h8htmlcssjs/ и т.д.

@@ -9,6 +9,7 @@ import java.util.List;
 public interface Store {
     /**
      * @param account зритель в к/т.
+     * @return  код успешного завершения метода или нет.
      */
     int add(final Account account);
     /**

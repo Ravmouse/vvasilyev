@@ -11,6 +11,7 @@ import java.util.List;
 public interface Validate {
     /**
      * @param account аккаунт зрителя.
+     * @return  код успешного завершения метода или нет.
      */
     int add(Account account);
     /**
