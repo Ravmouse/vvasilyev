@@ -1,4 +1,4 @@
-package ru.job4j.h1io.t_1configfile;
+package ru.job4j.h1io.t6configfile;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,8 +35,7 @@ public class Config {
             read.lines()
                     .filter(s -> !s.startsWith("##"))
                     .filter(s -> !s.isEmpty())
-                    .forEach(s -> values.put(s.substring(0, s.lastIndexOf("="))
-                                           , s.substring(s.indexOf("=") + 1)));
+                    .forEach(s -> values.put(s.substring(0, s.lastIndexOf("=")), s.substring(s.indexOf("=") + 1)));
         }
     }
 

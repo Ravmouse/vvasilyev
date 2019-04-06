@@ -1,4 +1,4 @@
-package ru.job4j.h1io.t_1configfile;
+package ru.job4j.h1io.t6configfile;
 
 import org.junit.Test;
 import ru.job4j.utils.Utils;
@@ -16,7 +16,7 @@ public class ConfigTest {
      */
     @Test
     public void whenLoadToMapThenRetrieveFromMap() throws IOException {
-        Config c = new Config(Utils.getResourcePath("ru/job4j/h1io/t_1configfile/app.properties"));
+        Config c = new Config(Utils.getResourcePath("ru/job4j/h1io/t6configfile/app.properties"));
         c.load();
         assertThat(c.value("hibernate.connection.username"), is("postgres"));
     }
