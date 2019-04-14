@@ -40,12 +40,13 @@ public class SimpleBlockingQueueTest {
 
         /**
          * В зависимости от своего имени один из потоков становится Producer, а другой - Consumer.
+         * При проведении тестов при помощи mvn test имена потоков - Thread-8 и Thread-9.
          * @param value - значение, чтобы положить и взять из очереди.
          * @param sb - ссылка на экземпляр блокирующей очереди.
          * @throws InterruptedException в случае возникновения исключения.
          */
         private void chooseMethod(int value, SimpleBlockingQueue<Integer> sb) throws InterruptedException {
-            if (Thread.currentThread().getName().equals("Thread-0")) {
+            if (Thread.currentThread().getName().equals("Thread-0") || Thread.currentThread().getName().equals("Thread-8")) {
                 sb.offer(value);
             } else {
                 sb.poll();

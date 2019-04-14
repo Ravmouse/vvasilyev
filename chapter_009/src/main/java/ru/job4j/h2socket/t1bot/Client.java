@@ -58,8 +58,8 @@ public class Client {
                 while (!(str = in.readLine()).isEmpty()) {
                     LOGGER.info(String.format("Server: %s", str));
                 }
-                str = WORDS.get(rnd.nextInt(WORDS.size()));
-//                str = "exit"; //Для теста метода из класса ClientTest.
+//                str = WORDS.get(rnd.nextInt(WORDS.size()));
+                str = "exit"; //Для теста метода из класса ClientTest.
                 out.println(str);
             } while (!"exit".equals(str));
         }

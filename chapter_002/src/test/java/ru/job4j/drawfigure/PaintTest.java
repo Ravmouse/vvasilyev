@@ -13,7 +13,8 @@ public class PaintTest {
      */
     @Test
     public void whenTriangleThenDrawTriangle() {
-        final String line = System.getProperty("line.separator");
+//        final String line = System.getProperty("line.separator");
+        final String line = "\r\n";
         String expected = String.format("    ^%s   ^ ^%s  ^   ^%s ^     ^%s^^^^^^^^^", line, line, line, line);
         assertThat(new Paint().draw(new Triangle()), is(expected));
     }
@@ -23,7 +24,8 @@ public class PaintTest {
      */
     @Test
     public void whenSquareThenDrawSquare() {
-        final String line = System.getProperty("line.separator");
+//        final String line = System.getProperty("line.separator");
+        final String line = "\r\n";
         String expected = String.format("#########%s#       #%s#       #%s#       #%s#########", line, line, line, line);
         assertThat(new Paint().draw(new Square()), is(expected));
     }

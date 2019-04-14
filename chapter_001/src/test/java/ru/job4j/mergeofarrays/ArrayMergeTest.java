@@ -22,5 +22,10 @@ public class ArrayMergeTest {
         int[] expected = {-3, -2, 0, 1, 2, 3, 4, 5, 9, 10, 12};
         int[] result = arr.mergeOfSortedArrays(first, second);
         assertThat(expected, is(result));
+        int[] f = {-2, 1, 3, 5, 10, 12};
+        int[] s = {-3, 0, 2, 4, 9};
+        int[] e = {-3, -2, 0, 1, 2, 3, 4, 5, 9, 10, 12};
+        int[] r = arr.mergeOfSortedArrays(f, s);
+        assertThat(e, is(r));
     }
 }

@@ -27,3 +27,4 @@ target
 *.myd
 files
 *.stackdump
+*.csv

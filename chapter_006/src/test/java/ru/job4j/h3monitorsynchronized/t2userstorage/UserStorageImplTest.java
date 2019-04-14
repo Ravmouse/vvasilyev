@@ -10,7 +10,7 @@ public class UserStorageImplTest {
     /**
      * The for loop's counter.
      */
-    private static final int N = 1_000_000;
+    private static final int N = 10000;
 
     /**
      * An inner class.

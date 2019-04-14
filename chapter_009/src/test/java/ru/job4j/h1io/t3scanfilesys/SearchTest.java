@@ -20,11 +20,11 @@ public class SearchTest {
         String parent = String.format("%sJavaSearch", System.getProperty("java.io.tmpdir"));
         List<String> exts = Arrays.asList("java", "txt");
         List<File> fileList = Search.files(parent, exts);
-        assertThat(fileList.get(0).getName(), is("program.java"));
-        assertThat(fileList.get(1).getName(), is("text.txt"));
-        assertThat(fileList.get(2).getName(), is("comic.txt"));
-        assertThat(fileList.get(3).getName(), is("jvm.java"));
-        assertThat(fileList.get(4).getName(), is("novel.txt"));
-        assertThat(fileList.get(5).getName(), is("server.java"));
+        assertThat(fileList.get(0).getName(), is("comic.txt"));
+        assertThat(fileList.get(1).getName(), is("jvm.java"));
+        assertThat(fileList.get(2).getName(), is("novel.txt"));
+        assertThat(fileList.get(3).getName(), is("program.java"));
+        assertThat(fileList.get(4).getName(), is("server.java"));
+        assertThat(fileList.get(5).getName(), is("text.txt"));
     }
 }
