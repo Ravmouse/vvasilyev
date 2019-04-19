@@ -10,13 +10,15 @@ public class Mult extends Action {
     /**
      * Калькулятор.
      */
-    private final Calculator calc = new Calculator();
+    private final Calculator calc;
 
     /**
      * @param name имя.
+     * @param calc ссылка на калькулятор.
      */
-    public Mult(final String name) {
+    public Mult(final String name, final Calculator calc) {
         super(name);
+        this.calc = calc;
     }
 
     /**
@@ -26,7 +28,6 @@ public class Mult extends Action {
      */
     @Override
     public Double operation(final Double one, final Double two) {
-        calc.mult(one, two);
-        return calc.getResult();
+        return calc.mult(one, two);
     }
 }

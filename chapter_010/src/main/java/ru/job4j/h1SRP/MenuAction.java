@@ -3,11 +3,12 @@ package ru.job4j.h1srp;
 import ru.job4j.h1srp.action.Action;
 import ru.job4j.h1srp.action.Add;
 import ru.job4j.h1srp.action.Div;
-import ru.job4j.h1srp.action.Exit;
 import ru.job4j.h1srp.action.Mult;
-import ru.job4j.h1srp.action.Result;
 import ru.job4j.h1srp.action.Sub;
+import ru.job4j.h2ocp.EngineerCalc;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,18 +19,24 @@ public class MenuAction {
     /**
      * Карта.
      */
-    private final Map<Integer, Action> actions = new LinkedHashMap<>();
+    protected final Map<Integer, Action> actions = new LinkedHashMap<>();
+    /**
+     * Список со строками. Если одно из этих значений будет совпадать, то операция является тригонометрической.
+     */
+    private static final List<String> NAMES = Arrays.asList("Косинус", "Синус", "Тангенс", "Котангенс");
+    /**
+     * Инженерный калькулятор.
+     */
+    protected final EngineerCalc calc = new EngineerCalc();
 
     /**
      * Конструктор.
      */
     public MenuAction() {
-        actions.put(1, new Add("1. Сложение"));
-        actions.put(2, new Sub("2. Вычитание"));
-        actions.put(3, new Div("3. Деление"));
-        actions.put(4, new Mult("4. Умножение"));
-        actions.put(5, new Result("5. Пред.результат: "));
-        actions.put(6, new Exit("6. Выход"));
+        actions.put(1, new Add(" 1. Сложение", calc));
+        actions.put(2, new Sub(" 2. Вычитание", calc));
+        actions.put(3, new Div(" 3. Деление", calc));
+        actions.put(4, new Mult(" 4. Умножение", calc));
     }
 
     /**
@@ -37,5 +44,20 @@ public class MenuAction {
      */
     public Map<Integer, Action> actions() {
         return this.actions;
+    }
+
+    /**
+     * @param number число, введенное пользователем.
+     * @return true, если число соответствует триг.операции, и false, если - нет.
+     */
+    public boolean isTrigonom(int number) {
+        boolean result = false;
+        for (String name : NAMES) {
+            if (actions.get(number).getName().contains(name)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 }

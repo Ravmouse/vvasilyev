@@ -6,51 +6,42 @@ package ru.job4j.h1srp;
  */
 public class Calculator {
     /**
-     * Переменная для хранения результата вычисления.
-     */
-    private double result;
-
-    /**
      * Метод сложения.
      * @param first - first
      * @param second - second
+     * @return результат операции.
      */
-    public void add(double first, double second) {
-        this.result = first + second;
+    public double add(double first, double second) {
+        return first + second;
     }
 
     /**
      * Метод вычитания.
      * @param first - first
      * @param second - second
+     * @return результат операции.
      */
-    public void sub(double first, double second) {
-        this.result = first - second;
+    public double sub(double first, double second) {
+        return first - second;
     }
 
     /**
      * Метод деления.
      * @param first - first
      * @param second - second
+     * @return результат операции.
      */
-    public void div(double first, double second) {
-        this.result = first / second;
+    public double div(double first, double second) {
+        return first / second;
     }
 
     /**
      * Метод умножения.
      * @param first - first
      * @param second - second
+     * @return результат операции.
      */
-    public void mult(double first, double second) {
-        this.result = first * second;
-    }
-
-    /**
-     * Метод получения результата вычисления.
-     * @return double
-     */
-    public double getResult() {
-        return this.result;
+    public double mult(double first, double second) {
+        return first * second;
     }
 }

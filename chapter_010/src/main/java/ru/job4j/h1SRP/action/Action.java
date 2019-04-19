@@ -48,4 +48,11 @@ public abstract class Action {
     public double getResult() {
         return result;
     }
+
+    /**
+     * @return имя действия.
+     */
+    public String getName() {
+        return name;
+    }
 }

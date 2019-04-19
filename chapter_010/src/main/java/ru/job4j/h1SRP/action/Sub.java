@@ -10,13 +10,15 @@ public class Sub extends Action {
     /**
      * Калькулятор.
      */
-    private final Calculator calc = new Calculator();
+    private final Calculator calc;
 
     /**
      * @param name имя.
+     * @param calc ссылка на калькулятор.
      */
-    public Sub(final String name) {
+    public Sub(final String name, final Calculator calc) {
         super(name);
+        this.calc = calc;
     }
 
     /**
@@ -26,7 +28,6 @@ public class Sub extends Action {
      */
     @Override
     public Double operation(final Double one, final Double two) {
-        calc.sub(one, two);
-        return calc.getResult();
+        return calc.sub(one, two);
     }
 }

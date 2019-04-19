@@ -14,7 +14,7 @@ public class ValidateInput extends ConsoleInput {
      */
     private static final Logger LOG = Logger.getLogger(Utils.getNameOfTheClass());
     /**
-     * Нужен, чтобы получить доступ до экз.класса Result (#5), который хранит результат пред.вычисления.
+     * Нужен, чтобы получить доступ до экз.класса Result (#count - 1), который хранит результат пред.вычисления.
      */
     private final MenuAction menu;
 
@@ -60,7 +60,7 @@ public class ValidateInput extends ConsoleInput {
             try {
                 str = super.askS(in);
                 if ("z".equals(str)) {
-                    value = menu.actions().get(5).getResult();
+                    value = menu.actions().get(menu.actions().size() - 1).getResult();
                 } else {
                     value = Double.parseDouble(str);
                 }
