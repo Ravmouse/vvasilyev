@@ -1,6 +1,10 @@
 package ru.job4j.utils;
 
+import ru.job4j.h4isp.MenuItem;
 import java.time.LocalDate;
+import java.util.Comparator;
+import static java.lang.Integer.compare;
+import static java.lang.Integer.parseInt;
 
 /**
  * Утилиты.
@@ -92,5 +96,24 @@ public class Utils {
      */
     private static boolean isLeapYear(int year) {
         return (year % 4 == 0) && (year % 100 > 0) || (year % 400 == 0);
+    }
+
+    /**
+     * @param <T> экз. класса MenuItem или его подкласс.
+     * @return объект типа Comparator, сравнивающий два экз. класса MenuItem (или его подклассы).
+     */
+    public static <T extends MenuItem> Comparator<T> compareMenuItems() {
+        return (obj1, obj2) -> {
+            int result = 0;
+            String[] obj = obj1.getNumber().split("\\.");
+            String[] item = obj2.getNumber().split("\\.");
+            for (int i = 0; i < obj.length; i++) {
+                result = compare(parseInt(obj[i]), parseInt(item[i]));
+                if (result != 0) {
+                    break;
+                }
+            }
+            return result;
+        };
     }
 }
