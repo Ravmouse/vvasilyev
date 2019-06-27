@@ -34,4 +34,11 @@ public class ControlQuality {
     public void show() {
         this.list.forEach(Storage::show);
     }
+
+    /**
+     * @return список хранилищ, которые добавляются объекту при создании.
+     */
+    public List<Storage> getStorages() {
+        return list;
+    }
 }

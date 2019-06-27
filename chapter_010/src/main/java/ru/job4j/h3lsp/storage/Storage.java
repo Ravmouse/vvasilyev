@@ -38,4 +38,10 @@ public interface Storage {
      * @param nextStorage хранилище, ссылка на которое будет сохранена в объекте.
      */
     void setNextStorage(Storage nextStorage);
+    /**
+     * @return список продуктов из хранилища.
+     */
+    default List<Food> getFoods() {
+        return null;
+    }
 }
