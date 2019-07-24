@@ -30,15 +30,15 @@ public class Test {
         final Storage large = new LargeWarehouse(new Warehouse());
         final Storage shop = new Shop();
         final Storage trash = new Trash();
-        final Storage rec = new Recycle(trash);
-        lowTemp.setNextStorage(large);
-        large.setNextStorage(shop);
-        shop.setNextStorage(rec);
-        rec.setNextStorage(trash);
-        List<Storage> storageList = Arrays.asList(lowTemp, large, shop, rec, trash);
-
-        ControlQuality c = new ControlQuality(storageList);
-        c.distribute(list);
-        c.show();
+        final Recycle rec = new Recycle(trash);
+//        lowTemp.setNextStorage(large);
+//        large.setNextStorage(shop);
+//        shop.setNextStorage(rec);
+//        rec.setNextStorage(trash);
+//        List<Storage> storageList = Arrays.asList(lowTemp, large, shop, rec, trash);
+//
+//        ControlQuality c = new ControlQuality(storageList);
+//        c.distribute(list);
+//        c.show();
     }
 }
