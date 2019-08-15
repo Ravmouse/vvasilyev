@@ -3,41 +3,46 @@ package ru.job4j.h7testtask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
- * @author Vitaly Vasilyev, date: 04.07.2019, e-mail: rav.energ@rambler.ru
- * @version 1.0
+ * @author Vitaly Vasilyev, date: 15.08.2019, e-mail: rav.energ@rambler.ru
+ * @version 1.1
  */
 public class AI {
     /**
-     * Символ пользователя.
+     * Символ 1-го игрока.
      */
-    private final String uSymbol;
+    private final String symbolOne;
     /**
-     * Символ компьютера.
+     * Символ 2-го игрока.
      */
-    private final String aiSymbol;
+    private final String symbolTwo;
     /**
-     * Список с ходами пользователя.
+     * Список с ходами 1-го игрока.
      */
-    private List<Integer> user = new ArrayList<>();
+    private List<Integer> listOne = new ArrayList<>();
     /**
-     * Список с ходами компьютера.
+     * Список с ходами 2-го игрока.
      */
-    private List<Integer> ai = new ArrayList<>();
+    private List<Integer> listTwo = new ArrayList<>();
     /**
      * Поле.
      */
     private final Board board;
+    /**
+     * Флаг переключения между двумя List'ами.
+     */
+    private boolean flag;
 
     /**
-     * @param uSymbol символ пользователя.
-     * @param aiSymbol символ компьютера.
+     * @param symbolOne символ 1-го игрока.
+     * @param symbolTwo символ 2-го игрока.
      * @param board поле.
      */
-    public AI(String uSymbol, String aiSymbol, final Board board) {
-        this.uSymbol = uSymbol;
-        this.aiSymbol = aiSymbol;
+    public AI(String symbolOne, String symbolTwo, final Board board) {
+        this.symbolOne = symbolOne;
+        this.symbolTwo = symbolTwo;
         this.board = board;
     }
 
@@ -80,9 +85,9 @@ public class AI {
             }
 
             if (number == side) {
-                return "u";
+                return symbolOne;
             } else if (number == -side) {
-                return "c";
+                return symbolTwo;
             }
             number = 0;
             count = 0;
@@ -102,13 +107,13 @@ public class AI {
      * @param index позиция элемента типа Cell в списке.
      * @param cells список.
      * @param number число для подсчета кол-ва совпавших символов.
-     * @return если символ пользователя найден, то возвращается инкрементированное значение number, а иначе -
-     * декрементированное number.
+     * @return если символ 1-го игрока найден, то возвращается инкрементированное значение number,
+     *         если символ 2-го игрока найден, то возвращается декрементированное значение number, а иначе - без изменений.
      */
     private int condition(int index, List<Cell> cells, int number) {
-        if (uSymbol.equals(cells.get(index).toString())) {
+        if (symbolOne.equals(cells.get(index).toString())) {
             number++;
-        } else if (aiSymbol.equals(cells.get(index).toString())) {
+        } else if (symbolTwo.equals(cells.get(index).toString())) {
             number--;
         }
         return number;
@@ -117,32 +122,27 @@ public class AI {
     /**
      * @return произвольное значение из списка, в котором все элементы типа Cell имеют вид ".".
      */
-    private int getRandom() {
-        List<Integer> list = new ArrayList<>();
-        board.getCells().forEach(cell -> {
-            if (".".equals(cell.toString())) {
-                list.add(cell.getPosition());
-            }
-        });
+    public int getRandom() {
+        final List<Integer> list = board.getCells().stream()
+                .filter(cell -> ".".equals(cell.toString()))
+                .map(Cell::getPosition)
+                .collect(Collectors.toList());
         return list.get(new Random().nextInt(list.size()));
     }
 
     /**
-     * @param usrMove ход пользователя.
+     * @param move ход.
+     * @param symbol символ.
      */
-    public void userMove(int usrMove) {
-        user.add(usrMove);
-        board.changeCell(usrMove, uSymbol);
-    }
-
-    /**
-     * @return ход компьютера.
-     */
-    public int aiMove() {
-        int aMove = getRandom();
-        ai.add(aMove);
-        board.changeCell(aMove, aiSymbol);
-        return aMove;
+    public void move(int move, final String symbol) {
+        if (!flag) {
+            listOne.add(move);
+            flag = true;
+        } else {
+            listTwo.add(move);
+            flag = false;
+        }
+        board.changeCell(move, symbol);
     }
 
     /**
@@ -151,7 +151,7 @@ public class AI {
      */
     public boolean isValidMove(int move) {
         boolean result = true;
-        if (user.contains(move) || ai.contains(move)) {
+        if (listOne.contains(move) || listTwo.contains(move)) {
             result = false;
         }
         return result;
@@ -161,6 +161,6 @@ public class AI {
      * @return true, если кол-во ходов в обоих списках равно площади board, и false, если - нет.
      */
     public boolean isFull() {
-        return (user.size() + ai.size()) == board.getArea();
+        return (listOne.size() + listTwo.size()) == board.getArea();
     }
 }

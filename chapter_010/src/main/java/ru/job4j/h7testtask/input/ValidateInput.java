@@ -4,8 +4,8 @@ import org.apache.log4j.Logger;
 import ru.job4j.utils.Utils;
 
 /**
- * @author Vitaly Vasilyev, date: 05.07.2019, e-mail: rav.energ@rambler.ru
- * @version 1.0
+ * @author Vitaly Vasilyev, date: 15.08.2019, e-mail: rav.energ@rambler.ru
+ * @version 1.1
  */
 public class ValidateInput extends ConsoleInput {
     /**
@@ -42,19 +42,34 @@ public class ValidateInput extends ConsoleInput {
      * @param in строка с предложением.
      * @return вещественное значение.
      */
-    public String ask(String in, String one, String two) {
+    public String askPlayer(String in, String one, String two) {
         boolean invalid = true;
-        String result = null;
+        String result;
         do {
-            try {
-                result = super.askS(in);
-                if (one.equals(result) || two.equals(result)) {
-                    invalid = false;
-                } else {
-                    LOG.warn("Вы должны ввести либо символ " + one + ", либо символ " + two + "!");
-                }
-            } catch (NumberFormatException nbe) {
-                LOG.warn("Вы должны вводить либо 'z', либо только целые или дробные числа!");
+            result = super.askS(in);
+            if (one.equals(result) || two.equals(result)) {
+                invalid = false;
+            } else {
+                LOG.warn("Вы должны ввести либо символ '" + one + "', либо символ '" + two + "'!");
+            }
+
+        } while (invalid);
+        return result;
+    }
+
+    /**
+     * @param in строка с предложением.
+     * @return строку с символом.
+     */
+    public String askSymbol(String in) {
+        boolean invalid = true;
+        String result;
+        do {
+            result = super.askS(in);
+            if (result.length() == 1) {
+                invalid = false;
+            } else {
+                LOG.warn("Вы должны ввести только 1 символ!");
             }
         } while (invalid);
         return result;
