@@ -39,15 +39,15 @@ public class StartUI {
         int amount = input.ask("Введите размер поля для игры: ", 5);
         board = new Board(amount);
 
-        String playOne = input.askPlayer("Игрок #1: компьютер ('с') или человек ('u')? ", "c", "u");
+        String playOne = input.askPlayer("Игрок #1: компьютер ('с') или человек ('h')? ", "c", "h");
         String nameOne = input.askS("Задайте имя для Игрока #1: ");
         String symbolOne = input.askSymbol("Выберите символ для Игрока #1: ");
 
-        String playTwo = input.askPlayer("Игрок #2, компьютер ('с') или человек ('u')? ", "c", "u");
+        String playTwo = input.askPlayer("Игрок #2, компьютер ('с') или человек ('h')? ", "c", "h");
         String nameTwo = input.askS("Задайте имя для Игрока #2: ");
         String symbolTwo = input.askSymbol("Выберите символ для Игрока #2: ");
 
-        ai = new AI(symbolOne, symbolTwo, board);
+        ai = new AI(board);
 
         BiFunction<String, String, Integer> one = "c".equals(playOne) ? funcComp : funcUser;
         BiFunction<String, String, Integer> two = "c".equals(playTwo) ? funcComp : funcUser;
@@ -80,8 +80,7 @@ public class StartUI {
      */
     private int checkWinner(String name, String symbol) {
         int result = 0;
-        String winner = ai.findWinner();
-        if (symbol.equals(winner)) {
+        if (ai.isWinner(symbol)) {
             board.showBoard();
             LOG.info("Победил(-а) " + name + "!");
             result = -1;
@@ -147,8 +146,12 @@ public class StartUI {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        move = ai.getRandom();
-        ai.move(move, symbol);
+        if ((move = ai.getEnemyMove(symbol, 2)) != -1) {
+            ai.move(move, symbol);
+        } else {
+            move = ai.getRandom();
+            ai.move(move, symbol);
+        }
         LOG.info("Ход компьютера (" + name + ") = " + move);
         if (checkWinner(name, symbol) == -1 || checkFull() == -1) {
             result = -1;

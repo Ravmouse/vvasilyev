@@ -53,7 +53,7 @@ SELECT company_name, MAX(count) FROM (
 	INNER JOIN company c
 	ON c.id = p.company_id
 	GROUP BY p.company_id, c.name
-) x
+) value
 GROUP BY company_name, count
 ORDER BY count DESC
 LIMIT 1;

@@ -6,18 +6,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
- * @author Vitaly Vasilyev, date: 15.08.2019, e-mail: rav.energ@rambler.ru
- * @version 1.1
+ * @author Vitaly Vasilyev, date: 21.08.2019, e-mail: rav.energ@rambler.ru
+ * @version 1.2
  */
 public class AI {
-    /**
-     * Символ 1-го игрока.
-     */
-    private final String symbolOne;
-    /**
-     * Символ 2-го игрока.
-     */
-    private final String symbolTwo;
     /**
      * Список с ходами 1-го игрока.
      */
@@ -34,62 +26,63 @@ public class AI {
      * Флаг переключения между двумя List'ами.
      */
     private boolean flag;
+    /**
+     * Выигрышные комбинации.
+     */
+    private final List<List<Integer>> winners;
 
     /**
-     * @param symbolOne символ 1-го игрока.
-     * @param symbolTwo символ 2-го игрока.
      * @param board поле.
      */
-    public AI(String symbolOne, String symbolTwo, final Board board) {
-        this.symbolOne = symbolOne;
-        this.symbolTwo = symbolTwo;
+    public AI(final Board board) {
         this.board = board;
+        winners = construct(board);
     }
 
     /**
-     * @return пустую строку, если победителя нет, "u", если пользователь победил, или "c", если компьютер победил.
+     * @return список со списками целочисленных значений.
+     */
+    public List<List<Integer>> getWinners() {
+        return winners;
+    }
+
+    /**
+     * @param board поле.
+     * @return список со списками целочисленных значений - выигрышные комбинации.
      * 1. Внеш.цикл продолжается на величину [(длина поля * 2) + 2]. Если 3, то 8 раз. Если 5, то 12 раз и т.д.
-     * 2. Внутр.цикл продолжается на величину поля (3 раза, 5 раз и т.д.).
+     * 2. Внутр.цикл продолжается на величину длины поля (3 раза, 5 раз и т.д.).
      * 3. Счетчик i также используется для подсчета 3 промежутков:
-     * 4. когда будут перебраны все горизонтали в кол-ве величины поля (value нужно увеличивать на 1)
-     * 5. когда будут перебраны все вертикали в кол-ве величины поля (value нужно увеличивать на величину side)
+     * 4. когда будут перебраны все горизонтали в кол-ве длины поля (value нужно увеличивать на 1)
+     * 5. когда будут перебраны все вертикали в кол-ве длины поля (value нужно увеличивать на величину side)
      * 6. когда будут перебраны 2 диагонали (в одном случает value нужно увеличивать на side + 1),
      * в другом - на side - 1.
      */
-    public String findWinner() {
-        String result = "";
+    private List<List<Integer>> construct(final Board board) {
         int count = 0;
         int value = 0;
         int side = board.getSide();
         int adder = 0;
         int tmp = 0;
-        List<Cell> cells = board.getCells();
-        int number = 0;
-
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> inner = new ArrayList<>();
         for (int i = 0; i < (side * 2) + 2; i++) { //1.
             while (count < side) { //2.
                 if (i < side) { //3.
-                    number = condition(value, cells, number);
-                    value++; //4.
+                    inner.add(value++);
                 } else if (i >= side && i < side * 2) {
                     if (count == 0) {
                         value = tmp++;
                     }
-                    number = condition(value, cells, number);
+                    inner.add(value);
                     value += side; //5.
                 } else {
-                    number = condition(value, cells, number);
+                    inner.add(value);
                     value += adder; //6.
                 }
                 count++;
             }
-
-            if (number == side) {
-                return symbolOne;
-            } else if (number == -side) {
-                return symbolTwo;
-            }
-            number = 0;
+            result.add(new ArrayList<>(inner));
+            inner.clear();
             count = 0;
             value = (i == side - 1) ? 0 : value;
             if (i == side * 2 - 1) {
@@ -104,19 +97,53 @@ public class AI {
     }
 
     /**
-     * @param index позиция элемента типа Cell в списке.
-     * @param cells список.
-     * @param number число для подсчета кол-ва совпавших символов.
-     * @return если символ 1-го игрока найден, то возвращается инкрементированное значение number,
-     *         если символ 2-го игрока найден, то возвращается декрементированное значение number, а иначе - без изменений.
+     * @param symbol символ.
+     * @return true, если кол-во symbol среди выигрышных комбинаций равно длине поля, и false, если - нет.
      */
-    private int condition(int index, List<Cell> cells, int number) {
-        if (symbolOne.equals(cells.get(index).toString())) {
-            number++;
-        } else if (symbolTwo.equals(cells.get(index).toString())) {
-            number--;
+    public boolean isWinner(final String symbol) {
+        boolean result = false;
+        int count = 0;
+        for (List<Integer> list : winners) {
+            for (Integer i : list) {
+                if (symbol.equals(board.getCells().get(i).toString())) {
+                    count++;
+                }
+            }
+            if (result = count == board.getSide()) {
+                break;
+            }
+            count = 0;
         }
-        return number;
+        return result;
+    }
+
+    /**
+     * @param symbol символ.
+     * @param amount кол-во ходов оппонента в одной из выигрышных комбинаций.
+     * @return позицию на поле, куда нужно поставить свой символ, чтобы не дать возможность оппоненту.
+     * 1. Просмотреть все целые значения каждого списка из winners.
+     * 2. Если amount == 2, то любые 2 значения из 3 должны иметь символы, отличные от symbol и от ".",
+     *    это и будут 2 хода оппонента, 3-й ход которого нужно занять, чтобы не дать выиграть.
+     */
+    public int getEnemyMove(final String symbol, int amount) {
+        int result = -1;
+        int count = 0;
+        List<Cell> cells = board.getCells();
+        for (List<Integer> list : winners) {
+            for (Integer i : list) {
+                if (!symbol.equals(cells.get(i).toString()) && !".".equals(cells.get(i).toString())) {
+                    count++;
+                } else {
+                    result = i;
+                }
+            }
+            if (count == amount && isValidMove(result)) {
+                break;
+            }
+            count = 0;
+            result = -1;
+        }
+        return result;
     }
 
     /**

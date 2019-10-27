@@ -41,7 +41,7 @@ public class SchoolTest {
      * Тест на получение списка для А-класса.
      */
     @Test
-    public void collectA_Class() {
+    public void collectClassA() {
         List<Student> list = School.collect(students, s -> s.getScore() >= 70 && s.getScore() <= 100);
         assertThat(list, is(Arrays.asList(seven, eight, nine, ten)));
     }
@@ -50,7 +50,7 @@ public class SchoolTest {
      * Тест на получение списка для Б-класса.
      */
     @Test
-    public void collectB_Class() {
+    public void collectClassB() {
         List<Student> list = School.collect(students, s -> s.getScore() >= 50 && s.getScore() < 70);
         assertThat(list, is(Arrays.asList(five, six)));
     }
@@ -59,7 +59,7 @@ public class SchoolTest {
      * Тест на получение списка для В-класса.
      */
     @Test
-    public void collectC_Class() {
+    public void collectClassC() {
         List<Student> list = School.collect(students, s -> s.getScore() >= 0 && s.getScore() < 50);
         assertThat(list, is(Arrays.asList(zero, one, two, three, four)));
     }

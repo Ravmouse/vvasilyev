@@ -12,7 +12,7 @@ public class Office {
      * Логгер.
      */
     private static final Logger LOG = Logger.getLogger(Utils.getNameOfTheClass());
-    private static final Runtime runtime = Runtime.getRuntime();
+    private static final Runtime RUNTIME = Runtime.getRuntime();
 
     /**
      * Состояние памяти.
@@ -22,10 +22,10 @@ public class Office {
 //        int mb = 1024;
         int mb = 1;
 
-        LOG.info("Max memory: " + runtime.maxMemory() / mb);
-        LOG.info("Total memory: " + runtime.totalMemory() / mb);
-        LOG.info("Free memory: " + runtime.freeMemory() / mb);
-        LOG.info("Used memory: " + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+        LOG.info("Max memory: " + RUNTIME.maxMemory() / mb);
+        LOG.info("Total memory: " + RUNTIME.totalMemory() / mb);
+        LOG.info("Free memory: " + RUNTIME.freeMemory() / mb);
+        LOG.info("Used memory: " + (RUNTIME.totalMemory() - RUNTIME.freeMemory()) / mb);
     }
 
     /**
