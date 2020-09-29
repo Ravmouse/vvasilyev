@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
+
 import static java.sql.DriverManager.getConnection;
 
 /**
@@ -117,15 +119,18 @@ public class Tracker implements AutoCloseable {
      * Запрашивает из таблицы все данные и выводит их на печать.
      * @throws SQLException исключение.
      */
-    public void findAll() throws SQLException {
+    public void findAll(Consumer<String> consumer) throws SQLException {
         try (final Statement statement = conn.createStatement()) {
             try (final ResultSet resultSet = statement.executeQuery("SELECT * FROM items")) {
                 while (resultSet.next()) {
-                    System.out.println(resultSet.getInt("id"));
-                    System.out.println(resultSet.getString("name"));
-                    System.out.println(resultSet.getString("description"));
-                    System.out.println(resultSet.getString("create_date"));
-                    System.out.println(resultSet.getString("comments"));
+                    consumer.accept(
+                            String.format("id=%d, name=%s, description=%s, create_date=%s, comments=%s",
+                                    resultSet.getInt("id"),
+                                    resultSet.getString("name"),
+                                    resultSet.getString("description"),
+                                    resultSet.getString("create_date"),
+                                    resultSet.getString("comments"))
+                    );
                 }
             }
         }
@@ -142,10 +147,10 @@ public class Tracker implements AutoCloseable {
             t.insert("Chris", "front_end", "JS");
             t.insert("Mike", "administrator", "hates_doing_his_job");
             t.update("Peter", "Mike");
-            t.findAll();
+            t.findAll(System.out::println);
             System.out.println("====================");
             t.delete("Chris");
-            t.findAll();
+            t.findAll(System.out::println);
         }
     }
 
