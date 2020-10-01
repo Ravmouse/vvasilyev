@@ -119,19 +119,20 @@ public class Tracker implements AutoCloseable {
      * Запрашивает из таблицы все данные и выводит их на печать.
      * @throws SQLException исключение.
      */
-    public void findAll(Consumer<String> consumer) throws SQLException {
-        try (final Statement statement = conn.createStatement()) {
-            try (final ResultSet resultSet = statement.executeQuery("SELECT * FROM items")) {
-                while (resultSet.next()) {
-                    consumer.accept(
-                            String.format("id=%d, name=%s, description=%s, create_date=%s, comments=%s",
-                                    resultSet.getInt("id"),
-                                    resultSet.getString("name"),
-                                    resultSet.getString("description"),
-                                    resultSet.getString("create_date"),
-                                    resultSet.getString("comments"))
-                    );
-                }
+    public void findAll(Consumer<Object> consumer) throws SQLException {
+        try (
+                final Statement statement = conn.createStatement();
+                final ResultSet resultSet = statement.executeQuery("SELECT * FROM items")) {
+
+            while (resultSet.next()) {
+                consumer.accept(
+                    String.format("id=%d, name=%s, description=%s, create_date=%s, comments=%s",
+                            resultSet.getInt("id"),
+                            resultSet.getString("name"),
+                            resultSet.getString("description"),
+                            resultSet.getString("create_date"),
+                            resultSet.getString("comments"))
+                );
             }
         }
     }
